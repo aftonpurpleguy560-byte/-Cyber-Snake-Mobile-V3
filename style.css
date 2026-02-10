@@ -1,0 +1,113 @@
+:root { --main-color: #38bdf8; }
+
+body {
+  background: #000;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: var(--main-color);
+  font-family: 'Courier New', Courier, monospace;
+  overflow: hidden;
+  touch-action: none; /* Tablette kaydırmayı engeller */
+}
+
+.mobile-wrapper {
+  width: 95vw;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.game-area {
+  position: relative;
+  width: 100%;
+  max-width: 550px;
+  max-height: 75vh;
+  aspect-ratio: 1 / 1;
+}
+
+canvas {
+  background: #010409;
+  border: 3px solid var(--main-color);
+  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  box-shadow: 0 0 15px var(--main-color);
+}
+
+@media (orientation: landscape) {
+  .game-area { max-width: 70vh; }
+}
+
+.glitch {
+  font-size: 2.5rem;
+  font-weight: 900;
+  position: relative;
+  color: var(--main-color);
+  text-shadow: 2px 0 0 #ff00ff, -2px -2px 0 #00ffff;
+}
+
+.cyber-btn {
+  background: transparent;
+  border: 2px solid var(--main-color);
+  color: var(--main-color);
+  padding: 12px;
+  width: 220px;
+  cursor: pointer;
+  margin: 8px;
+  font-weight: bold;
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+
+.cyber-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.hidden { display: none !important; }
+
+.overlay-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  border-radius: 12px;
+}
+
+.setting-row {
+  width: 85%;
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+select {
+  background: #111;
+  color: #fff;
+  border: 1px solid var(--main-color);
+  padding: 5px;
+}
+
