@@ -3,10 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake V3</title>
+    <title>Cyber Snake V3 | Efe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <script src="script.js"></script>
+
+<div class="mobile-wrapper">
+  <div class="hud">
+    <div class="stat" onclick="panicMode()">SCORE: <span id="score">000</span></div>
+    <div class="stat">BEST: <span id="highScore">000</span></div>
+  </div>
+
+  <div class="game-container">
+    <div class="game-area">
+      <canvas id="cyberCanvas"></canvas>
+      
+      <div id="mainMenu" class="overlay-screen">
+        <h1 class="glitch" data-text="CYBER SNAKE V3">CYBER SNAKE V3</h1>
+        <button id="startBtn" class="cyber-btn">OYUNA BAŞLA</button>
+        <button id="settingsBtn" class="cyber-btn secondary">AYARLAR</button>
+        <p class="brand">Purpleguy © 2026 - tablet power</p>
+      </div>
+
+      <div id="settingsMenu" class="overlay-screen hidden">
+        <h3>SİSTEM AYARLARI</h3>
+        <div class="setting-row"><span>HIZ:</span>
+          <select id="difficulty"><option value="220">YAVAŞ</option><option value="130" selected>NORMAL</option><option value="80">HIZLI</option></select>
+        </div>
+        <div class="setting-row"><span>DUVARLAR:</span>
+          <select id="wallMode"><option value="die">ÖLDÜRÜR</option><option value="pass">GEÇİRGEN</option></select>
+        </div>
+        <div class="setting-row"><span>TEMA:</span>
+          <select id="themeSelect">
+            <option value="#38bdf8">NEON MAVİ</option>
+            <option value="#ff00ff">SİBER PEMBE</option>
+            <option value="#4ade80">MATRİX YEŞİLİ</option>
+            <option value="#facc15">ALTIN SARISI</option>
+            <option value="#fb923c">TURUNCU GÜÇ</option>
+            <option value="#f87171">ALEV KIRMIZISI</option>
+            <option value="#a855f7">MOR GECE</option>
+            <option value="#ffffff">BUZ BEYAZI</option>
+            <option value="#ec4899">SICAK PEMBE</option>
+            <option value="#22d3ee">TURKUAZ</option>
+          </select>
+        </div>
+        <button id="saveBtn" class="cyber-btn">KAYDET VE ÇIK</button>
+      </div>
+
+      <div id="gameOverScreen" class="overlay-screen hidden">
+        <h2 class="glitch" data-text="SİSTEM DURDU">SİSTEM DURDU</h2>
+        <button id="restartBtn" class="cyber-btn">TEKRAR DENE</button>
+        <button id="backMenuBtn" class="cyber-btn secondary">ANA MENÜYE DÖN</button>
+      </div>
+
+      <div id="victoryScreen" class="overlay-screen hidden">
+        <h1 class="glitch" data-text="ERİŞİM TAMAM">ERİŞİM TAMAM</h1>
+        <button id="winRestartBtn" class="cyber-btn">YENİDEN BAŞLA</button>
+        <button id="backMenuBtnWin" class="cyber-btn secondary">ANA MENÜYE DÖN</button>
+      </div>
+
+      <div id="panicScreen" class="overlay-screen hidden" style="background: #000;" onclick="panicMode()"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
