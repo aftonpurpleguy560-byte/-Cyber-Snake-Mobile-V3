@@ -8,11 +8,6 @@
 </head>
 <body>
     <div id="game-container">
-        <div id="lang-toggle">
-            <button onclick="setLanguage('tr')">TR</button> | 
-            <button onclick="setLanguage('en')">EN</button>
-        </div>
-
         <div id="ui-layer">
             <div class="stat"><span data-key="scoreText">Skor</span>: <span id="score">000</span></div>
             <div class="stat"><span data-key="highScoreText">En İyi</span>: <span id="highScore">000</span></div>
@@ -21,42 +16,54 @@
         <canvas id="cyberCanvas"></canvas>
 
         <div id="mainMenu" class="overlay">
-            <h1 class="glitch" title="CYBER SNAKE">CYBER SNAKE</h1>
-            <button id="startBtn" class="cyber-btn" data-key="startBtn">BAŞLAT</button>
-            <button id="settingsBtn" class="cyber-btn" data-key="settingsBtn">AYARLAR</button>
+            <h1 class="glitch">CYBER SNAKE</h1>
+            <button id="startBtn" class="modern-btn main">BAŞLAT</button>
+            <button id="settingsBtn" class="modern-btn secondary">AYARLAR</button>
             <p id="credit">Purpleguy © 2026 - tablet power</p>
         </div>
 
         <div id="settingsMenu" class="overlay hidden">
-            <div class="menu-content">
-                <h2 data-key="settingsTitle">SİBER LABORATUVAR</h2>
-                
-                <div class="setting-item">
-                    <label data-key="snakeColorText">Yılan Rengi:</label>
-                    <input type="color" id="themeSelect" value="#38bdf8">
+            <div class="modern-card">
+                <div class="card-header">
+                    <h2 data-key="settingsTitle">Ayarlar</h2>
                 </div>
-                
-                <div class="setting-item">
-                    <label data-key="wallModeText">Duvar Modu:</label>
-                    <select id="wallMode">
-                        <option value="die" data-key="wallDie">Çarpınca Öl</option>
-                        <option value="pass" data-key="wallPass">İçinden Geç</option>
-                    </select>
+
+                <div class="setting-section">
+                    <h3>🐍 Yılan Rengi</h3>
+                    <div class="color-grid">
+                        <div class="color-opt active" style="background: #38bdf8;" onclick="changeColor('#38bdf8', this)"></div>
+                        <div class="color-opt" style="background: #a855f7;" onclick="changeColor('#a855f7', this)"></div>
+                        <div class="color-opt" style="background: #22c55e;" onclick="changeColor('#22c55e', this)"></div>
+                        <div class="color-opt" style="background: #ef4444;" onclick="changeColor('#ef4444', this)"></div>
+                        <div class="color-opt" style="background: #eab308;" onclick="changeColor('#eab308', this)"></div>
+                    </div>
                 </div>
-                
-                <div class="setting-item">
-                    <label data-key="powerUpText">Güçlendiriciler:</label>
-                    <input type="checkbox" id="powerUpToggle" checked>
+
+                <div class="setting-section">
+                    <div class="setting-item">
+                        <span>🧱 Duvar Modu (Geçiş)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="wallToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>⚡ Güçlendiriciler</span>
+                        <label class="switch">
+                            <input type="checkbox" id="powerToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                
-                <button id="saveBtn" class="cyber-btn" data-key="saveBtn">KAYDET</button>
+
+                <button id="saveBtn" class="modern-save-btn">AYARLARI KAYDET</button>
             </div>
         </div>
 
         <div id="gameOverScreen" class="overlay hidden">
-            <h1 class="glitch" data-key="gameOverText">SİSTEM ÇÖKTÜ</h1>
-            <button id="restartBtn" class="cyber-btn" data-key="restartBtn">TEKRAR DENE</button>
-            <button id="backMenuBtn" class="cyber-btn" data-key="backBtn">MENÜ</button>
+            <h1 class="glitch">SİSTEM ÇÖKTÜ</h1>
+            <button id="restartBtn" class="modern-btn main">TEKRAR DENE</button>
+            <button id="backMenuBtn" class="modern-btn secondary">MENÜ</button>
         </div>
     </div>
 
