@@ -1,4 +1,3 @@
-/* Purpleguy © 2026 - tablet power */
 :root { --main-color: #38bdf8; --bg-color: #000; }
 
 body { 
@@ -9,99 +8,31 @@ body {
     align-items: center; 
     min-height: 100vh; 
     color: var(--main-color); 
-    font-family: 'Courier New', Courier, monospace; 
+    font-family: 'Courier New', monospace; 
     overflow: hidden; 
     touch-action: none; 
 }
 
-.mobile-wrapper { 
-    width: 95vw; 
-    height: 95vh; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-}
+.mobile-wrapper { width: 95vw; height: 95vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-.hud { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    width: 100%; 
-    max-width: 550px; 
-    margin-bottom: 10px; 
-    font-weight: bold; 
-    z-index: 10;
-}
+.hud { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 550px; margin-bottom: 10px; font-weight: bold; }
 
-.game-area { 
-    position: relative; 
-    width: 100%; 
-    max-width: 550px; 
-    aspect-ratio: 1 / 1; 
-}
+.game-area { position: relative; width: 100%; max-width: 550px; aspect-ratio: 1 / 1; }
 
-canvas { 
-    background: #010409; 
-    border: 3px solid var(--main-color); 
-    border-radius: 12px; 
-    width: 100%; 
-    height: 100%; 
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); 
-}
+canvas { background: #010409; border: 3px solid var(--main-color); border-radius: 12px; width: 100%; height: 100%; box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); }
 
-.overlay-screen { 
-    position: absolute; 
-    top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0, 0, 0, 0.92); 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 100; 
-    border-radius: 12px; 
-    backdrop-filter: blur(5px);
-}
+.overlay-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; border-radius: 12px; }
 
 .hidden { display: none !important; }
 
-.glitch { 
-    font-size: 2.5rem; 
-    text-transform: uppercase; 
-    text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
-    margin-bottom: 20px;
-}
+.glitch { font-size: 2.5rem; text-transform: uppercase; text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
 
-.cyber-btn { 
-    background: transparent; 
-    border: 2px solid var(--main-color); 
-    color: var(--main-color); 
-    padding: 15px 30px; 
-    margin: 10px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    text-transform: uppercase; 
-    border-radius: 8px; 
-    transition: 0.3s all;
-}
+.cyber-btn { background: transparent; border: 2px solid var(--main-color); color: var(--main-color); padding: 12px 24px; margin: 8px; cursor: pointer; font-weight: bold; border-radius: 8px; }
 
-.cyber-btn:hover { 
-    background: var(--main-color); 
-    color: #000; 
-    box-shadow: 0 0 15px var(--main-color); 
-}
+.cyber-btn:hover { background: var(--main-color); color: #000; }
 
-.cyber-btn.secondary { border-color: #444; color: #444; }
+.setting-row { width: 85%; display: flex; justify-content: space-between; margin: 10px 0; }
 
-.setting-row { 
-    width: 85%; 
-    display: flex; 
-    justify-content: space-between; 
-    margin: 12px 0; 
-    font-size: 0.9rem;
-}
+select { background: #111; color: #fff; border: 1px solid var(--main-color); padding: 5px; }
 
-select { background: #111; color: #fff; border: 1px solid var(--main-color); padding: 5px; border-radius: 4px; }
-
-.lang-btn { background: none; border: 1px solid var(--main-color); color: white; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.8rem; transition: 0.2s; }
-.lang-btn:hover { background: rgba(56, 189, 248, 0.2); }
+.lang-btn { background: none; border: 1px solid var(--main-color); color: white; padding: 4px 8px; cursor: pointer; border-radius: 4px; font-size: 0.7rem; }
