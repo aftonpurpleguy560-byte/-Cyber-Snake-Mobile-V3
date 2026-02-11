@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake v3.2+ | Purpleguy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="game-container">
-        <div id="lang-select">
-            <button onclick="changeLang('tr')">TR</button>
-            <button onclick="changeLang('en')">EN</button>
-        </div>
-
-        <div id="ui">
-            <div><span id="txt-score">SKOR</span>: <span id="score">000</span></div>
-            <div><span id="txt-high">EN İYİ</span>: <span id="high">000</span></div>
-        </div>
-        
-        <canvas id="c"></canvas>
-
-        <div id="menu" class="overlay">
-            <h1 id="txt-title" class="menu-title">SNAKE v3.2</h1>
-            <button class="btn btn-main" id="btn-start" onclick="startGame()">BAŞLAT</button>
-            <p id="signature">Purpleguy © 2026 - tablet power</p>
-        </div>
+<div class="hud">
+    <div id="langControls" style="position: absolute; top: 5px; left: 5px; display: flex; gap: 5px;">
+        <button onclick="setLanguage('tr')" style="background:none; border:1px solid var(--main-color); color:white; cursor:pointer; font-size:10px;">TR</button>
+        <button onclick="setLanguage('en')" style="background:none; border:1px solid var(--main-color); color:white; cursor:pointer; font-size:10px;">EN</button>
+    </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+<script src="translations.js"></script>
+<script src="script.js"></script>
