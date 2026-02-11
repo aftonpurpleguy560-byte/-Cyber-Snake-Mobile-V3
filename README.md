@@ -1,28 +1,30 @@
-# 🐍 Cyber Snake Mobile V3
+# 🐍 Cyber Snake Mobile V3.1 - "Hardcore Edition"
 
-Tablette hem dikey hem de yatay modda kusursuz çalışan, modern ve siber temalı bir yılan oyunu. Profesyonel bir deneyim için GitHub + Vercel altyapısıyla yayınlanmıştır.
+Tablette kusursuz performans için optimize edilmiş, dinamik zorluk sistemine sahip modern yılan oyunu. Artık skor yaptıkça oyun daha da hırçınlaşıyor!
 
-## 🚀 Özellikler
-* **Tam Duyarlı (Responsive):** Tablette yön değişimine (Portrait/Landscape) tam uyum sağlar.
-* **Siber Estetik:** Neon renkler, glitch efektli menüler ve silindir formunda yılan tasarımı.
-* **Gelişmiş Mekanikler:** * Her yemek +5 puan kazandırır.
-    * Tarayıcı tabanlı "Beep" ses efekti.
-    * Yüksek skor (High Score) yerel depolama desteği.
-* **Easter Egg (Gizli Özellik):** Ayarlar menüsündeki imzaya 3 kez hızlıca tıklayarak **God Mode**'u aktif edebilirsiniz.
+## 🆕 Son Yenilikler (v3.1)
+* **Dinamik Zorluk Sistemi:** Her 50 puanda bir yılanın hızı otomatik olarak artar.
+* **Görsel Geri Bildirim:** Hız arttığında oyun alanı kırmızı neon ışıkla yanıp söner.
+* **60 FPS Akıcılık:** `requestAnimationFrame` teknolojisi ile "dona dona gitme" sorunu tamamen ortadan kaldırıldı.
+* **Tam Silindir Tasarımı:** Yılan parçaları artık daha modern ve pürüzsüz bir silindir formunda.
 
-## 🕹️ Nasıl Oynanır?
-1.  **Dokunmatik (Swipe):** Parmağınızı ekranda kaydırarak yılanı yönlendirin.
-2.  **Klavye:** Bilgisayardan giriyorsanız ok tuşları veya WASD ile kontrol edin.
-3.  **Ayarlar:** Oyun hızını, duvar modunu ve neon temasını kişiselleştirin.
+## 🚀 Teknik Özellikler
+* **Responsive Engine:** Tablet dikey/yatay moduna anlık uyum.
+* **Web Audio API:** Harici dosya gerektirmeyen, kodla üretilen retro ses efektleri.
+* **Persistent High Score:** Rekorun tarayıcı kapansa bile `localStorage` üzerinde saklanır.
 
-## 🛠️ Kurulum
-Bu projeyi kendi Vercel hesabınızda yayınlamak için:
-1. Repoyu forklayın.
-2. Vercel üzerinden reponuzu içeri aktarın (Import).
-3. `index.html`, `style.css` ve `script.js` dosyaları otomatik olarak tanınacaktır.
+## 🕹️ Kontroller
+* **Tablet/Mobil:** Hassas Swipe (Kaydırma) hareketleri.
+* **Mekanik:** Her elma (🍎) +5 puan kazandırır.
+
+## 🤫 Easter Egg (God Mode)
+Ayarlar menüsünün en altında bulunan geliştirici imzasına **3 kez hızlıca** dokunarak ölümsüzlük modunu açıp kapatabilirsiniz.
+> *Not: God Mode etkinken yılan altın rengine bürünür.*
 
 ---
 
-### ✍️ İmza
-**Purpleguy © 2026 - tablet power**
-*Geliştirici: Efe*
+### ✍️ Geliştirici
+**Purpleguy © 2026 - tablet power** *Project Owner: Efe*
+
+---
+*Bu proje GitHub + Vercel altyapısı ile otomatik olarak dağıtılmaktadır.*
