@@ -1,4 +1,7 @@
-/* Cyber Snake v3.8 Beta - Official Style */
+/* Cyber Snake v3.8 Beta | Dark World Master Design
+   Purpleguy © 2026 - tablet power 
+*/
+
 * {
     margin: 0;
     padding: 0;
@@ -7,9 +10,14 @@
 }
 
 body {
-    background: #000; /* Arka plan her zaman siyah */
+    /* Burası o sıkıcı beyaz/gri dünyayı siber mekana çevirir */
+    background-color: #000000 !important; 
+    background-image: 
+        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
     color: #00f3ff;
-    font-family: 'Courier New', monospace;
+    font-family: 'Courier New', Courier, monospace;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,25 +28,38 @@ body {
 #game-container {
     position: relative;
     border: 3px solid #00f3ff;
-    box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    box-shadow: 0 0 40px rgba(0, 243, 255, 0.4);
     background: #000;
 }
 
+/* Üst Panel - Puanlar */
 .stats {
     display: flex;
     justify-content: space-between;
-    padding: 12px;
-    border-bottom: 1px solid #00f3ff;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid #00f3ff;
     font-size: 14px;
+    letter-spacing: 1px;
 }
 
+.stat-label { color: #00f3ff; opacity: 0.8; }
+#scoreValue, #highScoreValue { color: #fff; text-shadow: 0 0 10px #00f3ff; }
+
+/* Canvas Alanı */
+canvas {
+    display: block;
+    background: #000;
+}
+
+/* Ana Menü ve Ayarlar */
 #menu {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.98);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,57 +67,80 @@ body {
     z-index: 100;
 }
 
+/* Glitch Başlık */
 .glitch {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: bold;
+    color: #00f3ff;
+    text-shadow: 2px 2px #ff003c, -2px -2px #05ff00;
+    margin-bottom: 30px;
     text-transform: uppercase;
-    text-shadow: 2px 2px #ff003c, -2px -2px #00f3ff;
-    margin-bottom: 20px;
-    animation: glitch-anim 0.4s infinite;
+    animation: siber-titreme 0.4s infinite;
 }
 
-@keyframes glitch-anim {
-    0% { transform: skew(0deg); }
-    33% { transform: skew(3deg); opacity: 0.8; }
-    66% { transform: skew(-2deg); color: #ff00ff; }
-    100% { transform: skew(0deg); }
+@keyframes siber-titreme {
+    0% { transform: translate(0); }
+    25% { transform: translate(-1px, 1px) skew(1deg); }
+    50% { transform: translate(-1px, -1px); color: #ff00ff; }
+    75% { transform: translate(1px, 1px) skew(-1deg); }
+    100% { transform: translate(0); }
 }
 
+/* Buton Tasarımları */
 button {
     background: transparent;
     border: 1px solid #00f3ff;
     color: #00f3ff;
-    padding: 10px 20px;
-    margin: 5px;
+    padding: 12px 24px;
+    margin: 8px;
     font-family: inherit;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     cursor: pointer;
-    transition: 0.3s all;
+    transition: 0.3s all cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 button:hover {
     background: #00f3ff;
     color: #000;
-    box-shadow: 0 0 15px #00f3ff;
+    box-shadow: 0 0 20px #00f3ff;
+    transform: scale(1.05);
 }
 
+/* Tema Seçim Alanı */
 .theme-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    margin-top: 10px;
+    gap: 10px;
+    margin: 15px 0;
 }
 
+/* İmza Alanı (God Mode Tetikleyici) */
 .signature {
-    margin-top: 25px;
+    margin-top: 30px;
     font-size: 10px;
+    letter-spacing: 2px;
+    color: #00f3ff;
     opacity: 0.6;
     cursor: pointer;
+    transition: 0.3s;
 }
 
+.signature:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px #00f3ff;
+}
+
+/* Dil Seçiciler */
 .lang-select {
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     display: flex;
     gap: 15px;
 }
 
+.lang-select button {
+    padding: 5px 10px;
+    font-size: 12px;
+}
