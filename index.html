@@ -21,7 +21,7 @@
         <canvas id="cyberCanvas"></canvas>
 
         <div id="mainMenu" class="overlay">
-            <h1 class="glitch">CYBER SNAKE</h1>
+            <h1 class="glitch" title="CYBER SNAKE">CYBER SNAKE</h1>
             <button id="startBtn" class="cyber-btn" data-key="startBtn">BAŞLAT</button>
             <button id="settingsBtn" class="cyber-btn" data-key="settingsBtn">AYARLAR</button>
             <p id="credit">Purpleguy © 2026 - tablet power</p>
@@ -30,10 +30,12 @@
         <div id="settingsMenu" class="overlay hidden">
             <div class="menu-content">
                 <h2 data-key="settingsTitle">SİBER LABORATUVAR</h2>
+                
                 <div class="setting-item">
                     <label data-key="snakeColorText">Yılan Rengi:</label>
                     <input type="color" id="themeSelect" value="#38bdf8">
                 </div>
+                
                 <div class="setting-item">
                     <label data-key="wallModeText">Duvar Modu:</label>
                     <select id="wallMode">
@@ -41,16 +43,18 @@
                         <option value="pass" data-key="wallPass">İçinden Geç</option>
                     </select>
                 </div>
+                
                 <div class="setting-item">
                     <label data-key="powerUpText">Güçlendiriciler:</label>
                     <input type="checkbox" id="powerUpToggle" checked>
                 </div>
+                
                 <button id="saveBtn" class="cyber-btn" data-key="saveBtn">KAYDET</button>
             </div>
         </div>
 
         <div id="gameOverScreen" class="overlay hidden">
-            <h2 data-key="gameOverText">SİSTEM ÇÖKTÜ</h2>
+            <h1 class="glitch" data-key="gameOverText">SİSTEM ÇÖKTÜ</h1>
             <button id="restartBtn" class="cyber-btn" data-key="restartBtn">TEKRAR DENE</button>
             <button id="backMenuBtn" class="cyber-btn" data-key="backBtn">MENÜ</button>
         </div>
