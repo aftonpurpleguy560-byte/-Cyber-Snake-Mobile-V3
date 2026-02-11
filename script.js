@@ -1,131 +1,142 @@
 /**
- * Cyber Snake v3.8 Beta | Mega Settings & Sound
+ * Cyber Snake v3.8 | Ultimate Visual Edition
  * Purpleguy © 2026 - tablet power
  */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const scoreVal = document.getElementById("scoreValue");
-const highVal = document.getElementById("highScoreValue");
 const eatSound = document.getElementById("eatSound");
 
-// --- SİSTEM DEĞİŞKENLERİ ---
-let gridSize = 20;
-let snake = [{x: 100, y: 100}, {x: 80, y: 100}];
-let food = { x: 0, y: 0, type: '🍎', points: 7 };
-let dx = gridSize, dy = 0;
-let score = 0, gameSpeed = 50, gameRunning = false, godMode = false;
-let currentThemeColor = "#00f3ff", currentLang = 'tr', clickCount = 0;
+// --- AYARLAR VE DURUM ---
+let gridSize = 20, score = 0, gameSpeed = 70;
+let snake = [{x: 160, y: 160}, {x: 140, y: 160}, {x: 120, y: 160}];
+let food = {x: 0, y: 0, type: '🍎', points: 7};
+let dx = gridSize, dy = 0, gameRunning = false, wallPass = false;
+let primaryColor = "#00f3ff", highScore = localStorage.getItem("best") || 0;
 
-let highScore = localStorage.getItem("cyberHighScore") || 0;
-highVal.innerText = highScore.toString().padStart(3, '0');
+document.getElementById("highScoreValue").innerText = highScore.toString().padStart(3, '0');
 
-// 10 Renk Paleti
-const colorPalette = [
-    {n: 'CYBER', c: '#00f3ff'}, {n: 'NEON', c: '#ff00ff'}, {n: 'RETRO', c: '#ff8c00'},
-    {n: 'MATRIX', c: '#00ff41'}, {n: 'GOLD', c: '#ffd700'}, {n: 'LAVA', c: '#ff4500'},
-    {n: 'AQUA', c: '#7fffd4'}, {n: 'PURPLE', c: '#9370db'}, {n: 'CORAL', c: '#f08080'}, {n: 'WHITE', c: '#ffffff'}
+// Renkler
+const themes = [
+    {n:'CYBER', c:'#00f3ff'}, {n:'NEON', c:'#ff00ff'}, {n:'GOLD', c:'#ffd700'},
+    {n:'MATRIX', c:'#00ff41'}, {n:'LAVA', c:'#ff4500'}, {n:'WHITE', c:'#ffffff'}
 ];
 
-// Meyveler
-const foodItems = [
-    {i:'🍈',p:1},{i:'🍉',p:2},{i:'🍊',p:3},{i:'🍋',p:4},{i:'🍍',p:5},{i:'🥭',p:6},
-    {i:'🍎',p:7},{i:'🍏',p:8},{i:'🍐',p:9},{i:'🍒',p:10},{i:'🍓',p:11},{i:'🫐',p:12},
-    {i:'🥝',p:13},{i:'🍅',p:14}
-];
-
-// --- AYAR FONKSİYONLARI ---
-window.setSpeed = (v) => { gameSpeed = parseInt(v); };
-window.setLanguage = (l) => {
-    currentLang = l;
-    document.querySelector('.play-btn').innerText = (l === 'tr' ? "OYUNA BAŞLA" : "START GAME");
-};
-window.openThemePage = () => {
-    const container = document.getElementById("themeButtons");
-    container.innerHTML = "";
-    colorPalette.forEach(t => {
-        let btn = document.createElement("button");
-        btn.innerText = t.n; btn.style.borderColor = t.c;
-        btn.onclick = () => { currentThemeColor = t.c; canvas.style.borderColor = t.c; window.closeSubPage('theme-page'); };
-        container.appendChild(btn);
+// --- MENÜ SİSTEMİ (60 FPS) ---
+window.openSettings = () => { openPage('settings-page'); };
+window.openThemes = () => {
+    const grid = document.getElementById("themeGrid");
+    grid.innerHTML = "";
+    themes.forEach(t => {
+        const b = document.createElement("button");
+        b.innerText = t.n; b.style.borderColor = t.c;
+        b.onclick = () => { primaryColor = t.c; canvas.style.borderColor = t.c; window.closePage('theme-page'); };
+        grid.appendChild(b);
     });
-    document.getElementById('theme-page').style.display = 'flex';
+    openPage('theme-page');
 };
-window.closeSubPage = (id) => document.getElementById(id).style.display = 'none';
-window.openAdvanced = () => {
-    let p = prompt("Gelişmiş Erişim:");
-    if(p === "purpleguy2026") { godMode = true; alert("SİBER GÜÇ AKTİF!"); }
+
+function openPage(id) {
+    const p = document.getElementById(id);
+    p.style.display = 'flex';
+    setTimeout(() => p.style.opacity = '1', 10);
+}
+
+window.closePage = (id) => {
+    const p = document.getElementById(id);
+    p.style.opacity = '0';
+    setTimeout(() => p.style.display = 'none', 400);
 };
+
+window.setWallPass = (v) => wallPass = v;
+window.setSpeed = (v) => gameSpeed = parseInt(v);
 
 // --- OYUN MOTORU ---
-function resizeCanvas() {
-    const size = Math.min(window.innerWidth * 0.95, window.innerHeight * 0.65);
-    canvas.width = Math.floor(size / 20) * 20; canvas.height = canvas.width;
+function resize() {
+    const s = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.6);
+    canvas.width = Math.floor(s/20)*20; canvas.height = canvas.width;
 }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+window.addEventListener('resize', resize); resize();
 
 function createFood() {
-    let f = foodItems[Math.floor(Math.random()*foodItems.length)];
-    food = { x: Math.floor(Math.random()*(canvas.width/gridSize))*gridSize, 
-             y: Math.floor(Math.random()*(canvas.height/gridSize))*gridSize, 
-             type: f.i, points: f.p };
+    food.x = Math.floor(Math.random()*(canvas.width/gridSize))*gridSize;
+    food.y = Math.floor(Math.random()*(canvas.height/gridSize))*gridSize;
 }
 
 function draw() {
-    if (!gameRunning) return;
-    ctx.fillStyle = "black"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Yemek Çizimi
-    ctx.font = `${gridSize-4}px serif`;
-    ctx.fillText(food.type, food.x, food.y + gridSize - 4);
+    if(!gameRunning) return;
+    ctx.fillStyle = "rgba(5, 5, 5, 0.3)"; // Hafif iz bırakma efekti
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Yılan Çizimi (Gözlü ve Kuyruklu)
+    // Yemek
+    ctx.font = "18px serif";
+    ctx.fillText(food.type, food.x + 2, food.y + 16);
+
+    // Yılan Çizimi
     snake.forEach((part, i) => {
-        ctx.fillStyle = godMode ? "#ff00ff" : currentThemeColor;
-        if (i === 0) {
-            ctx.fillRect(part.x, part.y, gridSize, gridSize);
-            ctx.fillStyle = "white"; // Gözler
-            ctx.fillRect(part.x+12, part.y+4, 4, 4); ctx.fillRect(part.x+12, part.y+12, 4, 4);
-        } else {
-            ctx.globalAlpha = 1 - (i / (snake.length + 5));
-            ctx.fillRect(part.x+2, part.y+2, gridSize-4, gridSize-4);
-            ctx.globalAlpha = 1;
+        const isHead = i === 0;
+        ctx.fillStyle = isHead ? primaryColor : `rgba(${hexToRgb(primaryColor)}, ${1 - i/snake.length})`;
+        ctx.shadowBlur = isHead ? 15 : 0;
+        ctx.shadowColor = primaryColor;
+        
+        // Yuvarlatılmış Kare
+        drawRoundedRect(part.x + 1, part.y + 1, gridSize - 2, gridSize - 2, 5);
+
+        if(isHead) { // Gözler
+            ctx.fillStyle = "white";
+            ctx.beginPath(); ctx.arc(part.x+14, part.y+6, 2, 0, 7); ctx.fill();
+            ctx.beginPath(); ctx.arc(part.x+14, part.y+14, 2, 0, 7); ctx.fill();
         }
     });
 
     move();
-    setTimeout(() => requestAnimationFrame(draw), 1000 / (gameSpeed / 10 + 5));
+    setTimeout(() => requestAnimationFrame(draw), 1000 / (gameSpeed/5 + 5));
 }
 
 function move() {
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-    if (head.x >= canvas.width) head.x = 0; else if (head.x < 0) head.x = canvas.width - gridSize;
-    if (head.y >= canvas.height) head.y = 0; else if (head.y < 0) head.y = canvas.height - gridSize;
 
-    if (!godMode) {
-        for (let i = 1; i < snake.length; i++) {
-            if (head.x === snake[i].x && head.y === snake[i].y) { location.reload(); return; }
-        }
+    if(wallPass) {
+        if(head.x >= canvas.width) head.x = 0; else if(head.x < 0) head.x = canvas.width - gridSize;
+        if(head.y >= canvas.height) head.y = 0; else if(head.y < 0) head.y = canvas.height - gridSize;
+    } else if(head.x >= canvas.width || head.x < 0 || head.y >= canvas.height || head.y < 0) {
+        location.reload(); return;
     }
 
     snake.unshift(head);
-    if (head.x === food.x && head.y === food.y) {
-        score += food.points;
-        eatSound.currentTime = 0; eatSound.play(); // SES ÇAL
-        scoreVal.innerText = score.toString().padStart(3, '0');
-        if (score > highScore) { highScore = score; localStorage.setItem("cyberHighScore", highScore); highVal.innerText = highScore.toString().padStart(3, '0'); }
+    if(head.x === food.x && head.y === food.y) {
+        score += food.points; eatSound.play();
+        document.getElementById("scoreValue").innerText = score.toString().padStart(3, '0');
+        if(score > highScore) { highScore = score; localStorage.setItem("best", score); }
         createFood();
-    } else { snake.pop(); }
+    } else snake.pop();
 }
 
-window.startGame = () => { document.getElementById("menu").style.display = "none"; gameRunning = true; createFood(); draw(); };
+function drawRoundedRect(x, y, w, h, r) {
+    ctx.beginPath(); ctx.moveTo(x+r, y); ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r); ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r); ctx.closePath(); ctx.fill();
+}
 
-// Kaydırma (Swipe) Desteği
-let tX=0, tY=0;
-canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; });
-canvas.addEventListener('touchend', e => {
-    let dX=e.changedTouches[0].clientX-tX, dY=e.changedTouches[0].clientY-tY;
-    if (Math.abs(dX)>Math.abs(dY)) { if (dX>30 && dx===0) {dx=gridSize; dy=0;} else if (dX<-30 && dx===0) {dx=-gridSize; dy=0;} }
-    else { if (dY>30 && dy===0) {dx=0; dy=gridSize;} else if (dY<-30 && dy===0) {dx=0; dy=-gridSize;} }
+function hexToRgb(hex) {
+    let r = parseInt(hex.slice(1,3), 16), g = parseInt(hex.slice(3,5), 16), b = parseInt(hex.slice(5,7), 16);
+    return `${r}, ${g}, ${b}`;
+}
+
+window.startGame = () => {
+    document.getElementById("menu").style.transform = "scale(0)";
+    setTimeout(() => {
+        document.getElementById("menu").style.display = "none";
+        document.getElementById("gameStats").style.display = "flex";
+        canvas.style.display = "block";
+        gameRunning = true; createFood(); draw();
+    }, 400);
+};
+
+// Kontroller (Swipe & Ok Tuşları)
+document.addEventListener("keydown", e => {
+    if(e.key === "ArrowUp" && dy === 0) {dx=0; dy=-gridSize;}
+    if(e.key === "ArrowDown" && dy === 0) {dx=0; dy=gridSize;}
+    if(e.key === "ArrowLeft" && dx === 0) {dx=-gridSize; dy=0;}
+    if(e.key === "ArrowRight" && dx === 0) {dx=gridSize; dy=0;}
 });
