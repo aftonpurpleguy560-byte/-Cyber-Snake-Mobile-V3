@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake V3 | God Mode Edition</title>
+    <title>Cyber Snake V3.1 | Efe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
 <div class="mobile-wrapper">
   <div class="hud">
     <div class="stat" onclick="panicMode()">SCORE: <span id="score">000</span></div>
-    <div id="godStatus" style="color: #4ade80; font-size: 0.8rem; visibility: hidden;">GOD MODE ACTIVE</div>
+    <div id="godStatus" style="color: #4ade80; font-size: 0.8rem; visibility: hidden; font-weight: bold;">GOD MODE ACTIVE</div>
     <div class="stat">BEST: <span id="highScore">000</span></div>
   </div>
 
@@ -27,7 +27,7 @@
       </div>
 
       <div id="settingsMenu" class="overlay-screen hidden">
-        <h3>SİSTEM AYARLARI</h3>
+        <h3 class="glitch" data-text="SİSTEM AYARLARI" style="font-size: 1.5rem;">SİSTEM AYARLARI</h3>
         <div class="setting-row"><span>HIZ:</span>
           <select id="difficulty"><option value="220">YAVAŞ</option><option value="130" selected>NORMAL</option><option value="80">HIZLI</option></select>
         </div>
@@ -44,7 +44,7 @@
           </select>
         </div>
         <button id="saveBtn" class="cyber-btn">KAYDET VE ÇIK</button>
-        <p id="godTrigger" class="brand" style="cursor:pointer; margin-top:20px; padding:10px; opacity:0.8;">Purpleguy © 2026 - tablet power</p>
+        <p id="godTrigger" class="brand" style="cursor:pointer; margin-top:20px; padding:10px;">Purpleguy © 2026 - tablet power</p>
       </div>
 
       <div id="gameOverScreen" class="overlay-screen hidden">
@@ -61,4 +61,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
