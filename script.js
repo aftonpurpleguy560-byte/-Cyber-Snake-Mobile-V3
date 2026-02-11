@@ -4,40 +4,42 @@ const GRID = 40;
 canvas.width = 600; 
 canvas.height = 600;
 
-// Oyun Değişkenleri
 let snake = [], food = {}, dx = GRID, dy = 0, score = 0, highScore = 0, gameActive = false;
 let snakeColor = "#38bdf8", moveInterval = 130, lastTime = 0;
 let wallMode = "die", usePowerUps = true, godMode = false;
 
-// Meyve ve Güçlendirici Havuzu
 const fruits = ["🍎","🍏","🍉","🍇","🍓","🍒","🍍","🥝","🫐"];
 
-// DİL FONKSİYONU (translations.js dosyasından beslenir)
 function setLanguage(lang) {
     document.querySelectorAll("[data-key]").forEach(el => {
         const key = el.getAttribute("data-key");
-        if (translations[lang] && translations[lang][key]) {
-            el.innerText = translations[lang][key];
-        }
+        if (translations[lang] && translations[lang][key]) el.innerText = translations[lang][key];
     });
 }
 
-// YEMEK OLUŞTURMA (Rastgele Meyve veya Yıldırım)
 function spawnFood() {
+    let rand = Math.random();
+    let char;
+    
+    if (usePowerUps && rand < 0.15) {
+        char = "⚡️"; // Hızlandırıcı
+    } else if (usePowerUps && rand < 0.25) {
+        char = "❄️"; // Yavaşlatıcı (Kar Tanesi geri geldi!)
+    } else {
+        char = fruits[Math.floor(Math.random() * fruits.length)];
+    }
+
     food = { 
         x: Math.floor(Math.random() * 15) * GRID, 
         y: Math.floor(Math.random() * 15) * GRID,
-        char: (usePowerUps && Math.random() < 0.2) ? "⚡️" : fruits[Math.floor(Math.random() * fruits.length)]
+        char: char
     };
 }
 
-// ÇİZİM FONKSİYONU
 function draw() {
-    // Arka plan temizleme
     ctx.fillStyle = "#010409";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Yılan Çizimi
     snake.forEach((p, i) => {
         ctx.fillStyle = i === 0 ? (godMode ? "#facc15" : snakeColor) : "rgba(255,255,255,0.2)";
         ctx.shadowBlur = i === 0 ? 15 : 0; 
@@ -49,19 +51,16 @@ function draw() {
         ctx.closePath();
     });
 
-    // Yemek Çizimi (Siyahlık sorununu çözen net ayar)
     ctx.shadowBlur = 0; 
     ctx.font = "32px serif"; 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(food.char, food.x + (GRID/2), food.y + (GRID/2) + 2);
+    ctx.fillText(food.char, food.x + 20, food.y + 22);
 }
 
-// GÜNCELLEME FONKSİYONU
 function update() {
     let head = { x: snake[0].x + dx, y: snake[0].y + dy };
 
-    // Duvar Kontrolü (God Mode veya WallPass)
     if (godMode || wallMode === "pass") {
         if (head.x < 0) head.x = 560; else if (head.x >= 600) head.x = 0;
         if (head.y < 0) head.y = 560; else if (head.y >= 600) head.y = 0;
@@ -69,29 +68,33 @@ function update() {
         if (head.x < 0 || head.x >= 600 || head.y < 0 || head.y >= 600) return endGame();
     }
 
-    // Kendine Çarpma (God Mode kapalıyken)
     if (!godMode && snake.some(s => s.x === head.x && s.y === head.y)) return endGame();
 
     snake.unshift(head);
 
-    // Yemek Yeme Kontrolü
     if (head.x === food.x && head.y === food.y) {
-        score += 10;
+        // Güçlendirici Efektleri
+        if (food.char === "⚡️") {
+            score += 20;
+            moveInterval = Math.max(50, moveInterval - 20); // Hızlandır
+        } else if (food.char === "❄️") {
+            score += 5;
+            moveInterval = Math.min(200, moveInterval + 30); // Yavaşlat (Maksimum 200ms)
+        } else {
+            score += 10;
+        }
+
         document.getElementById("score").innerText = score.toString().padStart(3, '0');
-        
         if (score > highScore) {
             highScore = score;
             document.getElementById("highScore").innerText = highScore.toString().padStart(3, '0');
         }
-        
-        if (food.char === "⚡️") moveInterval = Math.max(50, moveInterval - 15);
         spawnFood();
     } else {
         snake.pop();
     }
 }
 
-// OYUN DÖNGÜSÜ
 function gameLoop(t) {
     if (!lastTime) lastTime = t;
     if (gameActive && t - lastTime > moveInterval) {
@@ -102,24 +105,21 @@ function gameLoop(t) {
     requestAnimationFrame(gameLoop);
 }
 
-// OYUNU BİTİR
 function endGame() {
     gameActive = false;
     document.getElementById("gameOverScreen").classList.remove("hidden");
 }
 
-// GOD MODE TETİKLEYİCİ (Logoya 3 kez tıkla)
 let clickCount = 0;
 document.querySelector(".glitch").onclick = () => {
     clickCount++;
     if (clickCount >= 3) {
         godMode = !godMode;
-        alert("GOD MODE: " + (godMode ? "AKTİF (Sarı Yılan)" : "PASİF"));
+        alert("GOD MODE: " + (godMode ? "AKTİF" : "PASİF"));
         clickCount = 0;
     }
 };
 
-// BUTON OLAYLARI
 document.getElementById("startBtn").onclick = () => {
     document.getElementById("mainMenu").classList.add("hidden");
     snake = [{x: 240, y: 240}, {x: 200, y: 240}];
@@ -143,5 +143,4 @@ document.getElementById("restartBtn").onclick = () => {
     document.getElementById("startBtn").click();
 };
 
-// Başlangıç
 requestAnimationFrame(gameLoop);
