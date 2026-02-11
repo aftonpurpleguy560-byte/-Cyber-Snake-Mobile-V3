@@ -1,4 +1,4 @@
-​🐍 Cyber Snake v3.5 - "The Challenger Edition"
+​#🐍 Cyber Snake v3.5 - "The Challenger Edition"
 ​Efe (Project Architect) tarafından; "Laf üretenler için değil, kod üretenler için" geliştirilmiş, akıllı tahta uyumlu siber-yılan simülasyonu.
 ​🚀 Neden Daha İyi? (Teknik Üstünlükler)
 ​Bu proje, "ben daha iyisini yaparım" diyenlerin aksine, teorik iddialar üzerine değil, kararlı algoritmalar üzerine inşa edilmiştir.
