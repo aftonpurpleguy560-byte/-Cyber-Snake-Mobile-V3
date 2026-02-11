@@ -2,19 +2,104 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>SİSTEM HATASI - 404</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SİSTEM ERİŞİMİ REDDEDİLDİ | 404</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        h1 { font-size: 80px; margin: 0; text-shadow: 0 0 15px #0f0; }
-        p { font-size: 20px; color: #fff; }
-        a { color: #0f0; text-decoration: none; border: 1px solid #0f0; padding: 10px 20px; margin-top: 20px; }
-        a:hover { background: #0f0; color: #000; }
+        :root {
+            --neon-green: #0f0;
+            --neon-pink: #f0f;
+            --bg-black: #000;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--neon-green);
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Glitch Efekti */
+        .glitch {
+            font-size: clamp(5rem, 15vw, 10rem);
+            font-weight: bold;
+            position: relative;
+            text-shadow: 2px 2px var(--neon-pink), -2px -2px #0ff;
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(2deg); }
+            20% { transform: skew(-3deg); }
+            40% { transform: skew(4deg); }
+            60% { transform: skew(-1deg); }
+            80% { transform: skew(3deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        .message {
+            font-size: 1.2rem;
+            margin: 20px;
+            color: #fff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hint {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+        }
+
+        /* Siber Buton */
+        .back-link {
+            color: var(--neon-green);
+            text-decoration: none;
+            border: 1px solid var(--neon-green);
+            padding: 12px 25px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+
+        .back-link:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 10px;
+            color: #222;
+        }
     </style>
 </head>
 <body>
-    <h1>404</h1>
-    <p>> VERİ ERİŞİMİ REDDEDİLDİ.</p>
-    <p>> Aradığınız dosya silinmiş veya hiç var olmamış olabilir.</p>
-    <a href="/">ANA ÜSSE DÖN</a>
+
+    <h1 class="glitch">404</h1>
+    
+    <div class="message">
+        > HATA: VERİ PAKETİ SİBER UZAYDA KAYBOLDU.
+    </div>
+    
+    <div class="hint">
+        Aradığınız koordinatlar sistem kayıtlarımızda mevcut değil.
+    </div>
+
+    <a href="/" class="back-link">ANA ÜSSE GERİ DÖN</a>
+
+    <div class="footer">
+        Purpleguy © 2026 - tablet power
+    </div>
+
 </body>
 </html>
