@@ -1,36 +1,29 @@
-# 🐍 Cyber Snake Mobile V3.2 - "Elemental Shift"
-
-Efe'nin tablet kullanımı için özel olarak optimize edilmiş, dinamik zorluk ve özel güçlendirmelere sahip siber-yılan oyunu. Artık sadece büyümek değil, elementleri yönetmek de gerekiyor!
-
-## 🚀 Son Yenilikler (v3.2)
-
-### 🧪 Yeni Oyun Mekanikleri
-* **Zengin Meyve Menüsü:** Rastgele çıkan 15 farklı meyve (🍇, 🍉, 🍍...) ile görsel çeşitlilik.
-* **⚡️ Yıldırım (Speed Booster):** Alındığında anlık **+10 puan** verir ve yılanın hızını ciddi oranda artırır.
-* **❄️ Kar Tanesi (Slow Motion):** Alındığında **+2 puan** verir ve yılanı yavaşlatarak kontrolü kolaylaştırır.
-
-### 🎨 Görsel Devrim
-* **Tam Silindir (Seamless Tube):** Yılan artık parçalı değil, kesintisiz bir silindir/boru formunda.
-* **Glow & Pulse:** Yılanın etrafındaki neon ışığı ve meyvelerin büyüme/küçülme animasyonları eklendi.
-* **Dynamic Border:** Hızlanma ve yavaşlama efektlerine göre ekran çerçevesinin renk değiştirmesi.
-
-## 🛠 Teknik Altyapı
-* **60 FPS Engine:** `requestAnimationFrame` ile takılmasız akıcı oyun deneyimi.
-* **Web Audio API:** Sentetik olarak üretilen siber ses efektleri.
-* **Vercel Auto-Deploy:** GitHub üzerinden anlık güncelleme ve hızlı erişim.
-
-## 🕹 Kontroller ve Strateji
-* **Hassas Swipe:** Tablet ekranında herhangi bir yere dokunup kaydırarak yılanı yönlendir.
-* **Dinamik Zorluk:** Puanın arttıkça yılan doğal olarak hızlanır, ancak güçlendirmelerle bu hızı yönetebilirsin.
-* **God Mode:** Geliştirici imzasına (Purpleguy) **3 kez** hızlıca dokunarak ölümsüzlüğü aktif et.
-
-## 🤫 Geliştirici Notu
-> "Bu proje, bir AI ve bir geliştiricinin (Efe) ortaklığıyla, saf JavaScript kullanılarak siber bir atmosfer yaratmak için inşa edilmiştir."
-
----
-
-### ✍️ Geliştirici & Tasarım
-**Efe** (Project Owner)
-**Purpleguy © 2026 - tablet power**
-
----
+​🐍 Cyber Snake v3.5 - "The Challenger Edition"
+​Efe (Project Architect) tarafından; "Laf üretenler için değil, kod üretenler için" geliştirilmiş, akıllı tahta uyumlu siber-yılan simülasyonu.
+​🚀 Neden Daha İyi? (Teknik Üstünlükler)
+​Bu proje, "ben daha iyisini yaparım" diyenlerin aksine, teorik iddialar üzerine değil, kararlı algoritmalar üzerine inşa edilmiştir.
+​🕹️ Joystick API v2 (Stabil Kontrol)
+​Akıllı tahtalardaki "her yöne sapma" sorununu çözen, parmağını ekrandan kaldırmadan sürmeni sağlayan Dinamik Joystick sistemi.
+​Hassasiyet: 30px eşikli vektörel hesaplama.
+​Kararlılık: Milimetrik titreşimleri filtreleyen yön kilidi.
+​Lafa değil, koordinat sistemine bakılır.
+​🧪 Siber Laboratuvar (Gelişmiş Ayarlar)
+​Gerçek bir geliştirici, oyuncuya özgürlük tanır. Menü üzerinden:
+​Meyve Havuzu: 15 farklı meyveyi (🍇, 🍉, 🍎...) tek tek filtreleme.
+​Elemental Mod: ⚡️ Yıldırım ve ❄️ Kar Tanesi güçlendirmelerini açma/kapama.
+​Fizik Motoru: Duvar içinden geçme veya çarpınca imha olma (Wall Physics) seçimi.
+​🎭 Susturucu Görsel Efektler
+​Sadece kare çizenlerin anlayamayacağı kadar derin bir görsel altyapı:
+​Sprite Rendering: Yılanın yönüne göre dönen kafası, animasyonlu dili ve siber zırhlı boğumları.
+​Haptic Feed: Yemek yeme anında ekran sarsıntısı (Screen Shake).
+​Particle Engine: Güçlendirme alındığında etrafa saçılan neon parçacıklar.
+​🤫 Geliştirici Mesajı
+​"Yazılım dünyasında kodun çalışması, teoride yapılabilecek her şeyden daha değerlidir. Bu proje Vercel'de yayında ve stabil çalışıyor. Daha iyisini yapabileceğini iddia edenler için GitHub her zaman açık; klavyeye dokunmak bedava ama algoritma kurmak zekâ gerektirir."
+​🛠 Teknik Özet
+​🛠 Teknik Özet
+​FPS: 60 Stabil (Powered by requestAnimationFrame)
+​Kontrol: Hassas Swipe/Joystick (Touch Events v3)
+​Ses: 8-bit Siber Tonlar (Web Audio API)
+​Dağıtım: Cloud Edge (Vercel Auto-Deploy)
+✍️ Proje Mimarı
+​Efe (Project Architect) Purpleguy © 2026 - tablet power
