@@ -154,3 +154,4 @@ window.onload = () => {
     canvas.height = CANVAS_SIZE;
     requestAnimationFrame(gameLoop);
 };
+
