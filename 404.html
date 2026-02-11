@@ -3,103 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SİSTEM ERİŞİMİ REDDEDİLDİ | 404</title>
+    <title>404 - SİSTEM HATASI | Purpleguy</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --neon-green: #0f0;
-            --neon-pink: #f0f;
-            --bg-black: #000;
-        }
-
         body {
-            background-color: var(--bg-black);
-            color: var(--neon-green);
-            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            margin: 0;
+            background: #000;
             overflow: hidden;
-            text-align: center;
+            color: var(--main-color, #38bdf8);
         }
 
-        /* Glitch Efekti */
-        .glitch {
-            font-size: clamp(5rem, 15vw, 10rem);
-            font-weight: bold;
+        /* Arkaplan Parazit Efekti */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_3dl_Noise_Static.png');
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
             position: relative;
-            text-shadow: 2px 2px var(--neon-pink), -2px -2px #0ff;
-            animation: glitch-skew 1s infinite linear alternate-reverse;
+            padding: 40px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            background: rgba(1, 4, 9, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1), 0 0 20px rgba(56, 189, 248, 0.1);
+            text-align: center;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            max-width: 80%;
         }
 
-        @keyframes glitch-skew {
-            0% { transform: skew(2deg); }
-            20% { transform: skew(-3deg); }
-            40% { transform: skew(4deg); }
-            60% { transform: skew(-1deg); }
-            80% { transform: skew(3deg); }
-            100% { transform: skew(0deg); }
+        .error-code {
+            font-size: clamp(5rem, 15vw, 10rem);
+            margin: 0;
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -5px;
         }
 
         .message {
             font-size: 1.2rem;
-            margin: 20px;
+            margin: 20px 0;
             color: #fff;
-            letter-spacing: 2px;
             text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        .hint {
-            color: #555;
+        .sub-message {
             font-size: 0.9rem;
+            color: var(--main-color);
+            opacity: 0.7;
             margin-bottom: 40px;
+            font-family: 'Courier New', monospace;
         }
 
-        /* Siber Buton */
-        .back-link {
-            color: var(--neon-green);
-            text-decoration: none;
-            border: 1px solid var(--neon-green);
-            padding: 12px 25px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-        }
-
-        .back-link:hover {
-            background: var(--neon-green);
-            color: #000;
-            box-shadow: 0 0 20px var(--neon-green);
-        }
-
-        .footer {
+        /* Tarama Çizgisi Efekti (CRT) */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 5;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(56, 189, 248, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
             position: absolute;
-            bottom: 20px;
-            font-size: 10px;
-            color: #222;
+            bottom: 100%;
+            animation: scanline 6s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100%; }
+        }
+
+        .cyber-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 15px 30px;
+            border: 2px solid var(--main-color);
+            color: var(--main-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-btn:hover {
+            background: var(--main-color);
+            color: #000;
+            box-shadow: 0 0 20px var(--main-color);
+        }
+
+        .brand {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            letter-spacing: 2px;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
+    <div class="scanline"></div>
 
-    <h1 class="glitch">404</h1>
-    
-    <div class="message">
-        > HATA: VERİ PAKETİ SİBER UZAYDA KAYBOLDU.
+    <div class="container">
+        <h1 class="glitch error-code" data-text="404">404</h1>
+        <p class="message" id="error-msg">VERİ PAKETİ KAYIP</p>
+        <p class="sub-message">Sistem protokolü: Aranan koordinat siber uzayda mevcut değil.</p>
+        
+        <a href="index.html" class="cyber-btn">
+            ANA SİSTEME DÖN
+        </a>
     </div>
     
-    <div class="hint">
-        Aradığınız koordinatlar sistem kayıtlarımızda mevcut değil.
-    </div>
+    <p class="brand">Purpleguy © 2026 - tablet power</p>
 
-    <a href="/" class="back-link">ANA ÜSSE GERİ DÖN</a>
+    <script>
+        // Dil desteğine göre 404 mesajını güncelle
+        const savedLang = localStorage.getItem("efe_lang") || "tr";
+        const msgEl = document.getElementById("error-msg");
+        
+        const errorTranslations = {
+            tr: "VERİ PAKETİ KAYIP",
+            en: "DATA PACKET LOST"
+        };
+        
+        msgEl.innerText = errorTranslations[savedLang] || errorTranslations.tr;
 
-    <div class="footer">
-        Purpleguy © 2026 - tablet power
-    </div>
-
+        // Rastgele glitch efekti tetikleyici
+        setInterval(() => {
+            const code = document.querySelector('.error-code');
+            code.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
+            setTimeout(() => code.style.transform = 'translate(0,0)', 50);
+        }, 3000);
+    </script>
 </body>
 </html>
+
