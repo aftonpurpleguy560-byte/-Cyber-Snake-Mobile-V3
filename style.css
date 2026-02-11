@@ -1,108 +1,102 @@
-/* Purpleguy © 2026 - tablet power */
-:root {
-    --main-color: #38bdf8;
-    --bg-color: #000000;
+/* Cyber Snake v3.8 Beta - Official Style */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    background-color: var(--bg-color);
-    margin: 0;
+    background: #000; /* Arka plan her zaman siyah */
+    color: #00f3ff;
+    font-family: 'Courier New', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    color: var(--main-color);
-    font-family: 'Courier New', Courier, monospace;
+    height: 100vh;
     overflow: hidden;
-    touch-action: none;
 }
 
-.mobile-wrapper {
-    width: 95vw;
-    height: 95vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+#game-container {
+    position: relative;
+    border: 3px solid #00f3ff;
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    background: #000;
 }
 
-.hud {
+.stats {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 550px;
-    margin-bottom: 10px;
-    font-weight: bold;
+    padding: 12px;
+    border-bottom: 1px solid #00f3ff;
+    font-size: 14px;
 }
 
-.game-area {
-    position: relative;
-    width: 100%;
-    max-width: 550px;
-    aspect-ratio: 1 / 1;
-}
-
-canvas {
-    background: #010409;
-    border: 3px solid var(--main-color);
-    border-radius: 12px;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
-}
-
-.overlay-screen {
+#menu {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 100;
-    border-radius: 12px;
 }
-
-.hidden { display: none !important; }
 
 .glitch {
-    font-size: 2.5rem;
-    text-transform: uppercase;
-    text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
-}
-
-.cyber-btn {
-    background: transparent;
-    border: 2px solid var(--main-color);
-    color: var(--main-color);
-    padding: 12px 24px;
-    margin: 8px;
-    cursor: pointer;
+    font-size: 26px;
     font-weight: bold;
-    border-radius: 8px;
-    transition: 0.3s;
+    text-transform: uppercase;
+    text-shadow: 2px 2px #ff003c, -2px -2px #00f3ff;
+    margin-bottom: 20px;
+    animation: glitch-anim 0.4s infinite;
 }
 
-.cyber-btn:hover {
-    background: var(--main-color);
-    color: #000000;
+@keyframes glitch-anim {
+    0% { transform: skew(0deg); }
+    33% { transform: skew(3deg); opacity: 0.8; }
+    66% { transform: skew(-2deg); color: #ff00ff; }
+    100% { transform: skew(0deg); }
 }
 
-.setting-row {
-    width: 85%;
+button {
+    background: transparent;
+    border: 1px solid #00f3ff;
+    color: #00f3ff;
+    padding: 10px 20px;
+    margin: 5px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.3s all;
+}
+
+button:hover {
+    background: #00f3ff;
+    color: #000;
+    box-shadow: 0 0 15px #00f3ff;
+}
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.signature {
+    margin-top: 25px;
+    font-size: 10px;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.lang-select {
+    position: absolute;
+    bottom: 10px;
     display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-}
-
-select {
-    background: #111;
-    color: #fff;
-    border: 1px solid var(--main-color);
-    padding: 5px;
+    gap: 15px;
 }
 
