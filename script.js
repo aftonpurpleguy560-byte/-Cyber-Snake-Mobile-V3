@@ -3,17 +3,20 @@ const ctx = canvas.getContext("2d");
 const GRID = 40; 
 const CANVAS_SIZE = 600;
 
-let snake = [], food = {}, dx = 0, dy = 0, score = 0, gameActive = false, isPanic = false;
-let baseSpeed = 130, wallMode = "die", snakeColor = "#38bdf8";
+// Oyun Değişkenleri
+let snake = [], food = {}, dx = GRID, dy = 0, score = 0, gameActive = false, isPanic = false;
+let wallMode = "die", snakeColor = "#38bdf8";
+let lastTime = 0, moveTimer = 0, moveInterval = 130; 
 
-// GOD MODE DEĞİŞKENLERİ
+// God Mode Değişkenleri
 let godMode = false;
 let clickCount = 0;
 let lastClickTime = 0;
 
-// SES SİSTEMİ
+// Ses Sistemi
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(freq, duration) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'sine';
@@ -26,23 +29,21 @@ function playSound(freq, duration) {
     osc.stop(audioCtx.currentTime + duration);
 }
 
-// BEST SCORE
+// Yüksek Skor Yükleme
 let highScore = localStorage.getItem("best_v3") || 0;
 document.getElementById("highScore").innerText = highScore.toString().padStart(3, '0');
 
-// GİZLİ GOD MODE TETİKLEYİCİ (3 Tıklama)
+// GİZLİ GOD MODE TETİKLEYİCİ
 document.getElementById("godTrigger").onclick = () => {
     const now = Date.now();
     if (now - lastClickTime > 500) clickCount = 0;
     clickCount++;
     lastClickTime = now;
-
     if (clickCount === 3) {
         godMode = !godMode;
         clickCount = 0;
         const trigger = document.getElementById("godTrigger");
         const status = document.getElementById("godStatus");
-        
         if (godMode) {
             trigger.style.color = "#4ade80";
             trigger.innerText = "GOD MODE: ON";
@@ -95,23 +96,21 @@ function draw() {
     }
 
     snake.forEach((s, i) => {
-        // God Mode açıksa yılan altın rengi olur
         ctx.fillStyle = godMode ? "#facc15" : (i === 0 ? snakeColor : "rgba(255, 255, 255, 0.2)");
         ctx.beginPath();
-        ctx.roundRect(s.x + 2, s.y + 2, 36, 36, 12);
+        ctx.arc(s.x + 20, s.y + 20, 18, 0, Math.PI * 2);
         ctx.fill();
         if(i === 0) {
             ctx.fillStyle = "#fff";
-            ctx.fillRect(s.x + 10, s.y + 12, 5, 5); ctx.fillRect(s.x + 25, s.y + 12, 5, 5);
+            ctx.beginPath(); ctx.arc(s.x + 14, s.y + 16, 3, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(s.x + 26, s.y + 16, 3, 0, Math.PI * 2); ctx.fill();
         }
     });
 }
 
 function update() {
-    if(!gameActive || isPanic) return;
     let head = {x: snake[0].x + dx, y: snake[0].y + dy};
 
-    // GOD MODE: DUVARLARDAN GEÇİŞ
     if (godMode) {
         if(head.x < 0) head.x = 560; else if(head.x >= 600) head.x = 0;
         if(head.y < 0) head.y = 560; else if(head.y >= 600) head.y = 0;
@@ -119,10 +118,7 @@ function update() {
         if(wallMode === "pass") {
             if(head.x < 0) head.x = 560; else if(head.x >= 600) head.x = 0;
             if(head.y < 0) head.y = 560; else if(head.y >= 600) head.y = 0;
-        } else {
-            if(head.x < 0 || head.x >= 600 || head.y < 0 || head.y >= 600) return endGame();
-        }
-        // GOD MODE kapalıyken kendine çarpma
+        } else if(head.x < 0 || head.x >= 600 || head.y < 0 || head.y >= 600) return endGame();
         if(snake.some((s, idx) => idx > 3 && s.x === head.x && s.y === head.y)) return endGame();
     }
 
@@ -131,11 +127,32 @@ function update() {
     if(head.x === food.x && head.y === food.y) {
         score += 5;
         document.getElementById("score").innerText = score.toString().padStart(3, '0');
+        
+        // --- DINAMIK ZORLUK ---
+        if (score % 50 === 0 && moveInterval > 45) {
+            moveInterval -= 8;
+            canvas.style.borderColor = "#ff4757"; // Hızlanma uyarısı
+            setTimeout(() => canvas.style.borderColor = "var(--main-color)", 300);
+            playSound(900, 0.2); // Hızlanma sesi
+        }
+
         playSound(600, 0.1);
         spawnFood();
     } else {
         snake.pop();
     }
+}
+
+function gameLoop(currentTime) {
+    if (!lastTime) lastTime = currentTime;
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    if (gameActive && !isPanic) {
+        moveTimer += deltaTime;
+        if (moveTimer >= moveInterval) { update(); moveTimer = 0; }
+    }
+    draw();
+    requestAnimationFrame(gameLoop);
 }
 
 function endGame() {
@@ -148,21 +165,17 @@ function endGame() {
     document.getElementById("gameOverScreen").classList.remove("hidden");
 }
 
-function loop() {
-    update(); draw();
-    setTimeout(loop, baseSpeed);
-}
-
 document.getElementById("startBtn").onclick = () => {
     document.getElementById("mainMenu").classList.add("hidden");
-    snake = [{x: 200, y: 200}, {x: 160, y: 200}];
-    dx = GRID; dy = 0; score = 0;
+    snake = [{x: 240, y: 240}, {x: 200, y: 240}];
+    dx = GRID; dy = 0; score = 0; moveTimer = 0;
+    moveInterval = parseInt(document.getElementById("difficulty").value);
     document.getElementById("score").innerText = "000";
     gameActive = true; spawnFood();
 };
 
 document.getElementById("saveBtn").onclick = () => {
-    baseSpeed = parseInt(document.getElementById("difficulty").value);
+    moveInterval = parseInt(document.getElementById("difficulty").value);
     wallMode = document.getElementById("wallMode").value;
     snakeColor = document.getElementById("themeSelect").value;
     document.documentElement.style.setProperty('--main-color', snakeColor);
@@ -182,5 +195,5 @@ document.getElementById("backMenuBtn").onclick = () => {
 function panicMode() { isPanic = !isPanic; document.getElementById("panicScreen").classList.toggle("hidden", !isPanic); }
 
 canvas.width = CANVAS_SIZE; canvas.height = CANVAS_SIZE;
-loop();
+requestAnimationFrame(gameLoop);
 
