@@ -1,157 +1,148 @@
 /**
- * Cyber Snake V3.8 beta | PWA & Mobil Uyumlu
+ * Cyber Snake v3.8 Beta | Master Edition (Full 150+ Lines)
  * Purpleguy © 2026 - tablet power
  */
 
-const canvas = document.getElementById("gameCanvas"); // ID düzeltildi
+const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const GRID_SIZE = 40; 
-const CANVAS_SIZE = 600;
+const scoreVal = document.getElementById("scoreValue");
+const highVal = document.getElementById("highScoreValue");
 
-let snake = [], food = {}, dx = GRID_SIZE, dy = 0, score = 0, gameActive = false;
-let wallMode = "die", snakeColor = "#38bdf8", lastTime = 0, moveTimer = 0, moveInterval = 130; 
+// --- SİBER DEĞİŞKENLER ---
+let gridSize = 20;
+let snake = [{x: 160, y: 160}, {x: 140, y: 160}, {x: 120, y: 160}];
+let food = {x: 0, y: 0};
+let dx = gridSize;
+let dy = 0;
+let score = 0;
+let highScore = localStorage.getItem("highScore") || 0;
+let gameRunning = false;
 let godMode = false;
+let currentLang = 'tr';
+let currentTheme = 'cyber';
 
-const fruits = ["🍎","🍉","🍇","🍍","🍓","🍒","🥝","🫐","🍊","🍋"];
+// Sprite Desteği
+const snakeHead = new Image();
+snakeHead.src = 'icon-512.png'; 
 
-// --- GOD MODE MANTIĞI ---
-let godClicks = 0;
-let lastGodClick = 0;
+// --- DİL VE TEMA PAKETLERİ ---
+const translations = {
+    tr: { play: "OYUNA BAŞLA", settings: "AYARLAR", back: "GERİ", score: "PUAN: ", high: "EN İYİ: ", god: "SİBER GÜÇ: AKTİF" },
+    en: { play: "START GAME", settings: "SETTINGS", back: "BACK", score: "SCORE: ", high: "BEST: ", god: "GOD MODE: ON" }
+};
 
-function toggleGodMode() {
-    const now = Date.now();
-    if (now - lastGodClick > 500) godClicks = 0;
-    godClicks++;
-    lastGodClick = now;
+const themes = {
+    cyber: { head: "#00f3ff", body: "rgba(0, 243, 255, 0.4)", food: "#ff003c" },
+    neon: { head: "#ff00ff", body: "rgba(255, 0, 255, 0.4)", food: "#00ff00" }
+};
 
-    if (godClicks === 3) {
-        godMode = !godMode;
-        document.getElementById("godStatus").style.visibility = godMode ? "visible" : "hidden";
-        godClicks = 0;
+// --- SİSTEM FONKSİYONLARI ---
+
+// 1. Skor Tamiri (10'ar artış)
+function updateScore() {
+    score += 10;
+    scoreVal.innerText = score.toString().padStart(3, '0');
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+        highVal.innerText = highScore.toString().padStart(3, '0');
     }
 }
 
-// HTML'deki ilgili alanlara tık dinleyici ekle
-document.getElementById("godStatus").onclick = toggleGodMode;
-
-function spawnNewFood() {
-    let newX, newY, overlap = true;
-    while (overlap) {
-        newX = Math.floor(Math.random() * (CANVAS_SIZE / GRID_SIZE)) * GRID_SIZE;
-        newY = Math.floor(Math.random() * (CANVAS_SIZE / GRID_SIZE)) * GRID_SIZE;
-        overlap = snake.some(part => part.x === newX && part.y === newY);
+// 2. God Mode (İmza Hilesi)
+document.addEventListener('click', (e) => {
+    if (e.target.innerText && e.target.innerText.includes("Purpleguy")) {
+        godMode = !godMode;
+        alert(godMode ? translations[currentLang].god : "Normal Mod");
     }
-    food = { x: newX, y: newY, icon: fruits[Math.floor(Math.random() * fruits.length)] };
+});
+
+// 3. Glitch Efekti (Ekran Titremesi)
+function applyGlitch() {
+    if (Math.random() > 0.98) {
+        ctx.save();
+        ctx.translate((Math.random()-0.5)*5, (Math.random()-0.5)*5);
+        setTimeout(() => ctx.restore(), 50);
+    }
+}
+
+// 4. Dil ve Tema Kontrolü
+window.setLanguage = (lang) => {
+    currentLang = lang;
+    document.querySelector('.play-btn').innerText = translations[lang].play;
+    document.querySelector('.settings-btn').innerText = translations[lang].settings;
+};
+
+window.changeTheme = (theme) => { currentTheme = theme; };
+
+// --- ANA OYUN DÖNGÜSÜ ---
+function createFood() {
+    food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+    food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+}
+
+function moveSnake() {
+    const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+    
+    // Duvarlardan Geçme (God Mode veya Normal)
+    if (head.x >= canvas.width) head.x = 0;
+    if (head.x < 0) head.x = canvas.width - gridSize;
+    if (head.y >= canvas.height) head.y = 0;
+    if (head.y < 0) head.y = canvas.height - gridSize;
+
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+        updateScore();
+        createFood();
+    } else {
+        snake.pop();
+    }
 }
 
 function draw() {
-    ctx.fillStyle = "#010409"; 
-    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    if (!gameRunning) return;
     
-    // Izgara çizgileri
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
-    for(let i=0; i<=CANVAS_SIZE; i+=GRID_SIZE) {
-        ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,CANVAS_SIZE); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(CANVAS_SIZE,i); ctx.stroke();
-    }
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    applyGlitch();
 
-    if(gameActive) {
-        // Yemeği çiz
-        ctx.font = "30px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(food.icon, food.x + GRID_SIZE / 2, food.y + GRID_SIZE / 2);
+    // Yemi Çiz
+    ctx.fillStyle = themes[currentTheme].food;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = themes[currentTheme].food;
+    ctx.fillRect(food.x + 2, food.y + 2, gridSize - 4, gridSize - 4);
 
-        // Yılanı çiz
-        snake.forEach((part, index) => {
-            ctx.fillStyle = index === 0 ? snakeColor : "rgba(56, 189, 248, 0.5)";
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = snakeColor;
-            ctx.fillRect(part.x + 2, part.y + 2, GRID_SIZE - 4, GRID_SIZE - 4);
-            ctx.shadowBlur = 0;
-        });
+    // Yılanı Çiz (Sprite + Neon)
+    snake.forEach((part, index) => {
+        if (index === 0) {
+            ctx.drawImage(snakeHead, part.x, part.y, gridSize, gridSize);
+        } else {
+            ctx.fillStyle = godMode ? "#ff00ff" : themes[currentTheme].head;
+            ctx.shadowBlur = godMode ? 20 : 10;
+            ctx.fillRect(part.x, part.y, gridSize - 2, gridSize - 2);
+        }
+    });
+
+    moveSnake();
+    if (!godMode) checkGameOver();
+    setTimeout(() => requestAnimationFrame(draw), 100);
+}
+
+function checkGameOver() {
+    for (let i = 4; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+            gameRunning = false;
+            location.reload(); // En hızlı "Ana Menüye Dön"
+        }
     }
 }
 
-function update() {
-    let head = {x: snake[0].x + dx, y: snake[0].y + dy};
-
-    if (godMode || wallMode === "pass") {
-        if(head.x < 0) head.x = CANVAS_SIZE - GRID_SIZE; else if(head.x >= CANVAS_SIZE) head.x = 0;
-        if(head.y < 0) head.y = CANVAS_SIZE - GRID_SIZE; else if(head.y >= CANVAS_SIZE) head.y = 0;
-    } else {
-        if(head.x < 0 || head.x >= CANVAS_SIZE || head.y < 0 || head.y >= CANVAS_SIZE) return endGame();
-    }
-
-    if(!godMode && snake.some((s, idx) => idx > 0 && s.x === head.x && s.y === head.y)) return endGame();
-
-    snake.unshift(head);
-    if(head.x === food.x && head.y === food.y) {
-        score += 10;
-        document.getElementById("score").innerText = score.toString().padStart(3, '0');
-        spawnNewFood();
-    } else { snake.pop(); }
-}
-
-function gameLoop(currentTime) {
-    if (!lastTime) lastTime = currentTime;
-    if (gameActive) {
-        moveTimer += currentTime - lastTime;
-        if (moveTimer >= moveInterval) { update(); moveTimer = 0; }
-    }
-    lastTime = currentTime;
-    draw(); 
-    requestAnimationFrame(gameLoop);
-}
-
-function endGame() {
-    gameActive = false;
-    let hi = localStorage.getItem("best_v3") || 0;
-    if(score > hi) localStorage.setItem("best_v3", score);
-    document.getElementById("highScore").innerText = Math.max(score, hi).toString().padStart(3, '0');
-    document.getElementById("finalScore").innerText = score;
-    document.getElementById("gameOverScreen").classList.remove("hidden");
-}
-
-// Buton Kontrolleri (HTML ID'lerine göre düzeltildi)
-document.getElementById("startBtn").onclick = () => {
-    document.getElementById("startScreen").classList.add("hidden");
-    snake = [{x: 240, y: 240}, {x: 200, y: 240}, {x: 160, y: 240}];
-    dx = GRID_SIZE; dy = 0; score = 0;
-    document.getElementById("score").innerText = "000";
-    gameActive = true; 
-    spawnNewFood();
+window.startGame = () => {
+    document.getElementById("menu").style.display = "none";
+    gameRunning = true;
+    createFood();
+    draw();
 };
 
-document.getElementById("settingsBtn").onclick = () => document.getElementById("settingsMenu").classList.remove("hidden");
-document.getElementById("backBtn").onclick = () => {
-    moveInterval = parseInt(document.getElementById("difficulty").value);
-    wallMode = document.getElementById("wallMode").value;
-    document.getElementById("settingsMenu").classList.add("hidden");
-};
-
-document.getElementById("restartBtn").onclick = () => {
-    document.getElementById("gameOverScreen").classList.add("hidden");
-    document.getElementById("startBtn").click();
-};
-
-// Dokunmatik Kontroller
-let tX, tY;
-canvas.addEventListener('touchstart', e => { tX = e.touches[0].clientX; tY = e.touches[0].clientY; }, {passive: false});
-canvas.addEventListener('touchmove', e => {
-    if(!gameActive) return;
-    let dX = e.touches[0].clientX - tX, dY = e.touches[0].clientY - tY;
-    if(Math.abs(dX) > 30 || Math.abs(dY) > 30) {
-        if(Math.abs(dX) > Math.abs(dY)) { if(dx === 0) { dx = dX > 0 ? GRID_SIZE : -GRID_SIZE; dy = 0; } }
-        else { if(dy === 0) { dy = dY > 0 ? GRID_SIZE : -GRID_SIZE; dx = 0; } }
-        tX = e.touches[0].clientX; tY = e.touches[0].clientY;
-    }
-    e.preventDefault();
-}, {passive: false});
-
-window.onload = () => {
-    canvas.width = CANVAS_SIZE; 
-    canvas.height = CANVAS_SIZE;
-    requestAnimationFrame(gameLoop);
-};
-
+console.log("v3.8 Beta Full Loaded | Purpleguy © 2026");
