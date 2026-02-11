@@ -15,7 +15,7 @@
         <button onclick="setLanguage('en')" class="lang-btn">EN</button>
     </div>
     <div class="stat"><span id="txt-score-label">SKOR:</span> <span id="score">000</span></div>
-    <div id="godStatus" style="color: #facc15; font-size: 0.8rem; visibility: hidden; font-weight: bold;">TANRI MODU AKTİF</div>
+    <div id="godStatus" style="color: #facc15; font-size: 0.8rem; visibility: hidden; font-weight: bold; cursor: pointer; text-shadow: 0 0 10px #facc15;">TANRI MODU AKTİF</div>
     <div class="stat"><span id="txt-best-label">EN İYİ:</span> <span id="highScore">000</span></div>
   </div>
 
@@ -31,13 +31,23 @@
 
     <div id="settingsMenu" class="overlay-screen hidden">
       <h3 id="txt-settings-title">SİSTEM AYARLARI</h3>
-      <div class="setting-row"><span id="txt-speed-label">HIZ:</span>
-        <select id="difficulty"><option value="220" id="opt-slow">YAVAŞ</option><option value="130" selected id="opt-normal">NORMAL</option><option value="80" id="opt-fast">HIZLI</option></select>
+      <div class="setting-row">
+        <span id="txt-speed-label">HIZ:</span>
+        <select id="difficulty">
+            <option value="220" id="opt-slow">YAVAŞ</option>
+            <option value="130" selected id="opt-normal">NORMAL</option>
+            <option value="80" id="opt-fast">HIZLI</option>
+        </select>
       </div>
-      <div class="setting-row"><span id="txt-walls-label">DUVARLAR:</span>
-        <select id="wallMode"><option value="die" id="opt-die">ÖLDÜRÜR</option><option value="pass" id="opt-pass">GEÇİRGEN</option></select>
+      <div class="setting-row">
+        <span id="txt-walls-label">DUVARLAR:</span>
+        <select id="wallMode">
+            <option value="die" id="opt-die">ÖLDÜRÜR</option>
+            <option value="pass" id="opt-pass">GEÇİRGEN</option>
+        </select>
       </div>
-      <div class="setting-row"><span id="txt-theme-label">TEMA:</span>
+      <div class="setting-row">
+        <span id="txt-theme-label">TEMA:</span>
         <select id="themeSelect">
           <option value="#38bdf8">NEON MAVİ</option>
           <option value="#ff00ff">SİBER PEMBE</option>
@@ -45,6 +55,9 @@
         </select>
       </div>
       <button id="saveBtn" class="cyber-btn">KAYDET</button>
+      <div id="godTrigger" style="cursor: pointer; margin-top: 15px; font-size: 0.7rem; opacity: 0.5;">
+          Purpleguy © 2026 - tablet power
+      </div>
     </div>
 
     <div id="gameOverScreen" class="overlay-screen hidden">
