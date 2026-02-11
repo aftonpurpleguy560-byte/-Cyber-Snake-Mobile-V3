@@ -3,70 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake v3.8 Mega Update</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Cyber Snake v3.8 Ultimate | Purpleguy</title>
     <style>
-        /* Tema Sayfası Tasarımı */
-        .sub-page {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 1000;
+        :root { --p-color: #00f3ff; --neon-pink: #ff00ff; --bg-dark: #050505; }
+        
+        body { 
+            margin: 0; padding: 0; background: var(--bg-dark); 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; color: white; display: flex; align-items: center; justify-content: center; height: 100vh;
         }
-        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px; }
-        .theme-grid button { padding: 15px; border: 2px solid; cursor: pointer; background: transparent; color: white; }
-        .setting-item { margin: 15px 0; width: 80%; display: flex; justify-content: space-between; align-items: center; }
-        select { background: #000; color: #00f3ff; border: 1px solid #00f3ff; padding: 5px; }
+
+        /* 60 FPS Hareketli Arkaplan Grid */
+        #bg-grid {
+            position: fixed; top: 0; left: 0; width: 200%; height: 200%;
+            background: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1;
+            animation: moveGrid 20s linear infinite;
+        }
+        @keyframes moveGrid { from { transform: translate(0,0); } to { transform: translate(-40px, -40px); } }
+
+        #game-container {
+            position: relative; width: 100%; display: flex; flex-direction: column; align-items: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Gelişmiş Glitch Efekti */
+        .glitch {
+            font-size: 2.5rem; font-weight: 900; text-transform: uppercase;
+            position: relative; color: white; margin-bottom: 20px;
+            text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--p-color);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--p-color); transform: skew(0deg); }
+            20% { text-shadow: -2px 0 var(--neon-pink), 2px 0 var(--p-color); transform: skew(1deg); }
+            100% { text-shadow: 3px 0 var(--neon-pink), -1px 0 var(--p-color); transform: skew(-1deg); }
+        }
+
+        #menu {
+            background: rgba(10, 10, 10, 0.85); padding: 40px; border-radius: 20px;
+            border: 2px solid var(--p-color); backdrop-filter: blur(15px);
+            text-align: center; box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            max-width: 90%; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        button {
+            background: transparent; color: var(--p-color); border: 2px solid var(--p-color);
+            padding: 12px 30px; margin: 10px; cursor: pointer; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+        button:hover { background: var(--p-color); color: black; box-shadow: 0 0 20px var(--p-color); transform: scale(1.05); }
+
+        canvas { 
+            border: 4px solid var(--p-color); border-radius: 10px;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.4); display: none;
+        }
+
+        .stats { position: absolute; top: -50px; display: flex; gap: 20px; font-weight: bold; color: var(--p-color); }
+
+        /* Alt Sayfalar */
+        .sub-page {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.96);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; opacity: 0; transition: opacity 0.4s ease;
+        }
     </style>
 </head>
-<body style="background-color: black;">
+<body>
+    <div id="bg-grid"></div>
     <audio id="eatSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
     <div id="game-container">
-        <div class="stats">
-            <div class="stat-box">PUAN: <span id="scoreValue">000</span></div>
-            <div class="stat-box">EN İYİ: <span id="highScoreValue">000</span></div>
-        </div>
-
-        <canvas id="gameCanvas"></canvas>
-
         <div id="menu">
-            <h1 class="glitch">CYBER SNAKE v3.8</h1>
-            <button class="play-btn" onclick="window.startGame()">OYUNA BAŞLA</button>
-            <button class="settings-btn" onclick="toggleSettings()">AYARLAR</button>
-            
-            <div id="settings-panel" style="display:none;">
-                <div class="setting-item">
-                    <label>HIZ MODU:</label>
-                    <select id="speedSelect" onchange="window.setSpeed(this.value)">
-                        <option value="20">YAVAŞ</option>
-                        <option value="50" selected>NORMAL</option>
-                        <option value="100">HIZLI</option>
-                    </select>
-                </div>
-                <div class="setting-item">
-                    <label>DİL:</label>
-                    <button onclick="window.setLanguage('tr')">TR</button>
-                    <button onclick="window.setLanguage('en')">EN</button>
-                </div>
-                <button onclick="window.openThemePage()" style="width:100%; margin-top:10px;">TEMALAR (10 RENK)</button>
-                <button onclick="window.openAdvanced()" style="width:100%; margin-top:10px; border-color: red;">GELİŞMİŞ AYARLAR</button>
-                <div class="signature">Purpleguy © 2026 - tablet power</div>
+            <h1 class="glitch">CYBER SNAKE</h1>
+            <div class="stats" id="gameStats" style="display:none;">
+                <span>PUAN: <span id="scoreValue">000</span></span>
+                <span>BEST: <span id="highScoreValue">000</span></span>
             </div>
+            <button onclick="window.startGame()">BAŞLAT</button>
+            <button onclick="window.openSettings()">AYARLAR</button>
+            <div class="signature" style="font-size: 10px; margin-top: 20px; opacity: 0.6;">Purpleguy © 2026 - tablet power</div>
         </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
 
-        <div id="theme-page" class="sub-page">
-            <h3>SİBER RENK PALETİ</h3>
-            <div class="theme-grid" id="themeButtons"></div>
-            <button onclick="window.closeSubPage('theme-page')" style="color: red; border-color: red;">KAPAT</button>
+    <div id="settings-page" class="sub-page">
+        <h2 class="glitch">SİSTEM KONTROL</h2>
+        <div style="margin: 20px;">
+            <label>HAYALET MODU (DUVAR): </label>
+            <input type="checkbox" id="wallPass" onchange="window.setWallPass(this.checked)">
         </div>
+        <div style="margin: 20px;">
+            <label>OYUN HIZI: </label>
+            <select id="speed" onchange="window.setSpeed(this.value)" style="background:black; color:cyan; border:1px solid cyan;">
+                <option value="40">YAVAŞ</option>
+                <option value="70" selected>SİBER</option>
+                <option value="120">HIZLI</option>
+            </select>
+        </div>
+        <button onclick="window.openThemes()">RENK TEMALARI</button>
+        <button onclick="window.closePage('settings-page')">KAPAT</button>
+    </div>
+
+    <div id="theme-page" class="sub-page">
+        <h2 class="glitch">RENK MATRİSİ</h2>
+        <div id="themeGrid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;"></div>
+        <button onclick="window.closePage('theme-page')" style="margin-top:20px;">GERİ</button>
     </div>
 
     <script src="script.js"></script>
-    <script>
-        function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
-    </script>
 </body>
 </html>
