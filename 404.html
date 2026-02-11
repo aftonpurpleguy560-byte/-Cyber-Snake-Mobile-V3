@@ -2,152 +2,22 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - SİSTEM HATASI | Purpleguy</title>
-    <link rel="stylesheet" href="style.css">
+    <title>404 - SİSTEM HATASI</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #000;
-            overflow: hidden;
-            color: var(--main-color, #38bdf8);
-        }
-
-        /* Arkaplan Parazit Efekti */
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_3dl_Noise_Static.png');
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .container {
-            position: relative;
-            padding: 40px;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            background: rgba(1, 4, 9, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 1), 0 0 20px rgba(56, 189, 248, 0.1);
-            text-align: center;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            max-width: 80%;
-        }
-
-        .error-code {
-            font-size: clamp(5rem, 15vw, 10rem);
-            margin: 0;
-            line-height: 1;
-            font-weight: 900;
-            letter-spacing: -5px;
-        }
-
-        .message {
-            font-size: 1.2rem;
-            margin: 20px 0;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
-
-        .sub-message {
-            font-size: 0.9rem;
-            color: var(--main-color);
-            opacity: 0.7;
-            margin-bottom: 40px;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Tarama Çizgisi Efekti (CRT) */
-        .scanline {
-            width: 100%;
-            height: 100px;
-            z-index: 5;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(56, 189, 248, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
-            opacity: 0.1;
-            position: absolute;
-            bottom: 100%;
-            animation: scanline 6s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% { bottom: 100%; }
-            100% { bottom: -100%; }
-        }
-
-        .cyber-btn {
-            display: inline-block;
-            text-decoration: none;
-            padding: 15px 30px;
-            border: 2px solid var(--main-color);
-            color: var(--main-color);
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 5px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cyber-btn:hover {
-            background: var(--main-color);
-            color: #000;
-            box-shadow: 0 0 20px var(--main-color);
-        }
-
-        .brand {
-            margin-top: 50px;
-            font-size: 0.8rem;
-            opacity: 0.5;
-            letter-spacing: 2px;
-            z-index: 10;
-        }
+        body { background: #000; color: #38bdf8; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .container { border: 1px solid #38bdf8; padding: 50px; border-radius: 20px; box-shadow: 0 0 30px rgba(56, 189, 248, 0.2); }
+        h1 { font-size: 5rem; margin: 0; }
+        p { letter-spacing: 5px; }
+        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; border: 1px solid #38bdf8; color: #38bdf8; text-decoration: none; border-radius: 5px; }
+        .btn:hover { background: #38bdf8; color: #000; }
     </style>
 </head>
 <body>
-    <div class="scanline"></div>
-
     <div class="container">
-        <h1 class="glitch error-code" data-text="404">404</h1>
-        <p class="message" id="error-msg">VERİ PAKETİ KAYIP</p>
-        <p class="sub-message">Sistem protokolü: Aranan koordinat siber uzayda mevcut değil.</p>
-        
-        <a href="index.html" class="cyber-btn">
-            ANA SİSTEME DÖN
-        </a>
+        <h1>404</h1>
+        <p>VERİ PAKETİ KAYBOLDU</p>
+        <a href="/" class="btn">ANA SİSTEME DÖN</a>
+        <div style="font-size: 0.7rem; margin-top: 30px; opacity: 0.4;">Purpleguy © 2026 - tablet power</div>
     </div>
-    
-    <p class="brand">Purpleguy © 2026 - tablet power</p>
-
-    <script>
-        // Dil desteğine göre 404 mesajını güncelle
-        const savedLang = localStorage.getItem("efe_lang") || "tr";
-        const msgEl = document.getElementById("error-msg");
-        
-        const errorTranslations = {
-            tr: "VERİ PAKETİ KAYIP",
-            en: "DATA PACKET LOST"
-        };
-        
-        msgEl.innerText = errorTranslations[savedLang] || errorTranslations.tr;
-
-        // Rastgele glitch efekti tetikleyici
-        setInterval(() => {
-            const code = document.querySelector('.error-code');
-            code.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
-            setTimeout(() => code.style.transform = 'translate(0,0)', 50);
-        }, 3000);
-    </script>
 </body>
 </html>
-
