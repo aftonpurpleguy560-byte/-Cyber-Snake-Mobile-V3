@@ -1,168 +1,40 @@
-/* Efe - Cyber Snake v3.5 Profesyonel Tasarım */
-:root {
-    --main-color: #38bdf8;
-    --bg-dark: rgba(1, 4, 9, 0.95);
-    --neon-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
-}
+:root { --main-color: #38bdf8; --bg-card: #161b22; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #000; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: white; }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+#game-container { position: relative; width: 95vmin; height: 95vmin; }
+canvas { width: 100%; height: 100%; background: #0d1117; border-radius: 12px; border: 1px solid #30363d; }
 
-body {
-    background: #000;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
+#ui-layer { position: absolute; top: 15px; width: 100%; display: flex; justify-content: space-around; z-index: 10; font-family: monospace; color: var(--main-color); text-shadow: 0 0 10px var(--main-color); pointer-events: none; }
 
-/* OYUN ALANI */
-#game-container {
-    position: relative;
-    width: 90vmin;
-    height: 90vmin;
-    display: flex;
-    flex-direction: column;
-}
-
-/* SKOR TABLOSU (Canvas'ın tam üstüne yapışık) */
-#ui-layer {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background: #010409;
-    border: 2px solid var(--main-color);
-    border-bottom: none;
-    font-weight: bold;
-    color: var(--main-color);
-    font-family: monospace;
-    font-size: clamp(14px, 4vw, 20px);
-}
-
-/* OYUN EKRANI */
-canvas {
-    width: 100%;
-    height: 100%;
-    background: #010409;
-    border: 2px solid var(--main-color);
-    box-shadow: var(--neon-shadow);
-    display: block;
-}
-
-/* GLITCH BAŞLIK */
-.glitch {
-    font-size: clamp(2rem, 10vw, 4rem);
-    color: white;
-    text-transform: uppercase;
-    text-shadow: 3px 3px #ff00ff, -3px -3px #00ffff;
-    animation: glitch-anim 1s infinite;
-    cursor: pointer;
-    margin-bottom: 30px;
-}
-
-@keyframes glitch-anim {
-    0% { transform: skew(0deg); text-shadow: 3px 3px #ff00ff, -3px -3px #00ffff; }
-    20% { transform: skew(-2deg); text-shadow: -3px 3px #ff00ff, 3px -3px #00ffff; }
-    40% { transform: skew(2deg); }
-    100% { transform: skew(0deg); }
-}
-
-/* MENÜLER (Giriş, Ayarlar, Oyun Bitti) */
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-dark);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    backdrop-filter: blur(10px);
-    text-align: center;
-    padding: 20px;
-}
-
+.overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); }
 .hidden { display: none !important; }
 
-/* AYARLAR KUTUSU */
-.menu-content {
-    width: 100%;
-    max-width: 350px;
-    border: 1px solid var(--main-color);
-    padding: 20px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5);
-}
+/* Modern Kart Yapısı */
+.modern-card { background: var(--bg-card); width: 85%; max-width: 400px; border-radius: 24px; padding: 25px; border: 1px solid #30363d; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.card-header h2 { font-size: 1.4rem; margin-bottom: 20px; text-align: center; color: #f0f6fc; }
+.setting-section { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 15px; margin-bottom: 15px; }
+.setting-section h3 { font-size: 0.8rem; color: #8b949e; margin-bottom: 12px; text-transform: uppercase; }
 
-h2 {
-    color: var(--main-color);
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
+/* Renk Seçici Grid */
+.color-grid { display: flex; justify-content: space-between; }
+.color-opt { width: 45px; height: 45px; border-radius: 12px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
+.color-opt.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-.setting-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 15px 0;
-    font-size: 0.9rem;
-}
+/* Modern Switch */
+.setting-item { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 0.95rem; }
+.switch { position: relative; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; inset: 0; background: #30363d; border-radius: 34px; cursor: pointer; transition: 0.4s; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.4s; }
+input:checked + .slider { background: #238636; }
+input:checked + .slider:before { transform: translateX(20px); }
 
-/* SİBER BUTONLAR */
-.cyber-btn {
-    width: 220px;
-    background: transparent;
-    border: 1px solid var(--main-color);
-    color: var(--main-color);
-    padding: 15px;
-    margin: 10px 0;
-    font-weight: bold;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.3s;
-}
+/* Butonlar */
+.modern-btn { width: 200px; padding: 14px; margin: 8px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.main { background: var(--main-color); color: #000; }
+.secondary { background: #30363d; color: #c9d1d9; }
+.modern-save-btn { width: 100%; padding: 16px; border-radius: 14px; border: none; background: linear-gradient(90deg, #2ea043, #3fb950); color: white; font-weight: bold; margin-top: 10px; cursor: pointer; }
+.glitch { font-size: 3rem; margin-bottom: 2rem; text-shadow: 2px 2px #f0f, -2px -2px #0ff; }
+#credit { margin-top: 20px; font-size: 11px; color: #484f58; }
 
-.cyber-btn:hover {
-    background: var(--main-color);
-    color: black;
-    box-shadow: 0 0 15px var(--main-color);
-}
-
-/* DİL BUTONLARI (Sağ Üstte) */
-#lang-toggle {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    z-index: 200;
-    font-family: monospace;
-}
-
-#lang-toggle button {
-    background: none;
-    border: none;
-    color: #444;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-#lang-toggle button:hover {
-    color: var(--main-color);
-}
-
-/* ALT YAZI */
-#credit {
-    margin-top: 20px;
-    font-size: 10px;
-    color: #333;
-    letter-spacing: 1px;
-}
