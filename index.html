@@ -1,9 +1,68 @@
-<div class="hud">
-    <div id="langControls" style="position: absolute; top: 5px; left: 5px; display: flex; gap: 5px;">
-        <button onclick="setLanguage('tr')" style="background:none; border:1px solid var(--main-color); color:white; cursor:pointer; font-size:10px;">TR</button>
-        <button onclick="setLanguage('en')" style="background:none; border:1px solid var(--main-color); color:white; cursor:pointer; font-size:10px;">EN</button>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Snake V3.1 | Efe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="mobile-wrapper">
+  <div class="hud">
+    <div id="langSelector" style="position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 200;">
+        <button onclick="setLanguage('tr')" class="lang-btn">TR</button>
+        <button onclick="setLanguage('en')" class="lang-btn">EN</button>
     </div>
+    <div class="stat"><span id="txt-score-label">SCORE:</span> <span id="score">000</span></div>
+    <div id="godStatus" style="color: #facc15; font-size: 0.8rem; visibility: hidden; font-weight: bold;">GOD MODE ACTIVE</div>
+    <div class="stat"><span id="txt-best-label">BEST:</span> <span id="highScore">000</span></div>
+  </div>
+
+  <div class="game-container">
+    <div class="game-area">
+      <canvas id="cyberCanvas"></canvas>
+      
+      <div id="mainMenu" class="overlay-screen">
+        <h1 class="glitch" id="txt-main-title" data-text="CYBER SNAKE V3">CYBER SNAKE V3</h1>
+        <button id="startBtn" class="cyber-btn">OYUNA BAŞLA</button>
+        <button id="settingsBtn" class="cyber-btn secondary">AYARLAR</button>
+        <p class="brand">Purpleguy © 2026 - tablet power</p>
+      </div>
+
+      <div id="settingsMenu" class="overlay-screen hidden">
+        <h3 class="glitch" id="txt-settings-title" data-text="SİSTEM AYARLARI" style="font-size: 1.5rem;">SİSTEM AYARLARI</h3>
+        <div class="setting-row"><span id="txt-speed-label">HIZ:</span>
+          <select id="difficulty"><option value="220" id="opt-slow">YAVAŞ</option><option value="130" selected id="opt-normal">NORMAL</option><option value="80" id="opt-fast">HIZLI</option></select>
+        </div>
+        <div class="setting-row"><span id="txt-walls-label">DUVARLAR:</span>
+          <select id="wallMode"><option value="die" id="opt-die">ÖLDÜRÜR</option><option value="pass" id="opt-pass">GEÇİRGEN</option></select>
+        </div>
+        <div class="setting-row"><span id="txt-theme-label">TEMA:</span>
+          <select id="themeSelect">
+            <option value="#38bdf8">NEON MAVİ</option>
+            <option value="#ff00ff">SİBER PEMBE</option>
+            <option value="#4ade80">MATRİX YEŞİLİ</option>
+            <option value="#facc15">ALTIN SARISI</option>
+            <option value="#a855f7">MOR GECE</option>
+          </select>
+        </div>
+        <button id="saveBtn" class="cyber-btn">KAYDET VE ÇIK</button>
+        <p id="godTrigger" class="brand" style="cursor:pointer; margin-top:20px; padding:10px;">Purpleguy © 2026 - tablet power</p>
+      </div>
+
+      <div id="gameOverScreen" class="overlay-screen hidden">
+        <h2 class="glitch" id="txt-halt-title" data-text="SİSTEM DURDU">SİSTEM DURDU</h2>
+        <button id="restartBtn" class="cyber-btn">TEKRAR DENE</button>
+        <button id="backMenuBtn" class="cyber-btn secondary">ANA MENÜYE DÖN</button>
+      </div>
+
+      <div id="panicScreen" class="overlay-screen hidden" style="background: #000;" onclick="panicMode()"></div>
     </div>
+  </div>
+</div>
 
 <script src="translations.js"></script>
 <script src="script.js"></script>
+</body>
+</html>
