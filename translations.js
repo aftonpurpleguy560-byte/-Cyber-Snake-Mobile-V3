@@ -1,14 +1,44 @@
 const translations = {
     tr: {
-        scoreText: "SKOR",
-        highScoreText: "EN İYİ",
-        startBtn: "BAŞLAT",
-        gameTitle: "YILAN OYUNU"
+        score: "SKOR: ",
+        best: "EN İYİ: ",
+        godMode: "TANRI MODU AKTİF",
+        startBtn: "OYUNA BAŞLA",
+        settingsBtn: "AYARLAR",
+        gameOver: "SİSTEM DURDU",
+        restartBtn: "TEKRAR DENE",
+        backBtn: "ANA MENÜYE DÖN",
+        settingsTitle: "SİSTEM AYARLARI",
+        speed: "HIZ:",
+        walls: "DUVARLAR:",
+        theme: "TEMA:",
+        saveBtn: "KAYDET VE ÇIK",
+        speedSlow: "YAVAŞ",
+        speedNormal: "NORMAL",
+        speedFast: "HIZLI",
+        wallDie: "ÖLDÜRÜR",
+        wallPass: "GEÇİRGEN",
+        lostData: "ARADIĞINIZ VERİ SİBER UZAYDA KAYBOLDU."
     },
     en: {
-        scoreText: "SCORE",
-        highScoreText: "BEST",
-        startBtn: "START",
-        gameTitle: "SNAKE GAME"
+        score: "SCORE: ",
+        best: "BEST: ",
+        godMode: "GOD MODE ACTIVE",
+        startBtn: "START GAME",
+        settingsBtn: "SETTINGS",
+        gameOver: "SYSTEM HALTED",
+        restartBtn: "RETRY",
+        backBtn: "BACK TO MENU",
+        settingsTitle: "SYSTEM SETTINGS",
+        speed: "SPEED:",
+        walls: "WALLS:",
+        theme: "THEME:",
+        saveBtn: "SAVE AND EXIT",
+        speedSlow: "SLOW",
+        speedNormal: "NORMAL",
+        speedFast: "FAST",
+        wallDie: "KILLER",
+        wallPass: "PASSABLE",
+        lostData: "THE DATA YOU SEEK IS LOST IN CYBERSPACE."
     }
 };
