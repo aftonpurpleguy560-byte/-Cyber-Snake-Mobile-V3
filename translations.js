@@ -1,53 +1,14 @@
-/**
- * Purpleguy © 2026 - tablet power
- * Efe (Project Architect) - Dil Veri Tabanı
- */
-
 const translations = {
     tr: {
-        // Üst Panel
-        scoreText: "Skor",
-        highScoreText: "En İyi",
-        
-        // Ana Menü
+        scoreText: "SKOR",
+        highScoreText: "EN İYİ",
         startBtn: "BAŞLAT",
-        settingsBtn: "AYARLAR",
-        
-        // Ayarlar Menüsü (Siber Laboratuvar)
-        settingsTitle: "SİBER LABORATUVAR",
-        snakeColorText: "Yılan Rengi",
-        wallModeText: "Duvar Modu",
-        wallDie: "Çarpınca Öl",
-        wallPass: "İçinden Geç",
-        powerUpText: "Güçlendiriciler",
-        saveBtn: "KAYDET",
-        
-        // Oyun Bitti Ekranı
-        gameOverText: "SİSTEM ÇÖKTÜ",
-        restartBtn: "TEKRAR DENE",
-        backBtn: "MENÜ"
+        gameTitle: "YILAN OYUNU"
     },
     en: {
-        // Top Panel
-        scoreText: "Score",
-        highScoreText: "Best",
-        
-        // Main Menu
+        scoreText: "SCORE",
+        highScoreText: "BEST",
         startBtn: "START",
-        settingsBtn: "SETTINGS",
-        
-        // Settings Menu (Cyber Lab)
-        settingsTitle: "CYBER LAB",
-        snakeColorText: "Snake Color",
-        wallModeText: "Wall Mode",
-        wallDie: "Die on Wall",
-        wallPass: "Pass Through",
-        powerUpText: "Power-ups",
-        saveBtn: "SAVE",
-        
-        // Game Over Screen
-        gameOverText: "SYSTEM CRASHED",
-        restartBtn: "TRY AGAIN",
-        backBtn: "MENU"
+        gameTitle: "SNAKE GAME"
     }
 };
