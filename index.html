@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cyber Snake v3.8 Beta</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div id="game-container">
@@ -14,29 +13,32 @@
             <div class="stat-box"><span class="stat-label">EN İYİ:</span> <span id="highScoreValue">000</span></div>
         </div>
 
-        <canvas id="gameCanvas" width="320" height="320"></canvas>
+        <canvas id="gameCanvas"></canvas>
 
         <div id="menu">
-            <h1 class="glitch" data-text="CYBER SNAKE V3.8">CYBER SNAKE V3.8 Beta</h1>
-            <button class="play-btn" onclick="startGame()">OYUNA BAŞLA</button>
-            <button class="settings-btn" onclick="toggleSettings()">TEMALAR</button>
+            <h1 class="glitch" data-text="CYBER SNAKE V3.8">CYBER SNAKE V3.8</h1>
             
-            <div id="settings-panel" style="display:none;">
+            <div class="mode-select" style="margin-bottom: 20px; text-align: center;">
+                <p style="font-size: 10px; margin-bottom: 10px;">MOD SEÇ VE BAŞLA:</p>
+                <button onclick="window.startGame('yavas')">YAVAŞ (20)</button>
+                <button onclick="window.startGame('normal')">NORMAL (50)</button>
+                <button onclick="window.startGame('hizli')">HIZLI (100)</button>
+            </div>
+
+            <button class="settings-btn" onclick="toggleSettings()">AYARLAR</button>
+            
+            <div id="settings-panel" style="display:none; width: 80%;">
                 <div class="theme-grid">
-                    <button onclick="changeTheme('cyber')">CYBER</button>
-                    <button onclick="changeTheme('neon')">NEON</button>
-                    <button onclick="changeTheme('retro')">RETRO</button>
-                    <button onclick="changeTheme('matrix')">MATRIX</button>
-                    <button onclick="changeTheme('gold')">GOLD</button>
+                    <button onclick="window.changeTheme('cyber')">CYBER</button>
+                    <button onclick="window.changeTheme('neon')">NEON</button>
+                    <button onclick="window.changeTheme('retro')">RETRO</button>
+                    <button onclick="window.changeTheme('matrix')">MATRIX</button>
+                    <button onclick="window.changeTheme('gold')">GOLD</button>
                 </div>
+                <button class="readme-btn" onclick="window.openReadme()" style="width: 100%; margin-top: 10px; border-color: #ff003c; color: #ff003c;">PROJE GERÇEKLERİ (README)</button>
             </div>
 
             <div class="signature">Purpleguy © 2026 - tablet power</div>
-        </div>
-
-        <div class="lang-select">
-            <button onclick="setLanguage('tr')">TR</button>
-            <button onclick="setLanguage('en')">EN</button>
         </div>
     </div>
     <script src="script.js"></script>
