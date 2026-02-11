@@ -3,88 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake V beta 3.5 | Purpleguy</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#38bdf8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    
+    <title>Cyber Snake v3.8 Beta</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('Sistem Hazır (Service Worker Kayıtlı)'))
-                    .catch(err => console.log('Hata:', err));
-            });
-        }
-    </script>
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <div class="mobile-wrapper">
-        <div class="hud">
-            <div class="score-box">PUAN: <span id="score">000</span></div>
-            <div id="godStatus" style="color: #facc15; font-size: 0.8rem; visibility: hidden; font-weight: bold; cursor: pointer; text-shadow: 0 0 10px #facc15;">TANRI MODU AKTİF</div>
-            <div class="stat"><span id="txt-best-label">EN İYİ:</span> <span id="highScore">000</span></div>
+    <div id="game-container">
+        <div class="stats">
+            <div class="stat-box"><span class="stat-label">PUAN:</span> <span id="scoreValue">000</span></div>
+            <div class="stat-box"><span class="stat-label">EN İYİ:</span> <span id="highScoreValue">000</span></div>
         </div>
 
-        <div class="game-area">
-            <canvas id="gameCanvas"></canvas>
+        <canvas id="gameCanvas" width="320" height="320"></canvas>
+
+        <div id="menu">
+            <h1 class="glitch" data-text="CYBER SNAKE V3.8">CYBER SNAKE V3.8</h1>
+            <button class="play-btn" onclick="startGame()">OYUNA BAŞLA</button>
+            <button class="settings-btn" onclick="toggleSettings()">TEMALAR</button>
             
-            <div id="startScreen" class="overlay-screen">
-                <h1 class="glitch" id="txt-main-title" data-text="CYBER SNAKE V3">CYBER SNAKE V3</h1>
-                <button class="cyber-btn" id="startBtn">OYUNA BAŞLA</button>
-                <button class="cyber-btn" id="settingsBtn">AYARLAR</button>
-                <p style="font-size: 0.6rem; margin-top: 20px; opacity: 0.6;">Purpleguy © 2026 - tablet power</p>
+            <div id="settings-panel" style="display:none;">
+                <div class="theme-grid">
+                    <button onclick="changeTheme('cyber')">CYBER</button>
+                    <button onclick="changeTheme('neon')">NEON</button>
+                    <button onclick="changeTheme('retro')">RETRO</button>
+                    <button onclick="changeTheme('matrix')">MATRIX</button>
+                    <button onclick="changeTheme('gold')">GOLD</button>
+                </div>
             </div>
 
-            <div id="settingsMenu" class="overlay-screen hidden">
-                <h3 id="txt-settings-title">SİSTEM AYARLARI</h3>
-                
-                <div class="setting-row">
-                    <span id="txt-speed-label">HIZ:</span>
-                    <select id="difficulty">
-                        <option value="220" id="opt-slow">YAVAŞ</option>
-                        <option value="130" selected id="opt-normal">NORMAL</option>
-                        <option value="80" id="opt-fast">HIZLI</option>
-                    </select>
-                </div>
-
-                <div class="setting-row">
-                    <span id="txt-walls-label">DUVARLAR:</span>
-                    <select id="wallMode">
-                        <option value="die" id="opt-die">ÖLDÜRÜR</option>
-                        <option value="pass" id="opt-pass">GEÇİRGEN</option>
-                    </select>
-                </div>
-
-                <div class="setting-row">
-                    <span id="txt-theme-label">TEMA:</span>
-                    <select id="themeSelect">
-                        <option value="neon">NEON SİBER</option>
-                        <option value="classic">KLASİK</option>
-                    </select>
-                </div>
-
-                <button class="cyber-btn" id="backBtn">GERİ</button>
-            </div>
-
-            <div id="gameOverScreen" class="overlay-screen hidden">
-                <h2 id="txt-game-over">SİSTEM ÇÖKTÜ</h2>
-                <p id="txt-final-score-label">SKORUN: <span id="finalScore">0</span></p>
-                <button class="cyber-btn" id="restartBtn">REBOOT</button>
-            </div>
+            <div class="signature">Purpleguy © 2026 - tablet power</div>
         </div>
 
-        <div style="margin-top: 15px;">
-            <button class="lang-btn" onclick="setLanguage('tr')">TR</button>
-            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+        <div class="lang-select">
+            <button onclick="setLanguage('tr')">TR</button>
+            <button onclick="setLanguage('en')">EN</button>
         </div>
     </div>
-
-    <script src="translations.js"></script>
     <script src="script.js"></script>
+    <script>
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>
