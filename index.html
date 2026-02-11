@@ -3,61 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake V3.1 | Efe</title>
+    <title>Cyber Snake v3.5 | Purpleguy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="mobile-wrapper">
-  <div class="hud">
-    <div class="stat" onclick="panicMode()">SCORE: <span id="score">000</span></div>
-    <div id="godStatus" style="color: #4ade80; font-size: 0.8rem; visibility: hidden; font-weight: bold;">GOD MODE ACTIVE</div>
-    <div class="stat">BEST: <span id="highScore">000</span></div>
-  </div>
-
-  <div class="game-container">
-    <div class="game-area">
-      <canvas id="cyberCanvas"></canvas>
-      
-      <div id="mainMenu" class="overlay-screen">
-        <h1 class="glitch" data-text="CYBER SNAKE V3">CYBER SNAKE V3</h1>
-        <button id="startBtn" class="cyber-btn">OYUNA BAŞLA</button>
-        <button id="settingsBtn" class="cyber-btn secondary">AYARLAR</button>
-        <p class="brand">Purpleguy © 2026 - tablet power</p>
-      </div>
-
-      <div id="settingsMenu" class="overlay-screen hidden">
-        <h3 class="glitch" data-text="SİSTEM AYARLARI" style="font-size: 1.5rem;">SİSTEM AYARLARI</h3>
-        <div class="setting-row"><span>HIZ:</span>
-          <select id="difficulty"><option value="220">YAVAŞ</option><option value="130" selected>NORMAL</option><option value="80">HIZLI</option></select>
+    <div id="game-container">
+        <div id="lang-toggle">
+            <button onclick="setLanguage('tr')">TR</button> | 
+            <button onclick="setLanguage('en')">EN</button>
         </div>
-        <div class="setting-row"><span>DUVARLAR:</span>
-          <select id="wallMode"><option value="die">ÖLDÜRÜR</option><option value="pass">GEÇİRGEN</option></select>
-        </div>
-        <div class="setting-row"><span>TEMA:</span>
-          <select id="themeSelect">
-            <option value="#38bdf8">NEON MAVİ</option>
-            <option value="#ff00ff">SİBER PEMBE</option>
-            <option value="#4ade80">MATRİX YEŞİLİ</option>
-            <option value="#facc15">ALTIN SARISI</option>
-            <option value="#a855f7">MOR GECE</option>
-          </select>
-        </div>
-        <button id="saveBtn" class="cyber-btn">KAYDET VE ÇIK</button>
-        <p id="godTrigger" class="brand" style="cursor:pointer; margin-top:20px; padding:10px;">Purpleguy © 2026 - tablet power</p>
-      </div>
 
-      <div id="gameOverScreen" class="overlay-screen hidden">
-        <h2 class="glitch" data-text="SİSTEM DURDU">SİSTEM DURDU</h2>
-        <button id="restartBtn" class="cyber-btn">TEKRAR DENE</button>
-        <button id="backMenuBtn" class="cyber-btn secondary">ANA MENÜYE DÖN</button>
-      </div>
+        <div id="ui-layer">
+            <div class="stat"><span data-key="scoreText">Skor</span>: <span id="score">000</span></div>
+            <div class="stat"><span data-key="highScoreText">En İyi</span>: <span id="highScore">000</span></div>
+        </div>
 
-      <div id="panicScreen" class="overlay-screen hidden" style="background: #000;" onclick="panicMode()"></div>
+        <canvas id="cyberCanvas"></canvas>
+
+        <div id="mainMenu" class="overlay">
+            <h1 class="glitch">CYBER SNAKE</h1>
+            <button id="startBtn" class="cyber-btn" data-key="startBtn">BAŞLAT</button>
+            <button id="settingsBtn" class="cyber-btn" data-key="settingsBtn">AYARLAR</button>
+            <p id="credit">Purpleguy © 2026 - tablet power</p>
+        </div>
+
+        <div id="settingsMenu" class="overlay hidden">
+            <div class="menu-content">
+                <h2 data-key="settingsTitle">SİBER LABORATUVAR</h2>
+                <div class="setting-item">
+                    <label data-key="snakeColorText">Yılan Rengi:</label>
+                    <input type="color" id="themeSelect" value="#38bdf8">
+                </div>
+                <div class="setting-item">
+                    <label data-key="wallModeText">Duvar Modu:</label>
+                    <select id="wallMode">
+                        <option value="die" data-key="wallDie">Çarpınca Öl</option>
+                        <option value="pass" data-key="wallPass">İçinden Geç</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label data-key="powerUpText">Güçlendiriciler:</label>
+                    <input type="checkbox" id="powerUpToggle" checked>
+                </div>
+                <button id="saveBtn" class="cyber-btn" data-key="saveBtn">KAYDET</button>
+            </div>
+        </div>
+
+        <div id="gameOverScreen" class="overlay hidden">
+            <h2 data-key="gameOverText">SİSTEM ÇÖKTÜ</h2>
+            <button id="restartBtn" class="cyber-btn" data-key="restartBtn">TEKRAR DENE</button>
+            <button id="backMenuBtn" class="cyber-btn" data-key="backBtn">MENÜ</button>
+        </div>
     </div>
-  </div>
-</div>
 
-<script src="script.js"></script>
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
