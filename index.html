@@ -3,44 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake v3.8 Beta</title>
+    <title>Cyber Snake v3.8 Mega Update</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Tema Sayfası Tasarımı */
+        .sub-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px; }
+        .theme-grid button { padding: 15px; border: 2px solid; cursor: pointer; background: transparent; color: white; }
+        .setting-item { margin: 15px 0; width: 80%; display: flex; justify-content: space-between; align-items: center; }
+        select { background: #000; color: #00f3ff; border: 1px solid #00f3ff; padding: 5px; }
+    </style>
 </head>
-<body>
+<body style="background-color: black;">
+    <audio id="eatSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+
     <div id="game-container">
         <div class="stats">
-            <div class="stat-box"><span class="stat-label">PUAN:</span> <span id="scoreValue">000</span></div>
-            <div class="stat-box"><span class="stat-label">EN İYİ:</span> <span id="highScoreValue">000</span></div>
+            <div class="stat-box">PUAN: <span id="scoreValue">000</span></div>
+            <div class="stat-box">EN İYİ: <span id="highScoreValue">000</span></div>
         </div>
 
         <canvas id="gameCanvas"></canvas>
 
         <div id="menu">
-            <h1 class="glitch" data-text="CYBER SNAKE V3.8">CYBER SNAKE V3.8</h1>
-            
-            <div class="mode-select" style="margin-bottom: 20px; text-align: center;">
-                <p style="font-size: 10px; margin-bottom: 10px;">MOD SEÇ VE BAŞLA:</p>
-                <button onclick="window.startGame('yavas')">YAVAŞ (20)</button>
-                <button onclick="window.startGame('normal')">NORMAL (50)</button>
-                <button onclick="window.startGame('hizli')">HIZLI (100)</button>
-            </div>
-
+            <h1 class="glitch">CYBER SNAKE v3.8</h1>
+            <button class="play-btn" onclick="window.startGame()">OYUNA BAŞLA</button>
             <button class="settings-btn" onclick="toggleSettings()">AYARLAR</button>
             
-            <div id="settings-panel" style="display:none; width: 80%;">
-                <div class="theme-grid">
-                    <button onclick="window.changeTheme('cyber')">CYBER</button>
-                    <button onclick="window.changeTheme('neon')">NEON</button>
-                    <button onclick="window.changeTheme('retro')">RETRO</button>
-                    <button onclick="window.changeTheme('matrix')">MATRIX</button>
-                    <button onclick="window.changeTheme('gold')">GOLD</button>
+            <div id="settings-panel" style="display:none;">
+                <div class="setting-item">
+                    <label>HIZ MODU:</label>
+                    <select id="speedSelect" onchange="window.setSpeed(this.value)">
+                        <option value="20">YAVAŞ</option>
+                        <option value="50" selected>NORMAL</option>
+                        <option value="100">HIZLI</option>
+                    </select>
                 </div>
-                <button class="readme-btn" onclick="window.openReadme()" style="width: 100%; margin-top: 10px; border-color: #ff003c; color: #ff003c;">PROJE GERÇEKLERİ (README)</button>
+                <div class="setting-item">
+                    <label>DİL:</label>
+                    <button onclick="window.setLanguage('tr')">TR</button>
+                    <button onclick="window.setLanguage('en')">EN</button>
+                </div>
+                <button onclick="window.openThemePage()" style="width:100%; margin-top:10px;">TEMALAR (10 RENK)</button>
+                <button onclick="window.openAdvanced()" style="width:100%; margin-top:10px; border-color: red;">GELİŞMİŞ AYARLAR</button>
+                <div class="signature">Purpleguy © 2026 - tablet power</div>
             </div>
+        </div>
 
-            <div class="signature">Purpleguy © 2026 - tablet power</div>
+        <div id="theme-page" class="sub-page">
+            <h3>SİBER RENK PALETİ</h3>
+            <div class="theme-grid" id="themeButtons"></div>
+            <button onclick="window.closeSubPage('theme-page')" style="color: red; border-color: red;">KAPAT</button>
         </div>
     </div>
+
     <script src="script.js"></script>
     <script>
         function toggleSettings() {
