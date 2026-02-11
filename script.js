@@ -1,5 +1,5 @@
 /**
- * Cyber Snake V3.1+ | PWA & Mobil Uyumlu
+ * Cyber Snake V3.8 beta | PWA & Mobil Uyumlu
  * Purpleguy © 2026 - tablet power
  */
 
