@@ -1,0 +1,22 @@
+{
+  "name": "Cyber Snake V3.1",
+  "short_name": "CyberSnake",
+  "description": "Purpleguy tarafından geliştirilen siber temalı yılan oyunu.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#38bdf8",
+  "icons": [
+    {
+      "src": "https://vercel.com/api/www/avatar/aftonpurpleguy560-byte?s=192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://vercel.com/api/www/avatar/aftonpurpleguy560-byte?s=512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
