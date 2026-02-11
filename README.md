@@ -1,19 +1,28 @@
-# Cyber Snake V3.1+ 🐍⚡
+# 🐍 Cyber Snake v3.8 Beta | The Masterpiece
 
-**Efe** tarafından geliştirilen, mobil öncelikli ve siber temalı gelişmiş yılan oyunu.
+> **"Kötü olmuş, ben daha iyisini yaparım" diyenler için: Klavye orada, Vercel burada. Buyrun, sahne sizin. Tabii eğer siber tozumu yutmaktan vaktiniz kalırsa...**
 
-## 🛠 Özellikler
-- **Sprite Sistemi:** `head.png`, `body.png` ve `tail.png` ile yön duyarlı yılan grafikleri.
-- **Neon Food:** Siber pembe parlamalı emoji meyveler.
-- **Dil Desteği:** TR / EN seçenekleri.
-- **Ayarlar:** Hız seçimi, duvar modu (ölüm/geçirgen) ve tema renkleri.
-- **Tanrı Modu:** Purpleguy özel gizli modu.
+---
 
-## 🚀 Kurulum
-1. Tüm dosyaları (`index.html`, `script.js`, `style.css`, `translations.js`, `404.html`) bir klasöre koyun.
-2. Görselleri (`head.png`, `body.png`, `tail.png`) ana dizine ekleyin.
-3. Vercel veya GitHub Pages üzerinden yayına alın.
+## 🚀 Proje Hakkında
+Bu sadece bir yılan oyunu değil; **Purpleguy** imzasını taşıyan bir siber devrimdir. Arkadaş çevremin "yapamazsın" dediği, "çöp" dediği her şeyi içine 5 farklı tema ve gizli hilelerle gömdüm.
 
-## ✒️ İmza
-Purpleguy © 2026 - tablet power
+### 🔥 Neden Bu Oyun Sizin Kodlarınızdan Üstün?
+* **5 Farklı Siber Tema:** Cyber, Neon, Retro, Matrix ve Gold. Siz daha renk seçemezken ben evren kurdum.
+* **God Mode (Gizli Yetki):** İmzamın altına saklanmış bir hile mekanizması. Sizin ulaşamadığınız siber seviyelere tek tıkla çıkıyorum.
+* **Glitch Efekti:** Görsellik sizin için "resim eklemek" ise, benim için ekranı siber bir kaosa sürüklemektir.
+* **PWA Desteği:** Sizin oyunlarınız tarayıcıda takılı kalırken, benimki telefonlara ikon olarak iniyor.
 
+---
+
+## 🛠️ Teknik Detaylar (Anlamayacak Olanlar İçin)
+* **Versiyon:** 3.8 Beta (Siz hala v1.0'da mısınız?)
+* **Engine:** Pure JavaScript (Kütüphane kullanmadan, alın teriyle).
+* **Deployment:** Vercel (Hataları temizledik, yeşil tikleri dizdik).
+
+---
+
+## 👑 İmza
+**Purpleguy © 2026 - tablet power**
+
+*"Çok kötü olmuş diyen arkadaşlara not: Kodlarımın kalitesine bakarken gözleriniz kamaşabilir, dikkat edin."* 😎
