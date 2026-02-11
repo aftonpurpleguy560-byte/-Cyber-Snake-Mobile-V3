@@ -1,29 +1,20 @@
 /**
- * Cyber Snake V3.1+ | God Mode Multi-Trigger
+ * Cyber Snake V3.1+ | PWA & Mobil Uyumlu
  * Purpleguy © 2026 - tablet power
  */
 
-const canvas = document.getElementById("cyberCanvas");
+const canvas = document.getElementById("gameCanvas"); // ID düzeltildi
 const ctx = canvas.getContext("2d");
 const GRID_SIZE = 40; 
 const CANVAS_SIZE = 600;
 
 let snake = [], food = {}, dx = GRID_SIZE, dy = 0, score = 0, gameActive = false;
 let wallMode = "die", snakeColor = "#38bdf8", lastTime = 0, moveTimer = 0, moveInterval = 130; 
-let godMode = false, frameCount = 0;
+let godMode = false;
 
 const fruits = ["🍎","🍉","🍇","🍍","🍓","🍒","🥝","🫐","🍊","🍋"];
 
-const snakeSprites = {
-    head: new Image(),
-    body: new Image(),
-    tail: new Image()
-};
-snakeSprites.head.src = 'head.png'; 
-snakeSprites.body.src = 'body.png';
-snakeSprites.tail.src = 'tail.png';
-
-// --- GOD MODE MANTIĞI (3 TIK) ---
+// --- GOD MODE MANTIĞI ---
 let godClicks = 0;
 let lastGodClick = 0;
 
@@ -37,15 +28,11 @@ function toggleGodMode() {
         godMode = !godMode;
         document.getElementById("godStatus").style.visibility = godMode ? "visible" : "hidden";
         godClicks = 0;
-        // Opsiyonel: Hafif bir bildirim
-        console.log("God Mode: " + godMode);
     }
 }
 
-// Hem imzaya hem de yazıya tık dinleyici ekle
-document.getElementById("godTrigger").onclick = toggleGodMode;
+// HTML'deki ilgili alanlara tık dinleyici ekle
 document.getElementById("godStatus").onclick = toggleGodMode;
-// --------------------------------
 
 function spawnNewFood() {
     let newX, newY, overlap = true;
@@ -58,10 +45,10 @@ function spawnNewFood() {
 }
 
 function draw() {
-    frameCount++;
     ctx.fillStyle = "#010409"; 
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     
+    // Izgara çizgileri
     ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
     for(let i=0; i<=CANVAS_SIZE; i+=GRID_SIZE) {
         ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,CANVAS_SIZE); ctx.stroke();
@@ -69,47 +56,32 @@ function draw() {
     }
 
     if(gameActive) {
-        ctx.save();
-        ctx.shadowBlur = 20; ctx.shadowColor = "#ff00ff";
-        ctx.font = "30px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        // Yemeği çiz
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillText(food.icon, food.x + GRID_SIZE / 2, food.y + GRID_SIZE / 2);
-        ctx.restore();
 
+        // Yılanı çiz
         snake.forEach((part, index) => {
-            let sprite, angle = 0;
-            if (index === 0) {
-                sprite = snakeSprites.head;
-                if (dx > 0) angle = 0; else if (dx < 0) angle = Math.PI;
-                else if (dy > 0) angle = Math.PI / 2; else if (dy < 0) angle = -Math.PI / 2;
-            } else if (index === snake.length - 1) {
-                sprite = snakeSprites.tail;
-                angle = Math.atan2(snake[index-1].y - part.y, snake[index-1].x - part.x);
-            } else {
-                sprite = snakeSprites.body;
-                angle = Math.atan2(snake[index-1].y - part.y, snake[index-1].x - part.x);
-            }
-
-            ctx.save();
-            ctx.translate(part.x + GRID_SIZE / 2, part.y + GRID_SIZE / 2);
-            ctx.rotate(angle);
-            if (sprite.complete && sprite.naturalWidth !== 0) {
-                ctx.drawImage(sprite, -GRID_SIZE / 2, -GRID_SIZE / 2, GRID_SIZE, GRID_SIZE);
-            } else {
-                ctx.shadowBlur = 15; ctx.shadowColor = snakeColor;
-                ctx.fillStyle = index === 0 ? snakeColor : "rgba(255, 255, 255, 0.2)";
-                ctx.fillRect(-18, -18, 36, 36);
-            }
-            ctx.restore();
+            ctx.fillStyle = index === 0 ? snakeColor : "rgba(56, 189, 248, 0.5)";
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = snakeColor;
+            ctx.fillRect(part.x + 2, part.y + 2, GRID_SIZE - 4, GRID_SIZE - 4);
+            ctx.shadowBlur = 0;
         });
     }
 }
 
 function update() {
     let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
     if (godMode || wallMode === "pass") {
         if(head.x < 0) head.x = CANVAS_SIZE - GRID_SIZE; else if(head.x >= CANVAS_SIZE) head.x = 0;
         if(head.y < 0) head.y = CANVAS_SIZE - GRID_SIZE; else if(head.y >= CANVAS_SIZE) head.y = 0;
-    } else if(head.x < 0 || head.x >= CANVAS_SIZE || head.y < 0 || head.y >= CANVAS_SIZE) return endGame();
+    } else {
+        if(head.x < 0 || head.x >= CANVAS_SIZE || head.y < 0 || head.y >= CANVAS_SIZE) return endGame();
+    }
 
     if(!godMode && snake.some((s, idx) => idx > 0 && s.x === head.x && s.y === head.y)) return endGame();
 
@@ -128,7 +100,8 @@ function gameLoop(currentTime) {
         if (moveTimer >= moveInterval) { update(); moveTimer = 0; }
     }
     lastTime = currentTime;
-    draw(); requestAnimationFrame(gameLoop);
+    draw(); 
+    requestAnimationFrame(gameLoop);
 }
 
 function endGame() {
@@ -136,31 +109,35 @@ function endGame() {
     let hi = localStorage.getItem("best_v3") || 0;
     if(score > hi) localStorage.setItem("best_v3", score);
     document.getElementById("highScore").innerText = Math.max(score, hi).toString().padStart(3, '0');
+    document.getElementById("finalScore").innerText = score;
     document.getElementById("gameOverScreen").classList.remove("hidden");
 }
 
+// Buton Kontrolleri (HTML ID'lerine göre düzeltildi)
 document.getElementById("startBtn").onclick = () => {
-    document.getElementById("mainMenu").classList.add("hidden");
+    document.getElementById("startScreen").classList.add("hidden");
     snake = [{x: 240, y: 240}, {x: 200, y: 240}, {x: 160, y: 240}];
     dx = GRID_SIZE; dy = 0; score = 0;
-    moveInterval = parseInt(document.getElementById("difficulty").value);
-    gameActive = true; spawnNewFood();
+    document.getElementById("score").innerText = "000";
+    gameActive = true; 
+    spawnNewFood();
 };
 
 document.getElementById("settingsBtn").onclick = () => document.getElementById("settingsMenu").classList.remove("hidden");
-document.getElementById("saveBtn").onclick = () => {
+document.getElementById("backBtn").onclick = () => {
     moveInterval = parseInt(document.getElementById("difficulty").value);
     wallMode = document.getElementById("wallMode").value;
-    snakeColor = document.getElementById("themeSelect").value;
-    document.documentElement.style.setProperty('--main-color', snakeColor);
     document.getElementById("settingsMenu").classList.add("hidden");
 };
-document.getElementById("restartBtn").onclick = () => { document.getElementById("gameOverScreen").classList.add("hidden"); document.getElementById("startBtn").click(); };
-document.getElementById("backMenuBtn").onclick = () => { document.getElementById("gameOverScreen").classList.add("hidden"); document.getElementById("mainMenu").classList.remove("hidden"); };
 
-// Dokunmatik ve Klavye (Öncekiyle aynı)
+document.getElementById("restartBtn").onclick = () => {
+    document.getElementById("gameOverScreen").classList.add("hidden");
+    document.getElementById("startBtn").click();
+};
+
+// Dokunmatik Kontroller
 let tX, tY;
-canvas.addEventListener('touchstart', e => { tX = e.touches[0].clientX; tY = e.touches[0].clientY; });
+canvas.addEventListener('touchstart', e => { tX = e.touches[0].clientX; tY = e.touches[0].clientY; }, {passive: false});
 canvas.addEventListener('touchmove', e => {
     if(!gameActive) return;
     let dX = e.touches[0].clientX - tX, dY = e.touches[0].clientY - tY;
@@ -169,10 +146,11 @@ canvas.addEventListener('touchmove', e => {
         else { if(dy === 0) { dy = dY > 0 ? GRID_SIZE : -GRID_SIZE; dx = 0; } }
         tX = e.touches[0].clientX; tY = e.touches[0].clientY;
     }
-});
+    e.preventDefault();
+}, {passive: false});
 
 window.onload = () => {
-    canvas.width = CANVAS_SIZE; canvas.height = CANVAS_SIZE;
-    setLanguage(localStorage.getItem("efe_lang") || "tr");
+    canvas.width = CANVAS_SIZE; 
+    canvas.height = CANVAS_SIZE;
     requestAnimationFrame(gameLoop);
 };
