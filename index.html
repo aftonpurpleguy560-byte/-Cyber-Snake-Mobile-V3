@@ -9,8 +9,9 @@
         
         body { 
             margin: 0; padding: 0; background: var(--bg-dark); 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             overflow: hidden; color: white; display: flex; align-items: center; justify-content: center; height: 100vh;
+            touch-action: none; /* Mobil kaydırmayı engeller, swipe'ı iyileştirir */
         }
 
         /* 60 FPS Hareketli Arkaplan Grid */
@@ -25,10 +26,9 @@
 
         #game-container {
             position: relative; width: 100%; display: flex; flex-direction: column; align-items: center;
-            transition: opacity 0.5s ease-in-out;
         }
 
-        /* Gelişmiş Glitch Efekti */
+        /* Glitch Başlık */
         .glitch {
             font-size: 2.5rem; font-weight: 900; text-transform: uppercase;
             position: relative; color: white; margin-bottom: 20px;
@@ -42,16 +42,16 @@
         }
 
         #menu {
-            background: rgba(10, 10, 10, 0.85); padding: 40px; border-radius: 20px;
+            background: rgba(10, 10, 10, 0.85); padding: 30px; border-radius: 20px;
             border: 2px solid var(--p-color); backdrop-filter: blur(15px);
             text-align: center; box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-            max-width: 90%; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 85%; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         button {
             background: transparent; color: var(--p-color); border: 2px solid var(--p-color);
-            padding: 12px 30px; margin: 10px; cursor: pointer; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+            padding: 12px 25px; margin: 10px; cursor: pointer; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
         }
         button:hover { background: var(--p-color); color: black; box-shadow: 0 0 20px var(--p-color); transform: scale(1.05); }
@@ -59,60 +59,107 @@
         canvas { 
             border: 4px solid var(--p-color); border-radius: 10px;
             box-shadow: 0 0 40px rgba(0, 243, 255, 0.4); display: none;
+            background: rgba(0,0,0,0.9);
         }
 
-        .stats { position: absolute; top: -50px; display: flex; gap: 20px; font-weight: bold; color: var(--p-color); }
+        .stats-display { font-size: 1.2rem; color: var(--p-color); margin-bottom: 10px; display: none; font-weight: bold; }
 
-        /* Alt Sayfalar */
+        /* Ayarlar Sayfası */
         .sub-page {
             position: fixed; inset: 0; background: rgba(0,0,0,0.96);
             display: none; flex-direction: column; align-items: center; justify-content: center;
             z-index: 100; opacity: 0; transition: opacity 0.4s ease;
         }
+
+        .setting-row { margin: 15px 0; width: 250px; display: flex; justify-content: space-between; align-items: center; }
+        select { background: black; color: var(--p-color); border: 1px solid var(--p-color); padding: 5px; }
+
+        .signature { font-size: 10px; margin-top: 20px; opacity: 0.6; letter-spacing: 1px; }
     </style>
 </head>
 <body>
     <div id="bg-grid"></div>
-    <audio id="eatSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="eatSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
 
     <div id="game-container">
+        <div id="status-bar" class="stats-display">
+            PUAN: <span id="scoreValue">000</span> | BEST: <span id="highScoreValue">000</span>
+        </div>
+
         <div id="menu">
             <h1 class="glitch">CYBER SNAKE</h1>
-            <div class="stats" id="gameStats" style="display:none;">
-                <span>PUAN: <span id="scoreValue">000</span></span>
-                <span>BEST: <span id="highScoreValue">000</span></span>
-            </div>
-            <button onclick="window.startGame()">BAŞLAT</button>
+            <button onclick="window.startGame()">SİSTEMİ BAŞLAT</button>
             <button onclick="window.openSettings()">AYARLAR</button>
-            <div class="signature" style="font-size: 10px; margin-top: 20px; opacity: 0.6;">Purpleguy © 2026 - tablet power</div>
+            <div class="signature">Purpleguy © 2026 - tablet power</div>
         </div>
+
         <canvas id="gameCanvas"></canvas>
     </div>
 
     <div id="settings-page" class="sub-page">
-        <h2 class="glitch">SİSTEM KONTROL</h2>
-        <div style="margin: 20px;">
-            <label>HAYALET MODU (DUVAR): </label>
-            <input type="checkbox" id="wallPass" onchange="window.setWallPass(this.checked)">
-        </div>
-        <div style="margin: 20px;">
-            <label>OYUN HIZI: </label>
-            <select id="speed" onchange="window.setSpeed(this.value)" style="background:black; color:cyan; border:1px solid cyan;">
-                <option value="40">YAVAŞ</option>
-                <option value="70" selected>SİBER</option>
-                <option value="120">HIZLI</option>
+        <h2 class="glitch">AYARLAR</h2>
+        
+        <div class="setting-row">
+            <label>HIZ MODU:</label>
+            <select id="speed" onchange="window.setSpeed(this.value)">
+                <option value="10">YAVAŞ</option>
+                <option value="25" selected>NORMAL</option>
+                <option value="50">HIZLI</option>
             </select>
         </div>
-        <button onclick="window.openThemes()">RENK TEMALARI</button>
-        <button onclick="window.closePage('settings-page')">KAPAT</button>
+
+        <div class="setting-row">
+            <label>DUVAR GEÇİŞİ:</label>
+            <input type="checkbox" id="wallPass" onchange="window.setWallPass(this.checked)" style="width:20px; height:20px;">
+        </div>
+
+        <button onclick="window.openThemes()">RENK MATRİSİ</button>
+        <button onclick="window.closePage('settings-page')" style="border-color: red; color: red;">KAPAT</button>
     </div>
 
     <div id="theme-page" class="sub-page">
-        <h2 class="glitch">RENK MATRİSİ</h2>
+        <h2 class="glitch">TEMALAR</h2>
         <div id="themeGrid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;"></div>
-        <button onclick="window.closePage('theme-page')" style="margin-top:20px;">GERİ</button>
+        <button onclick="window.closePage('theme-page')" style="margin-top:20px;">GERİ DÖN</button>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Sayfa geçiş animasyonları için küçük tetikleyiciler
+        window.openSettings = () => {
+            const p = document.getElementById('settings-page');
+            p.style.display = 'flex';
+            setTimeout(() => p.style.opacity = '1', 10);
+        };
+
+        window.openThemes = () => {
+            const grid = document.getElementById("themeGrid");
+            grid.innerHTML = "";
+            const themes = [
+                {n:'CYBER', c:'#00f3ff'}, {n:'NEON', c:'#ff00ff'}, 
+                {n:'MATRIX', c:'#00ff41'}, {n:'GOLD', c:'#ffd700'},
+                {n:'LAVA', c:'#ff4500'}, {n:'WHITE', c:'#ffffff'}
+            ];
+            themes.forEach(t => {
+                const b = document.createElement("button");
+                b.innerText = t.n; b.style.borderColor = t.c;
+                b.onclick = () => { 
+                    window.primaryColor = t.c; 
+                    document.getElementById('gameCanvas').style.borderColor = t.c;
+                    window.closePage('theme-page'); 
+                };
+                grid.appendChild(b);
+            });
+            const p = document.getElementById('theme-page');
+            p.style.display = 'flex';
+            setTimeout(() => p.style.opacity = '1', 10);
+        };
+
+        window.closePage = (id) => {
+            const p = document.getElementById(id);
+            p.style.opacity = '0';
+            setTimeout(() => p.style.display = 'none', 400);
+        };
+    </script>
 </body>
 </html>
