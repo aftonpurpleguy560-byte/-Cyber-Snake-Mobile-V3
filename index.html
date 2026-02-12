@@ -3,79 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake v3.8 Beta | Purpleguy</title>
+    <title>Cyber Snake v3.8 | Purpleguy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="bg-grid"></div>
-    <div id="stats">
-        <span id="scoreLabel"></span><span id="scoreVal">0</span>
-        <span id="bestLabel"></span><span id="bestVal">0</span>
-    </div>
 
     <div id="game-container">
+        <div id="stats">
+            <div><span id="scoreLabel">SKOR:</span> <span id="scoreVal">0</span></div>
+            <div><span id="bestLabel">EN İYİ:</span> <span id="bestScore">0</span></div>
+        </div>
+
         <div id="menu">
             <h1 class="glitch">CYBER SNAKE</h1>
-            <button id="startBtn" onclick="window.startGame()"></button>
-            <button id="settingsBtn" onclick="window.openSettings()"></button>
+            <button id="startBtn" onclick="startGame()">OYUNU BAŞLAT</button>
+            <button id="settingsBtn" onclick="openSettings()">AYARLAR</button>
+            <button id="advBtn" onclick="openAdvanced()">BENİ OKU</button>
             <div class="p-signature">Purpleguy © 2026 - tablet power</div>
         </div>
+
         <canvas id="gameCanvas"></canvas>
-    </div>
 
-    <div id="settings-page" class="sub-page">
-        <h2 id="settingsTitle" class="glitch"></h2>
-        
-        <div class="setting-row">
-            <label id="langLabelText"></label>
-            <select onchange="window.setLang(this.value)">
-                <option value="tr">TURKISH / TR</option>
-                <option value="en">ENGLISH / EN</option>
-            </select>
+        <div id="settings-page" class="sub-page">
+            <h2 id="settingsTitle">SİSTEM AYARLARI</h2>
+            <div class="setting-row">
+                <span id="speedLabelText">HIZ:</span>
+                <select onchange="setSpeed(this.value)">
+                    <option id="optNormal" value="10">NORMAL</option>
+                    <option id="optSlow" value="7">YAVAŞ</option>
+                    <option id="optFast" value="15">HIZLI</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span id="wallsLabelText">DUVARLAR:</span>
+                <select onchange="setWallPass(this.value === 'true')">
+                    <option id="optDie" value="false">ÖLDÜRÜCÜ</option>
+                    <option id="optPass" value="true">GEÇİRGEN</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span id="themeLabelText">TEMA:</span>
+                <select onchange="setTheme(this.value)">
+                    <option value="#00f3ff">SİBER MAVİ</option>
+                    <option value="#ff00ff">NEON PEMBE</option>
+                    <option value="#00ff41">MATRİX YEŞİLİ</option>
+                </select>
+            </div>
+            <button id="saveBtn" onclick="closePage('settings-page')">KAYDET VE ÇIK</button>
         </div>
 
-        <div class="setting-row">
-            <label id="speedLabelText"></label>
-            <select id="speedSelect" onchange="window.setSpeed(this.value)">
-                <option value="5" id="optSlow"></option>
-                <option value="10" selected id="optNormal"></option>
-                <option value="20" id="optFast"></option>
-            </select>
-        </div>
-
-        <div class="setting-row">
-            <label id="wallsLabelText"></label>
-            <select onchange="window.setWallPass(this.value === 'pass')">
-                <option value="die" id="optDie"></option>
-                <option value="pass" id="optPass"></option>
-            </select>
-        </div>
-
-        <div class="setting-row">
-            <label id="themeLabelText"></label>
-            <select onchange="window.setTheme(this.value)">
-                <option value="#00f3ff">CYBER BLUE</option>
-                <option value="#ff00ff">NEON PINK</option>
-                <option value="#00ff41">MATRIX GREEN</option>
-                <option value="#ff4500">LAVA RED</option>
-            </select>
-        </div>
-
-        <button id="advBtn" onclick="window.openAdvanced()" style="color:var(--matrix-green); border-color:var(--matrix-green);"></button>
-        <button id="saveBtn" onclick="window.closePage('settings-page')"></button>
-        <div class="p-signature">Purpleguy © 2026 - tablet power</div>
-    </div>
-
-    <div id="advanced-page" class="sub-page">
-        <h2 class="glitch" style="color:var(--matrix-green);">SİBER SİCİL</h2>
-        <div id="readme-content" class="readme-box"></div>
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button onclick="window.confirmExit()" style="border-color: var(--matrix-green); color: var(--matrix-green);">TAMAM</button>
-            <button onclick="window.closePage('advanced-page')" style="border-color: red; color: red;">GERİ</button>
+        <div id="advanced-page" class="sub-page">
+            <h2 id="readmeTitle">SİSTEM KAYITLARI</h2>
+            <div id="readme-content" class="readme-box"></div>
+            <button onclick="confirmExit()">GÜVENLİ ÇIKIŞ</button>
         </div>
     </div>
 
-    <script src="translations.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
+
