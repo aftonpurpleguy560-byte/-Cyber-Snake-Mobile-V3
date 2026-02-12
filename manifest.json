@@ -1,6 +1,6 @@
 {
   "short_name": "CyberSnake",
-  "name": "Cyber Snake v3.8 | Purpleguy",
+  "name": "Cyber Snake v4.0 | Purpleguy",
   "icons": [
     {
       "src": "icon_large.png",
@@ -9,8 +9,9 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#050505",
   "background_color": "#050505"
 }
