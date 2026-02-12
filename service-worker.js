@@ -1,3 +1,4 @@
+
 /* Purpleguy © 2026 - tablet power */
 const CACHE_NAME = 'cyber-snake-v3.8-cache';
 const urlsToCache = [
