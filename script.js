@@ -1,5 +1,5 @@
 /**
- * Cyber Snake v4.2.2 - Ultimate Full System Build
+ * Cyber Snake v4.2.7 - Green Chaos Edition
  * Purpleguy © 2026 - tablet power
  */
 
@@ -19,7 +19,7 @@ let dx = 20, dy = 0;
 let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
 let gameRunning = false, godMode = false;
 
-// --- ASSET VE SPRITE MOTORU ---
+// --- SPRITE MOTORU (256x256 Chaos Map) ---
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png';
 let assetsLoaded = false;
@@ -33,7 +33,7 @@ const foods = [
 ];
 let food = {x:0, y:0, type:'🍎', points:5};
 
-// --- ÇEVİRİ TABLOSU ---
+// --- ÇEVİRİ VE DİL DESTEĞİ ---
 const translations = {
     tr: {
         startBtn: "OYUNA BAŞLA", settingsBtn: "AYARLAR", advBtn: "GELİŞMİŞ",
@@ -49,11 +49,10 @@ const translations = {
     }
 };
 
-// --- BİLDİRİM VE PWA SİSTEMİ (TEK SEFERLİK) ---
+// --- AKILLI BİLDİRİM SİSTEMİ (1 KERE) ---
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').then(reg => {
-        const asked = localStorage.getItem('notificationAsked');
-        if (!asked && Notification.permission === 'default') {
+        if (!localStorage.getItem('notificationAsked') && Notification.permission === 'default') {
             Notification.requestPermission().then(p => {
                 localStorage.setItem('notificationAsked', 'true');
                 if (p === 'granted') scheduleNotifications(reg);
@@ -73,58 +72,69 @@ function scheduleNotifications(reg) {
                 icon: '/icon_large.png',
                 tag: 'snake-notif-' + i
             });
-        }, i * 21600000);
+        }, i * 21600000); // 6 saatte bir
     }
 }
 
-// --- EFE'NİN ÖZEL SPRITE ÇİZİM MOTORU ---
+// --- 🎨 EFE'NİN KAOTİK RESMİNE ÖZEL ÇİZİM MOTORU ---
 function drawSnake() {
-    const unit = snakeSprites.width / 5 || 64; 
+    const unit = 64; // 256px / 4 parça = 64px
+
     snake.forEach((p, i) => {
         if (!assetsLoaded) {
             ctx.fillStyle = primaryColor;
             ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
             return;
         }
+
         let sx = 0, sy = 0;
         const next = snake[i + 1];
         const prev = snake[i - 1];
 
         if (i === 0) { // KAFALAR
-            if (dx === 0 && dy < 0) { sx = 3 * unit; sy = 0; }
-            else if (dx > 0 && dy === 0) { sx = 4 * unit; sy = 0; }
-            else if (dx < 0 && dy === 0) { sx = 3 * unit; sy = 1 * unit; }
-            else if (dx === 0 && dy > 0) { sx = 4 * unit; sy = 1 * unit; }
-        } else if (i === snake.length - 1) { // KUYRUKLAR
-            if (prev.y < p.y) { sx = 3 * unit; sy = 2 * unit; }
-            else if (prev.x > p.x) { sx = 4 * unit; sy = 2 * unit; }
-            else if (prev.x < p.x) { sx = 3 * unit; sy = 3 * unit; }
-            else if (prev.y > p.y) { sx = 4 * unit; sy = 3 * unit; }
-        } else { // GÖVDE VE KIVRIMLAR
-            if (prev.x < p.x && next.x > p.x || next.x < p.x && prev.x > p.x) { sx = 1 * unit; sy = 0; }
-            else if (prev.y < p.y && next.y > p.y || next.y < p.y && prev.y > p.y) { sx = 2 * unit; sy = 1 * unit; }
-            else if (prev.x < p.x && next.y > p.y || next.x < p.x && prev.y > p.y) { sx = 0; sy = 0; }
-            else if (prev.x < p.x && next.y < p.y || next.x < p.x && prev.y < p.y) { sx = 0; sy = 1 * unit; }
-            else if (prev.y < p.y && next.x > p.x || next.y < p.y && prev.x > p.x) { sx = 2 * unit; sy = 0; }
-            else if (prev.y > p.y && next.x > p.x || next.y > p.y && prev.x > p.x) { sx = 2 * unit; sy = 2 * unit; }
+            if (dx === 0 && dy < 0) { sx = 2 * unit; sy = 0; }      
+            else if (dx > 0 && dy === 0) { sx = 3 * unit; sy = 0; } 
+            else if (dx < 0 && dy === 0) { sx = 2 * unit; sy = unit; } 
+            else if (dx === 0 && dy > 0) { sx = 3 * unit; sy = unit; } 
+        } 
+        else if (i === snake.length - 1) { // KUYRUKLAR
+            if (prev.y < p.y) { sx = 2 * unit; sy = 2 * unit; }
+            else if (prev.x > p.x) { sx = 3 * unit; sy = 2 * unit; }
+            else if (prev.x < p.x) { sx = 2 * unit; sy = 3 * unit; }
+            else if (prev.y > p.y) { sx = 3 * unit; sy = 3 * unit; }
         }
+        else { // GÖVDE
+            if (prev.x < p.x && next.x > p.x || next.x < p.x && prev.x > p.x) { sx = unit; sy = 0; } 
+            else if (prev.y < p.y && next.y > p.y || next.y < p.y && prev.y > p.y) { sx = unit; sy = unit; } 
+            else { sx = 0; sy = 0; } 
+        }
+
         ctx.drawImage(snakeSprites, sx, sy, unit, unit, p.x, p.y, gridSize, gridSize);
     });
 }
 
-// --- OYUN MOTORU ---
+// --- HAREKET MOTORU ---
 function move() {
     if (!gameRunning) return;
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
     if (godMode || wallPassSetting) {
         if (head.x >= canvas.width) head.x = 0; else if (head.x < 0) head.x = canvas.width - gridSize;
         if (head.y >= canvas.height) head.y = 0; else if (head.y < 0) head.y = canvas.height - gridSize;
-    } else {
-        if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) return gameOver();
+    } else if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+        return gameOver();
     }
-    if (!godMode) for (let i = 1; i < snake.length; i++) if (head.x === snake[i].x && head.y === snake[i].y) return gameOver();
+
+    if (!godMode) {
+        for (let i = 1; i < snake.length; i++) if (head.x === snake[i].x && head.y === snake[i].y) return gameOver();
+    }
+
     snake.unshift(head);
-    if (head.x === food.x && head.y === food.y) { score += food.points; updateUI(); createFood(); } else { snake.pop(); }
+    if (head.x === food.x && head.y === food.y) {
+        score += food.points; updateUI(); createFood();
+    } else {
+        snake.pop();
+    }
 }
 
 function main() {
@@ -137,7 +147,7 @@ function main() {
     setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
 
-// --- MENÜ VE AYAR KOMUTLARI ---
+// --- MENÜ VE AYARLAR ---
 window.startGame = () => {
     const s = Math.min(window.innerWidth * 0.9, 400);
     canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
@@ -173,7 +183,7 @@ function gameOver() {
     location.reload(); 
 }
 
-// --- SWIPE VE KONTROL ---
+// --- SWIPE KONTROLÜ ---
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -182,9 +192,9 @@ canvas.addEventListener('touchend', e => {
     else { if (Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
 }, {passive:false});
 
-// --- GOD MODE VE İMZA ---
+// --- GOD MODE (İmzaya 3 Tık) ---
 document.addEventListener('click', e => {
-    if (e.target.classList.contains('p-signature')) {
+    if (e.target.innerText && e.target.innerText.includes('Purpleguy')) {
         let now = Date.now();
         if (now - (window.lastC || 0) < 500) window.cC = (window.cC || 0) + 1; else window.cC = 1;
         window.lastC = now;
@@ -200,3 +210,4 @@ window.onload = () => {
     Object.keys(t).forEach(id => { if (document.getElementById(id)) document.getElementById(id).innerText = t[id]; });
     window.setTheme(primaryColor);
 };
+
