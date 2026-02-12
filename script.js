@@ -1,5 +1,5 @@
 /**
- * Cyber Snake v4.1.0 - Unified 15 Foods & No-Asset Engine
+ * Cyber Snake v4.1.1 - Original Sprite & 15 Foods
  * Purpleguy © 2026 - tablet power
  */
 
@@ -19,11 +19,17 @@ let dx = 20, dy = 0;
 let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
 let gameRunning = false, godMode = false;
 
+// --- SPRITE YÜKLEME ---
+const snakeSprites = new Image();
+snakeSprites.src = 'snake_sprites.png';
+let assetsLoaded = false;
+snakeSprites.onload = () => { assetsLoaded = true; };
+
 // --- 15 ÇEŞİT SİBER YEMEK ---
 const foods = [
-    {t:'🍎',p:5},  {t:'🍌',p:8},  {t:'🍇',p:10}, {t:'🍓',p:12}, {t:'🍍',p:20}, 
+    {t:'🍎',p:5}, {t:'🍌',p:8}, {t:'🍇',p:10}, {t:'🍓',p:12}, {t:'🍍',p:20}, 
     {t:'🍉',p:30}, {t:'🍄',p:50}, {t:'🍅',p:14}, {t:'🍒',p:15}, {t:'🍑',p:18},
-    {t:'🍐',p:7},  {t:'🍋',p:9},  {t:'🥝',p:25}, {t:'🌽',p:11}, {t:'🥥',p:40}
+    {t:'🍐',p:7}, {t:'🍋',p:9}, {t:'🥝',p:25}, {t:'🌽',p:11}, {t:'🥥',p:40}
 ];
 let food = {x:0, y:0, type:'🍎', points:5};
 
@@ -42,52 +48,23 @@ const translations = {
     }
 };
 
-// --- SERVICE WORKER KAYDI (Sadece sw.js) ---
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-        if (Notification.permission === 'granted') scheduleNotifications(reg);
-    });
-}
-
-function scheduleNotifications(reg) {
-    const messages = ["Yılan çok acıktı!", "Efe, siber üs seni bekliyor.", "Rekor kırmaya hazır mısın?"];
-    for (let i = 1; i <= 20; i++) {
-        let delay = i * 21600000; 
-        setTimeout(() => {
-            reg.showNotification('Cyber Snake', {
-                body: messages[Math.floor(Math.random() * messages.length)],
-                icon: '/icon_large.png',
-                tag: 'snake-notif-' + i
-            });
-        }, delay);
-    }
-}
-
-// --- GÖRSEL MOTOR (Resimsiz Neon Çizim) ---
+// --- SPRITE ÇİZİM MOTORU ---
 function drawSnake() {
     snake.forEach((p, i) => {
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = primaryColor;
-        
-        if (i === 0) {
-            // KAFA: Beyaz neon kafa ve gözler
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(p.x, p.y, gridSize, gridSize);
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(p.x + 4, p.y + 4, 4, 4);
-            ctx.fillRect(p.x + 12, p.y + 4, 4, 4);
+        if (assetsLoaded) {
+            // Senin resmindeki kafa ve gövde koordinatları (64'lük kareler)
+            if (i === 0) {
+                // Kafa: Resmin sol başı (0,0)
+                ctx.drawImage(snakeSprites, 0, 0, 64, 64, p.x, p.y, gridSize, gridSize);
+            } else {
+                // Gövde: Resimde kafanın hemen yanı (64,0)
+                ctx.drawImage(snakeSprites, 64, 0, 64, 64, p.x, p.y, gridSize, gridSize);
+            }
         } else {
-            // GÖVDE: Tema renginde parlayan neon kareler
             ctx.fillStyle = primaryColor;
-            ctx.fillRect(p.x + 1, p.y + 1, gridSize - 2, gridSize - 2);
+            ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
         }
-        ctx.shadowBlur = 0;
     });
-}
-
-function drawFood() {
-    ctx.font = "16px Arial";
-    ctx.fillText(food.type, food.x + 2, food.y + 16);
 }
 
 // --- OYUN MOTORU ---
@@ -118,11 +95,17 @@ function main() {
     if(!gameRunning) return;
     ctx.fillStyle = "rgba(5, 5, 5, 0.4)"; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawFood(); move(); drawSnake();
+    
+    // Yemek Çizimi
+    ctx.font = "16px Arial";
+    ctx.fillText(food.type, food.x + 2, food.y + 16);
+    
+    move();
+    drawSnake();
     setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
 
-// --- SİSTEM KOMUTLARI ---
+// --- SİSTEM FONKSİYONLARI ---
 window.startGame = () => {
     const s = Math.min(window.innerWidth * 0.9, 400);
     canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
@@ -142,8 +125,8 @@ window.openPage = (id) => { document.getElementById(id).style.display = 'flex'; 
 window.closePage = (id) => { document.getElementById(id).style.display = 'none'; };
 
 function createFood() {
-    const f = foods[Math.floor(Math.random() * foods.length)];
-    food = { x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize, y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize, type: f.t, points: f.p };
+    const f = foods[Math.floor(Math.random()*foods.length)];
+    food = { x: Math.floor(Math.random()*(canvas.width/gridSize))*gridSize, y: Math.floor(Math.random()*(canvas.height/gridSize))*gridSize, type: f.t, points: f.p };
 }
 
 function updateUI() {
@@ -158,7 +141,9 @@ function gameOver() {
     location.reload(); 
 }
 
-// --- KONTROLLER ---
+// Kontroller ve SW kaydı
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
+
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -167,7 +152,6 @@ canvas.addEventListener('touchend', e => {
     else { if(Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
 }, {passive:false});
 
-// --- GOD MODE (İmzaya 3 Tık) ---
 document.addEventListener('click', e => {
     if(e.target.classList.contains('p-signature')) {
         let now = Date.now();
@@ -179,14 +163,6 @@ document.addEventListener('click', e => {
         }
     }
 });
-
-window.openAdvanced = () => { 
-    if(prompt("PASS:") === "purpleguy2026") {
-        const logs = "LOGS v4.1.0: 15 Foods Active. Unified SW engine.";
-        document.getElementById('readme-content').innerText = logs;
-        window.openPage('advanced-page');
-    }
-};
 
 window.onload = () => {
     const t = translations[currentLang];
