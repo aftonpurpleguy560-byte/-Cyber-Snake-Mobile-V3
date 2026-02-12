@@ -1,7 +1,6 @@
 /**
- * Cyber Snake v3.8 Beta | Ultimate God Mode Edition
+ * Cyber Snake v3.8 Beta | Final Sprite & God Mode Edition
  * Purpleguy © 2026 - tablet power
- * Easter Egg: İmzana 3 kez seri tıkla, GOD MODE aktif olsun!
  */
 
 const canvas = document.getElementById("gameCanvas");
@@ -12,7 +11,7 @@ let gameSpeed = 10, dx = 20, dy = 0;
 let snake = [{x: 100, y: 100}, {x: 80, y: 100}, {x: 60, y: 100}];
 let gameRunning = false, wallPass = false, currentLang = 'tr', primaryColor = "#00f3ff";
 
-// --- SPRITE SHEET MOTORU ---
+// --- SPRITE SHEET MOTORU (1024x1024 Destekli) ---
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png'; 
 let assetsLoaded = false;
@@ -46,20 +45,14 @@ window.setLang = (lang) => {
     document.getElementById('bestLabel').innerText = t.bestLabel;
 };
 
-// --- GİZLİ GOD MODE TETİKLEYİCİ (EASTER EGG) ---
-let clickCount = 0;
-let lastClickTime = 0;
-
+// --- GİZLİ GOD MODE TETİKLEYİCİ (3 TIK) ---
+let clickCount = 0, lastClickTime = 0;
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('p-signature')) {
         const currentTime = new Date().getTime();
-        if (currentTime - lastClickTime < 500) {
-            clickCount++;
-        } else {
-            clickCount = 1;
-        }
+        if (currentTime - lastClickTime < 500) clickCount++;
+        else clickCount = 1;
         lastClickTime = currentTime;
-
         if (clickCount === 3) {
             score = 5001;
             updateScoreUI();
@@ -78,18 +71,17 @@ function updateScoreUI() {
     } else {
         sEl.innerText = score;
         sEl.style.color = "var(--p-color)";
-        sEl.style.textShadow = "none";
     }
 }
 
-// --- AYARLAR VE PANEL KONTROLLERİ ---
+// --- PANEL KONTROLLERİ ---
 window.openAdvanced = () => {
     let p = prompt(currentLang === 'tr' ? "GELİŞMİŞ ŞİFRE:" : "ADVANCED PASS:");
     if(p === "purpleguy2026") {
         const readmeBox = document.getElementById('readme-content');
         readmeBox.innerText = currentLang === 'tr' ? 
             "🐍 CYBER SNAKE V3.8 | SİSTEM ÇÖKTÜREN\nPurpleguy © 2026\n\n- İmzana 3 kez tıklayarak God Mode açabilirsin.\n- 5000+ Skor: Tanrı Modu Tescillenir." : 
-            "🐍 CYBER SNAKE V3.8 | SYSTEM CRUSHER\nPurpleguy © 2026\n\n- Triple click your signature for God Mode.\n- 5000+ Score: God Mode Certified.";
+            "🐍 CYBER SNAKE v3.8 | SYSTEM CRUSHER\nPurpleguy © 2026\n\n- Triple click your signature for God Mode.\n- 5000+ Score: God Mode Certified.";
         openPage('advanced-page');
     } else alert("YETKİSİZ!");
 };
@@ -122,18 +114,20 @@ function move() {
     for(let i=1; i<snake.length; i++) if(head.x===snake[i].x && head.y===snake[i].y) return gameOver();
 
     snake.unshift(head);
-    if(head.x === food.x && head.y === food.y) {
-        score += food.points;
-        updateScoreUI();
-        createFood();
-    } else snake.pop();
+    if(head.x === food.x && head.y === food.y) { score += food.points; updateScoreUI(); createFood(); } 
+    else snake.pop();
 }
 
 function drawSnake() {
     snake.forEach((p, i) => {
-        // Resmin sol yarısı (0,0) kafa, sağ yarısı (gridSize,0) gövde
-        const sourceX = (i === 0) ? 0 : gridSize; 
-        ctx.drawImage(snakeSprites, sourceX, 0, gridSize, gridSize, p.x, p.y, gridSize, gridSize);
+        if (assetsLoaded && snakeSprites.complete) {
+            // 1024x1024 resmi tam ortadan (512px) bölüp 20x20 oyun karesine sığdırır
+            const sourceX = (i === 0) ? 0 : 512; 
+            ctx.drawImage(snakeSprites, sourceX, 0, 512, 1024, p.x, p.y, gridSize, gridSize);
+        } else {
+            ctx.fillStyle = primaryColor;
+            ctx.fillRect(p.x, p.y, gridSize, gridSize);
+        }
     });
 }
 
@@ -167,4 +161,3 @@ canvas.addEventListener('touchend', e => {
 
 window.setSpeed = (v) => gameSpeed = parseInt(v);
 window.setWallPass = (v) => wallPass = v;
-
