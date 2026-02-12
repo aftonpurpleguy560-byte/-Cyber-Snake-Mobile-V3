@@ -1,5 +1,5 @@
 /**
- * Cyber Snake v4.2.7 - Green Chaos Edition
+ * Cyber Snake v4.2.9 - The Final Masterpiece
  * Purpleguy © 2026 - tablet power
  */
 
@@ -33,7 +33,7 @@ const foods = [
 ];
 let food = {x:0, y:0, type:'🍎', points:5};
 
-// --- ÇEVİRİ VE DİL DESTEĞİ ---
+// --- ÇEVİRİ TABLOSU (Tam Liste) ---
 const translations = {
     tr: {
         startBtn: "OYUNA BAŞLA", settingsBtn: "AYARLAR", advBtn: "GELİŞMİŞ",
@@ -49,7 +49,7 @@ const translations = {
     }
 };
 
-// --- AKILLI BİLDİRİM SİSTEMİ (1 KERE) ---
+// --- BİLDİRİM SİSTEMİ (Tek Seferlik Racon) ---
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').then(reg => {
         if (!localStorage.getItem('notificationAsked') && Notification.permission === 'default') {
@@ -57,36 +57,31 @@ if ('serviceWorker' in navigator) {
                 localStorage.setItem('notificationAsked', 'true');
                 if (p === 'granted') scheduleNotifications(reg);
             });
-        } else if (Notification.permission === 'granted') {
-            scheduleNotifications(reg);
         }
     });
 }
 
 function scheduleNotifications(reg) {
-    const msgs = ["Yılan çok acıktı!", "Efe, siber üs seni bekliyor.", "Yeni rekor zamanı!"];
+    const msgs = ["Yılan çok acıktı!", "Efe, siber üs seni bekliyor.", "Rekor kırma zamanı!"];
     for (let i = 1; i <= 20; i++) {
         setTimeout(() => {
             reg.showNotification('Cyber Snake', {
                 body: msgs[Math.floor(Math.random() * msgs.length)],
-                icon: '/icon_large.png',
-                tag: 'snake-notif-' + i
+                icon: '/icon_large.png'
             });
-        }, i * 21600000); // 6 saatte bir
+        }, i * 21600000);
     }
 }
 
 // --- 🎨 EFE'NİN KAOTİK RESMİNE ÖZEL ÇİZİM MOTORU ---
 function drawSnake() {
-    const unit = 64; // 256px / 4 parça = 64px
-
+    const unit = 64; 
     snake.forEach((p, i) => {
         if (!assetsLoaded) {
             ctx.fillStyle = primaryColor;
             ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
             return;
         }
-
         let sx = 0, sy = 0;
         const next = snake[i + 1];
         const prev = snake[i - 1];
@@ -108,7 +103,6 @@ function drawSnake() {
             else if (prev.y < p.y && next.y > p.y || next.y < p.y && prev.y > p.y) { sx = unit; sy = unit; } 
             else { sx = 0; sy = 0; } 
         }
-
         ctx.drawImage(snakeSprites, sx, sy, unit, unit, p.x, p.y, gridSize, gridSize);
     });
 }
@@ -147,7 +141,7 @@ function main() {
     setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
 
-// --- MENÜ VE AYARLAR ---
+// --- MENÜ VE AYAR KOMUTLARI ---
 window.startGame = () => {
     const s = Math.min(window.innerWidth * 0.9, 400);
     canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
@@ -183,7 +177,7 @@ function gameOver() {
     location.reload(); 
 }
 
-// --- SWIPE KONTROLÜ ---
+// --- KONTROLLER ---
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -192,7 +186,7 @@ canvas.addEventListener('touchend', e => {
     else { if (Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
 }, {passive:false});
 
-// --- GOD MODE (İmzaya 3 Tık) ---
+// --- İMZA VE GOD MODE (İmzaya 3 Tık) ---
 document.addEventListener('click', e => {
     if (e.target.innerText && e.target.innerText.includes('Purpleguy')) {
         let now = Date.now();
@@ -210,4 +204,3 @@ window.onload = () => {
     Object.keys(t).forEach(id => { if (document.getElementById(id)) document.getElementById(id).innerText = t[id]; });
     window.setTheme(primaryColor);
 };
-
