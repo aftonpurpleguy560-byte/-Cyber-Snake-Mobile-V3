@@ -1,9 +1,21 @@
+/**
+ * Cyber Snake v3.8 Final Build
+ * Purpleguy © 2026 - tablet power
+ */
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let gridSize = 20, score = 0, bestScore = localStorage.getItem('best') || 0;
-let gameSpeed = 10, dx = 20, dy = 0, snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
-let gameRunning = false, wallPass = false, primaryColor = "#00f3ff", godMode = false, currentLang = 'tr';
+// KALICI HAFIZA YÜKLEME
+let gridSize = 20, score = 0;
+let bestScore = localStorage.getItem('best') || 0;
+let currentLang = localStorage.getItem('lang') || 'tr';
+let primaryColor = localStorage.getItem('theme') || "#00f3ff";
+let gameSpeed = parseInt(localStorage.getItem('speed')) || 10;
+let wallPassSetting = localStorage.getItem('wallPass') === 'true';
+
+let dx = 20, dy = 0, snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
+let gameRunning = false, godMode = false;
 
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png';
@@ -37,21 +49,37 @@ const translations = {
 
 function setLang(lang) {
     currentLang = lang;
+    localStorage.setItem('lang', lang);
     const t = translations[lang];
     document.getElementById('startBtn').innerText = t.startBtn;
     document.getElementById('settingsBtn').innerText = t.settingsBtn;
     document.getElementById('advBtn').innerText = t.readmeBtn;
     document.getElementById('settingsTitle').innerText = t.settingsTitle;
     document.getElementById('langLabelText').innerText = t.langLabel;
-    document.getElementById('speedLabelText').innerText = t.speedLabel;
-    document.getElementById('wallsLabelText').innerText = t.wallsLabel;
-    document.getElementById('themeLabelText').innerText = t.themeLabel;
     document.getElementById('saveBtn').innerText = t.saveBtn;
     document.getElementById('scoreLabel').innerText = t.scoreLabel;
     document.getElementById('bestLabel').innerText = t.bestLabel;
+    document.getElementById('readmeTitle').innerText = t.readmeTitle;
+    document.getElementById('readmeExitBtn').innerText = t.exit;
 }
 
-// GOD MODE TOGGLE (İmzaya 3 Tık)
+function setTheme(c) {
+    primaryColor = c;
+    localStorage.setItem('theme', c);
+    document.documentElement.style.setProperty('--p-color', c);
+}
+
+function setSpeed(v) {
+    gameSpeed = parseInt(v);
+    localStorage.setItem('speed', v);
+}
+
+function setWallPass(v) {
+    wallPassSetting = v;
+    localStorage.setItem('wallPass', v);
+}
+
+// GOD MODE: İMZAYA 3 TIK
 let clicks = 0, lastClick = 0;
 document.addEventListener('click', e => {
     if(e.target.classList.contains('p-signature')) {
@@ -59,7 +87,7 @@ document.addEventListener('click', e => {
         lastClick = Date.now();
         if(clicks === 3) {
             godMode = !godMode;
-            score = godMode ? 5001 : 0;
+            score = godMode ? 9999 : 0;
             updateUI();
             alert(godMode ? translations[currentLang].godOn : translations[currentLang].godOff);
             clicks = 0;
@@ -69,33 +97,39 @@ document.addEventListener('click', e => {
 
 function updateUI() {
     const s = document.getElementById('scoreVal');
-    s.innerText = godMode ? score + " [GM]" : score;
+    s.innerText = godMode ? score + " [GOD]" : score;
     s.style.color = godMode ? "#0f4" : primaryColor;
     document.getElementById('bestScore').innerText = bestScore;
+}
+
+function move() {
+    const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+    // GOD MODE veya Duvar Geçişi aktifse duvar kontrolünü atla
+    if(godMode || wallPassSetting) {
+        if(head.x >= canvas.width) head.x = 0; else if(head.x < 0) head.x = canvas.width - gridSize;
+        if(head.y >= canvas.height) head.y = 0; else if(head.y < 0) head.y = canvas.height - gridSize;
+    } else {
+        if(head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) return gameOver();
+    }
+
+    if(!godMode) {
+        for(let i=1; i<snake.length; i++) if(head.x === snake[i].x && head.y === snake[i].y) return gameOver();
+    }
+
+    snake.unshift(head);
+    if(head.x === food.x && head.y === food.y) { score += food.points; updateUI(); createFood(); } else snake.pop();
 }
 
 function drawSnake() {
     snake.forEach((p, i) => {
         if(assetsLoaded) {
-            if(i === 0) ctx.drawImage(snakeSprites, 130, 210, 750, 550, p.x-4, p.y-4, gridSize+8, gridSize+8);
-            else ctx.drawImage(snakeSprites, 75, 700, 280, 260, p.x, p.y, gridSize, gridSize);
+            if(i === 0) ctx.drawImage(snakeSprites, 192, 0, 64, 64, p.x, p.y, gridSize, gridSize);
+            else ctx.drawImage(snakeSprites, 64, 0, 64, 64, p.x, p.y, gridSize, gridSize);
         } else {
             ctx.fillStyle = primaryColor; ctx.fillRect(p.x, p.y, gridSize-1, gridSize-1);
         }
     });
-}
-
-function move() {
-    const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-    if(wallPass) {
-        if(head.x >= canvas.width) head.x = 0; else if(head.x < 0) head.x = canvas.width - gridSize;
-        if(head.y >= canvas.height) head.y = 0; else if(head.y < 0) head.y = canvas.height - gridSize;
-    } else if(head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) return gameOver();
-
-    for(let i=1; i<snake.length; i++) if(head.x === snake[i].x && head.y === snake[i].y) return gameOver();
-
-    snake.unshift(head);
-    if(head.x === food.x && head.y === food.y) { score += food.points; updateUI(); createFood(); } else snake.pop();
 }
 
 function createFood() {
@@ -107,16 +141,16 @@ function drawFood() { ctx.font = "16px Arial"; ctx.fillText(food.type, food.x+2,
 
 function main() {
     if(!gameRunning) return;
-    ctx.fillStyle = "rgba(0,0,0,0.3)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fillRect(0,0,canvas.width,canvas.height);
     drawFood(); move(); drawSnake();
     setTimeout(() => requestAnimationFrame(main), 1000/gameSpeed);
 }
 
 function gameOver() {
     gameRunning = false;
-    if(score > bestScore) localStorage.setItem('best', score);
+    if(score > bestScore) { bestScore = score; localStorage.setItem('best', bestScore); }
     alert(translations[currentLang].gameOver + score);
-    location.reload();
+    location.reload(); 
 }
 
 window.startGame = () => {
@@ -128,46 +162,28 @@ window.startGame = () => {
     gameRunning = true; createFood(); main(); updateUI();
 };
 
-// --- GELİŞMİŞ SWIPE MOTORU (KAYDIRMA) ---
-let touchStartX = 0, touchStartY = 0;
-
-canvas.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-}, {passive: false});
-
-canvas.addEventListener('touchmove', e => {
-    e.preventDefault(); // Ekranın kaymasını engelle
-}, {passive: false});
-
+// SWIPE (KAYDIRMA) MOTORU
+let tX=0, tY=0;
+canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
-    let touchEndX = e.changedTouches[0].clientX;
-    let touchEndY = e.changedTouches[0].clientY;
-    
-    let diffX = touchEndX - touchStartX;
-    let diffY = touchEndY - touchStartY;
-
-    // Hangi yönde daha fazla kaydırma yapıldığını bul
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-        // Yatay kaydırma
-        if (Math.abs(diffX) > 30) { // 30px eşik değeri
-            if (diffX > 0 && dx === 0) { dx = gridSize; dy = 0; } // Sağ
-            else if (diffX < 0 && dx === 0) { dx = -gridSize; dy = 0; } // Sol
-        }
-    } else {
-        // Dikey kaydırma
-        if (Math.abs(diffY) > 30) {
-            if (diffY > 0 && dy === 0) { dx = 0; dy = gridSize; } // Aşağı
-            else if (diffY < 0 && dy === 0) { dx = 0; dy = -gridSize; } // Yukarı
-        }
-    }
-}, {passive: false});
+    let dX = e.changedTouches[0].clientX - tX, dY = e.changedTouches[0].clientY - tY;
+    if(Math.abs(dX) > Math.abs(dY)) { if(Math.abs(dX)>30 && dx===0) {dx=dX>0?gridSize:-gridSize; dy=0;} }
+    else { if(Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
+}, {passive:false});
 
 window.openPage = (id) => { document.getElementById(id).style.display='flex'; };
 window.closePage = (id) => { document.getElementById(id).style.display='none'; };
-window.setSpeed = v => gameSpeed = parseInt(v);
-window.setWallPass = v => wallPass = v;
-window.setTheme = c => { primaryColor = c; document.documentElement.style.setProperty('--p-color', c); };
-window.openAdvanced = () => { if(prompt("PASS:") === "purpleguy2026") openPage('advanced-page'); };
 
-setLang('tr');
+window.openAdvanced = () => { 
+    if(prompt("PASS:") === "purpleguy2026") {
+        const logs = currentLang === 'tr' ? 
+            "SİSTEM LOGLARI [v3.8]:\n- Bellek: OK (localStorage)\n- God Mode: Fix (Duvar Geçişi)\n- Dil: Fix (Kalıcı)\n- 14 Yemek: Aktif\n- Ikon: Manifest Sync" : 
+            "SYSTEM LOGS [v3.8]:\n- Memory: OK (localStorage)\n- God Mode: Fix (Wall Clip)\n- Lang: Fix (Persistent)\n- 14 Foods: Active\n- Icon: Manifest Sync";
+        document.getElementById('readme-content').innerText = logs;
+        openPage('advanced-page');
+    }
+};
+
+// BAŞLAT
+setLang(currentLang);
+setTheme(primaryColor);
