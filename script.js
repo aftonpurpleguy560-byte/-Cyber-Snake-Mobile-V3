@@ -10,7 +10,7 @@ snakeSprites.src = 'snake_sprites.png';
 let assetsLoaded = false;
 snakeSprites.onload = () => assetsLoaded = true;
 
-// 14 ÇEŞİT YEMEK SİSTEMİ
+// 14 ÇEŞİT YEMEK
 const foods = [
     {t:'🍎',p:5}, {t:'🍌',p:8}, {t:'🍇',p:10}, {t:'🍓',p:12}, {t:'🍍',p:20}, 
     {t:'🍉',p:30}, {t:'🍄',p:50}, {t:'🍅',p:14}, {t:'🍒',p:15}, {t:'🍑',p:18},
@@ -38,16 +38,17 @@ const translations = {
 function setLang(lang) {
     currentLang = lang;
     const t = translations[lang];
-    Object.keys(t).forEach(key => {
-        const el = document.getElementById(key) || document.getElementById(key + 'Text');
-        if(el) el.innerText = t[key];
-    });
-    // Özel ID eşleşmeleri
-    document.getElementById('optSlow').innerText = t.slow;
-    document.getElementById('optNormal').innerText = t.normal;
-    document.getElementById('optFast').innerText = t.fast;
-    document.getElementById('optDie').innerText = t.die;
-    document.getElementById('optPass').innerText = t.pass;
+    document.getElementById('startBtn').innerText = t.startBtn;
+    document.getElementById('settingsBtn').innerText = t.settingsBtn;
+    document.getElementById('advBtn').innerText = t.readmeBtn;
+    document.getElementById('settingsTitle').innerText = t.settingsTitle;
+    document.getElementById('langLabelText').innerText = t.langLabel;
+    document.getElementById('speedLabelText').innerText = t.speedLabel;
+    document.getElementById('wallsLabelText').innerText = t.wallsLabel;
+    document.getElementById('themeLabelText').innerText = t.themeLabel;
+    document.getElementById('saveBtn').innerText = t.saveBtn;
+    document.getElementById('scoreLabel').innerText = t.scoreLabel;
+    document.getElementById('bestLabel').innerText = t.bestLabel;
 }
 
 // GOD MODE TOGGLE (İmzaya 3 Tık)
@@ -79,8 +80,7 @@ function drawSnake() {
             if(i === 0) ctx.drawImage(snakeSprites, 130, 210, 750, 550, p.x-4, p.y-4, gridSize+8, gridSize+8);
             else ctx.drawImage(snakeSprites, 75, 700, 280, 260, p.x, p.y, gridSize, gridSize);
         } else {
-            ctx.fillStyle = primaryColor;
-            ctx.fillRect(p.x, p.y, gridSize-1, gridSize-1);
+            ctx.fillStyle = primaryColor; ctx.fillRect(p.x, p.y, gridSize-1, gridSize-1);
         }
     });
 }
@@ -114,7 +114,7 @@ function main() {
 
 function gameOver() {
     gameRunning = false;
-    if(score > bestScore) { bestScore = score; localStorage.setItem('best', bestScore); }
+    if(score > bestScore) localStorage.setItem('best', score);
     alert(translations[currentLang].gameOver + score);
     location.reload();
 }
@@ -128,17 +128,46 @@ window.startGame = () => {
     gameRunning = true; createFood(); main(); updateUI();
 };
 
+// --- GELİŞMİŞ SWIPE MOTORU (KAYDIRMA) ---
+let touchStartX = 0, touchStartY = 0;
+
+canvas.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, {passive: false});
+
+canvas.addEventListener('touchmove', e => {
+    e.preventDefault(); // Ekranın kaymasını engelle
+}, {passive: false});
+
+canvas.addEventListener('touchend', e => {
+    let touchEndX = e.changedTouches[0].clientX;
+    let touchEndY = e.changedTouches[0].clientY;
+    
+    let diffX = touchEndX - touchStartX;
+    let diffY = touchEndY - touchStartY;
+
+    // Hangi yönde daha fazla kaydırma yapıldığını bul
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Yatay kaydırma
+        if (Math.abs(diffX) > 30) { // 30px eşik değeri
+            if (diffX > 0 && dx === 0) { dx = gridSize; dy = 0; } // Sağ
+            else if (diffX < 0 && dx === 0) { dx = -gridSize; dy = 0; } // Sol
+        }
+    } else {
+        // Dikey kaydırma
+        if (Math.abs(diffY) > 30) {
+            if (diffY > 0 && dy === 0) { dx = 0; dy = gridSize; } // Aşağı
+            else if (diffY < 0 && dy === 0) { dx = 0; dy = -gridSize; } // Yukarı
+        }
+    }
+}, {passive: false});
+
 window.openPage = (id) => { document.getElementById(id).style.display='flex'; };
 window.closePage = (id) => { document.getElementById(id).style.display='none'; };
 window.setSpeed = v => gameSpeed = parseInt(v);
 window.setWallPass = v => wallPass = v;
 window.setTheme = c => { primaryColor = c; document.documentElement.style.setProperty('--p-color', c); };
-window.openAdvanced = () => { 
-    if(prompt("PASS:") === "purpleguy2026") {
-        document.getElementById('readme-content').innerText = "v3.8 FINAL:\n- 14 Foods\n- 5 Themes\n- Swipe Control\n- God Mode Active";
-        openPage('advanced-page');
-    }
-};
+window.openAdvanced = () => { if(prompt("PASS:") === "purpleguy2026") openPage('advanced-page'); };
 
 setLang('tr');
-
