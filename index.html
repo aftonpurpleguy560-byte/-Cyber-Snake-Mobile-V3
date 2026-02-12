@@ -8,7 +8,6 @@
 </head>
 <body>
     <div id="bg-grid"></div>
-
     <div id="game-container">
         <div id="stats">
             <div class="stat-box"><span id="scoreLabel">SKOR</span>: <span id="scoreVal">0</span></div>
@@ -16,7 +15,7 @@
         </div>
 
         <div id="menu">
-            <h1 class="glitch" data-text="CYBER SNAKE">CYBER SNAKE</h1>
+            <h1 class="glitch">CYBER SNAKE</h1>
             <div class="menu-buttons">
                 <button id="startBtn" onclick="startGame()">OYUNA BAŞLA</button>
                 <button id="settingsBtn" onclick="openPage('settings-page')">AYARLAR</button>
@@ -37,6 +36,16 @@
                 </select>
             </div>
             <div class="setting-item">
+                <label id="themeLabelText">TEMA:</label>
+                <select onchange="setTheme(this.value)">
+                    <option value="#00f3ff">CYBER BLUE</option>
+                    <option value="#ff00ff">NEON PINK</option>
+                    <option value="#00ff41">MATRIX GREEN</option>
+                    <option value="#ffae00">AMBER GOLD</option>
+                    <option value="#ffffff">PURE WHITE</option>
+                </select>
+            </div>
+            <div class="setting-item">
                 <label id="speedLabelText">HIZ:</label>
                 <select onchange="setSpeed(this.value)">
                     <option id="optNormal" value="10">NORMAL</option>
@@ -51,14 +60,6 @@
                     <option id="optPass" value="true">GEÇİRGEN</option>
                 </select>
             </div>
-            <div class="setting-item">
-                <label id="themeLabelText">TEMA:</label>
-                <select onchange="setTheme(this.value)">
-                    <option value="#00f3ff">CYBER BLUE</option>
-                    <option value="#ff00ff">NEON PINK</option>
-                    <option value="#00ff41">MATRIX GREEN</option>
-                </select>
-            </div>
             <button id="saveBtn" class="close-btn" onclick="closePage('settings-page')">KAYDET</button>
         </div>
 
@@ -68,7 +69,6 @@
             <button id="readmeExitBtn" class="close-btn" onclick="closePage('advanced-page')">KAPAT</button>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
