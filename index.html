@@ -3,30 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake v3.8 | Purpleguy</title>
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon_large.png">
+    <title>Cyber Snake v4.0 | Purpleguy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="bg-grid"></div>
+
     <div id="game-container">
-        <div id="stats">
-            <div class="stat-box"><span id="scoreLabel">SKOR</span>: <span id="scoreVal">0</span></div>
-            <div class="stat-box"><span id="bestLabel">EN İYİ</span>: <span id="bestScore">0</span></div>
+        <div id="stats" class="glass-panel" style="display: none;">
+            <div class="stat-box"><span id="scoreLabelText">SKOR</span>: <span id="scoreVal">0</span></div>
+            <div class="stat-box"><span id="bestLabelText">EN İYİ</span>: <span id="bestScore">0</span></div>
         </div>
 
-        <div id="menu">
-            <h1 class="glitch">CYBER SNAKE</h1>
-            <div class="menu-buttons">
-                <button id="startBtn" onclick="startGame()">OYUNA BAŞLA</button>
-                <button id="settingsBtn" onclick="openPage('settings-page')">AYARLAR</button>
-                <button id="advBtn" onclick="openAdvanced()">GELİŞMİŞ</button>
+        <div id="menu" class="glass-panel">
+            <h1 class="cyber-title">CYBER SNAKE</h1>
+            <button id="startBtn" onclick="startGame()" class="cyber-btn main-btn">OYUNA BAŞLA</button>
+            <div class="menu-row">
+                <button id="settingsBtn" onclick="openPage('settings-page')" class="cyber-btn">AYARLAR</button>
+                <button id="advBtn" onclick="openAdvanced()" class="cyber-btn">GELİŞMİŞ</button>
             </div>
-            <div class="p-signature">Purpleguy © 2026 - tablet power</div>
+            <p class="p-signature">Purpleguy © 2026 - tablet power</p>
         </div>
 
-        <canvas id="gameCanvas"></canvas>
+        <canvas id="gameCanvas" style="display: none;"></canvas>
 
-        <div id="settings-page" class="sub-page">
+        <div id="settings-page" class="modal glass-panel">
             <h2 id="settingsTitle">SİSTEM AYARLARI</h2>
             <div class="setting-item">
                 <label id="langLabelText">DİL:</label>
@@ -36,40 +41,39 @@
                 </select>
             </div>
             <div class="setting-item">
-                <label id="themeLabelText">TEMA:</label>
-                <select onchange="setTheme(this.value)">
-                    <option value="#00f3ff">CYBER BLUE</option>
-                    <option value="#ff00ff">NEON PINK</option>
-                    <option value="#00ff41">MATRIX GREEN</option>
-                    <option value="#ffae00">AMBER GOLD</option>
-                    <option value="#ffffff">PURE WHITE</option>
-                </select>
-            </div>
-            <div class="setting-item">
                 <label id="speedLabelText">HIZ:</label>
                 <select onchange="setSpeed(this.value)">
-                    <option id="optNormal" value="10">NORMAL</option>
-                    <option id="optSlow" value="7">YAVAŞ</option>
-                    <option id="optFast" value="15">HIZLI</option>
+                    <option value="5">YAVAŞ</option>
+                    <option value="10" selected>NORMAL</option>
+                    <option value="15">HIZLI</option>
                 </select>
             </div>
             <div class="setting-item">
                 <label id="wallsLabelText">DUVARLAR:</label>
-                <select onchange="setWallPass(this.value === 'true')">
-                    <option id="optDie" value="false">ÖLDÜRÜCÜ</option>
-                    <option id="optPass" value="true">GEÇİRGEN</option>
+                <select onchange="setWallPass(this.value)">
+                    <option value="false">ÖLDÜRÜCÜ</option>
+                    <option value="true">GEÇİRGEN</option>
                 </select>
             </div>
-            <button id="saveBtn" class="close-btn" onclick="closePage('settings-page')">KAYDET</button>
+            <div class="setting-item">
+                <label id="themeLabelText">TEMA:</label>
+                <select onchange="setTheme(this.value)">
+                    <option value="#00f3ff">CYAN</option>
+                    <option value="#ff00ff">MAGENTA</option>
+                    <option value="#00ff00">LIME</option>
+                    <option value="#ff4400">ORANGE</option>
+                </select>
+            </div>
+            <button id="saveBtn" onclick="closePage('settings-page')" class="cyber-btn">KAYDET</button>
         </div>
 
-        <div id="advanced-page" class="sub-page">
+        <div id="advanced-page" class="modal glass-panel">
             <h2 id="readmeTitle">SİSTEM KAYITLARI</h2>
-            <div id="readme-content" class="readme-box"></div>
-            <button id="readmeExitBtn" class="close-btn" onclick="closePage('advanced-page')">KAPAT</button>
+            <pre id="readme-content"></pre>
+            <button id="readmeExitBtn" onclick="closePage('advanced-page')" class="cyber-btn">KAPAT</button>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
-
