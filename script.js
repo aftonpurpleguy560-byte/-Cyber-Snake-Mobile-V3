@@ -1,28 +1,31 @@
 /**
- * Cyber Snake v3.8 Final Build
+ * Cyber Snake v3.8 Final Stable Build
  * Purpleguy © 2026 - tablet power
  */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// KALICI HAFIZA YÜKLEME
-let gridSize = 20, score = 0;
+// --- KALICI HAFIZA & AYARLAR ---
+let score = 0;
+let gridSize = 20;
 let bestScore = localStorage.getItem('best') || 0;
 let currentLang = localStorage.getItem('lang') || 'tr';
 let primaryColor = localStorage.getItem('theme') || "#00f3ff";
 let gameSpeed = parseInt(localStorage.getItem('speed')) || 10;
 let wallPassSetting = localStorage.getItem('wallPass') === 'true';
 
-let dx = 20, dy = 0, snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
+let dx = 20, dy = 0;
+let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
 let gameRunning = false, godMode = false;
 
+// --- SPRITE YÜKLEME ---
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png';
 let assetsLoaded = false;
 snakeSprites.onload = () => assetsLoaded = true;
 
-// 14 ÇEŞİT YEMEK
+// --- 14 ÇEŞİT YEMEK ---
 const foods = [
     {t:'🍎',p:5}, {t:'🍌',p:8}, {t:'🍇',p:10}, {t:'🍓',p:12}, {t:'🍍',p:20}, 
     {t:'🍉',p:30}, {t:'🍄',p:50}, {t:'🍅',p:14}, {t:'🍒',p:15}, {t:'🍑',p:18},
@@ -30,19 +33,20 @@ const foods = [
 ];
 let food = {x:0, y:0, type:'🍎', points:5};
 
+// --- DİL MOTORU ---
 const translations = {
     tr: {
-        startBtn: "OYUNA BAŞLA", settingsBtn: "AYARLAR", readmeBtn: "GELİŞMİŞ",
-        settingsTitle: "SİSTEM AYARLARI", langLabel: "DİL:", speedLabel: "HIZ:", wallsLabel: "DUVARLAR:", themeLabel: "TEMA:",
+        startBtn: "OYUNA BAŞLA", settingsBtn: "AYARLAR", advBtn: "GELİŞMİŞ",
+        settingsTitle: "SİSTEM AYARLARI", langLabelText: "DİL:", speedLabelText: "HIZ:", wallsLabelText: "DUVARLAR:", themeLabelText: "TEMA:",
         saveBtn: "KAYDET", scoreLabel: "SKOR", bestLabel: "EN İYİ", slow: "YAVAŞ", normal: "NORMAL", fast: "HIZLI",
-        die: "ÖLDÜRÜCÜ", pass: "GEÇİRGEN", readmeTitle: "SİSTEM KAYITLARI", exit: "KAPAT",
+        die: "ÖLDÜRÜCÜ", pass: "GEÇİRGEN", readmeTitle: "SİSTEM KAYITLARI", readmeExitBtn: "KAPAT",
         gameOver: "SİSTEM DURDURULDU! SKOR: ", godOn: "GOD MODE: AKTİF", godOff: "GOD MODE: KAPALI"
     },
     en: {
-        startBtn: "START GAME", settingsBtn: "SETTINGS", readmeBtn: "ADVANCED",
-        settingsTitle: "SYSTEM SETTINGS", langLabel: "LANG:", speedLabel: "SPEED:", wallsLabel: "WALLS:", themeLabel: "THEME:",
+        startBtn: "START GAME", settingsBtn: "SETTINGS", advBtn: "ADVANCED",
+        settingsTitle: "SYSTEM SETTINGS", langLabelText: "LANG:", speedLabelText: "SPEED:", wallsLabelText: "WALLS:", themeLabelText: "THEME:",
         saveBtn: "SAVE", scoreLabel: "SCORE", bestLabel: "BEST", slow: "SLOW", normal: "NORMAL", fast: "FAST",
-        die: "KILLER", pass: "PASSABLE", readmeTitle: "SYSTEM LOGS", exit: "CLOSE",
+        die: "KILLER", pass: "PASSABLE", readmeTitle: "SYSTEM LOGS", readmeExitBtn: "CLOSE",
         gameOver: "SYSTEM HALTED! SCORE: ", godOn: "GOD MODE: ACTIVE", godOff: "GOD MODE: OFF"
     }
 };
@@ -51,22 +55,27 @@ function setLang(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
     const t = translations[lang];
-    document.getElementById('startBtn').innerText = t.startBtn;
-    document.getElementById('settingsBtn').innerText = t.settingsBtn;
-    document.getElementById('advBtn').innerText = t.readmeBtn;
-    document.getElementById('settingsTitle').innerText = t.settingsTitle;
-    document.getElementById('langLabelText').innerText = t.langLabel;
-    document.getElementById('saveBtn').innerText = t.saveBtn;
+    
+    // Metinleri Güncelle
+    Object.keys(t).forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerText = t[id];
+    });
+
+    // Select Kutusunu Eşitle
+    const langSelect = document.querySelector('select[onchange*="setLang"]');
+    if(langSelect) langSelect.value = lang;
+
     document.getElementById('scoreLabel').innerText = t.scoreLabel;
     document.getElementById('bestLabel').innerText = t.bestLabel;
-    document.getElementById('readmeTitle').innerText = t.readmeTitle;
-    document.getElementById('readmeExitBtn').innerText = t.exit;
 }
 
 function setTheme(c) {
     primaryColor = c;
     localStorage.setItem('theme', c);
     document.documentElement.style.setProperty('--p-color', c);
+    const themeSelect = document.querySelector('select[onchange*="setTheme"]');
+    if(themeSelect) themeSelect.value = c;
 }
 
 function setSpeed(v) {
@@ -75,11 +84,11 @@ function setSpeed(v) {
 }
 
 function setWallPass(v) {
-    wallPassSetting = v;
-    localStorage.setItem('wallPass', v);
+    wallPassSetting = (v === true || v === 'true');
+    localStorage.setItem('wallPass', wallPassSetting);
 }
 
-// GOD MODE: İMZAYA 3 TIK
+// --- GOD MODE (İmzaya 3 Tık) ---
 let clicks = 0, lastClick = 0;
 document.addEventListener('click', e => {
     if(e.target.classList.contains('p-signature')) {
@@ -102,10 +111,10 @@ function updateUI() {
     document.getElementById('bestScore').innerText = bestScore;
 }
 
+// --- OYUN MOTORU ---
 function move() {
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
 
-    // GOD MODE veya Duvar Geçişi aktifse duvar kontrolünü atla
     if(godMode || wallPassSetting) {
         if(head.x >= canvas.width) head.x = 0; else if(head.x < 0) head.x = canvas.width - gridSize;
         if(head.y >= canvas.height) head.y = 0; else if(head.y < 0) head.y = canvas.height - gridSize;
@@ -134,7 +143,11 @@ function drawSnake() {
 
 function createFood() {
     const f = foods[Math.floor(Math.random()*foods.length)];
-    food = { x: Math.floor(Math.random()*(canvas.width/gridSize))*gridSize, y: Math.floor(Math.random()*(canvas.height/gridSize))*gridSize, type: f.t, points: f.p };
+    food = { 
+        x: Math.floor(Math.random()*(canvas.width/gridSize))*gridSize, 
+        y: Math.floor(Math.random()*(canvas.height/gridSize))*gridSize, 
+        type: f.t, points: f.p 
+    };
 }
 
 function drawFood() { ctx.font = "16px Arial"; ctx.fillText(food.type, food.x+2, food.y+16); }
@@ -148,7 +161,7 @@ function main() {
 
 function gameOver() {
     gameRunning = false;
-    if(score > bestScore) { bestScore = score; localStorage.setItem('best', bestScore); }
+    if(score > bestScore) localStorage.setItem('best', score);
     alert(translations[currentLang].gameOver + score);
     location.reload(); 
 }
@@ -162,7 +175,7 @@ window.startGame = () => {
     gameRunning = true; createFood(); main(); updateUI();
 };
 
-// SWIPE (KAYDIRMA) MOTORU
+// --- SWIPE (KAYDIRMA) MOTORU ---
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -177,13 +190,17 @@ window.closePage = (id) => { document.getElementById(id).style.display='none'; }
 window.openAdvanced = () => { 
     if(prompt("PASS:") === "purpleguy2026") {
         const logs = currentLang === 'tr' ? 
-            "SİSTEM LOGLARI [v3.8]:\n- Bellek: OK (localStorage)\n- God Mode: Fix (Duvar Geçişi)\n- Dil: Fix (Kalıcı)\n- 14 Yemek: Aktif\n- Ikon: Manifest Sync" : 
-            "SYSTEM LOGS [v3.8]:\n- Memory: OK (localStorage)\n- God Mode: Fix (Wall Clip)\n- Lang: Fix (Persistent)\n- 14 Foods: Active\n- Icon: Manifest Sync";
+            "SİSTEM LOGLARI [v3.8]:\n- Bellek: OK\n- God Mode: Fix\n- Dil Senkronu: OK\n- 14 Yemek: Aktif" : 
+            "SYSTEM LOGS [v3.8]:\n- Memory: OK\n- God Mode: Fix\n- Lang Sync: OK\n- 14 Foods: Active";
         document.getElementById('readme-content').innerText = logs;
         openPage('advanced-page');
     }
 };
 
-// BAŞLAT
-setLang(currentLang);
-setTheme(primaryColor);
+// --- AÇILIŞ SENKRONU ---
+window.onload = () => {
+    setLang(currentLang);
+    setTheme(primaryColor);
+    document.querySelector('select[onchange*="setSpeed"]').value = gameSpeed;
+    document.querySelector('select[onchange*="setWallPass"]').value = wallPassSetting.toString();
+};
