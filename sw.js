@@ -1,4 +1,5 @@
-const CACHE_NAME = 'cybersnake-v4-cache';
+/* Purpleguy © 2026 - tablet power */
+const CACHE_NAME = 'cybersnake-v4.1-cache';
 const ASSETS = [
   '/',
   '/index.html',
@@ -9,16 +10,29 @@ const ASSETS = [
   '/manifest.json'
 ];
 
-// Dosyaları önbelleğe al
+// Dosyaları önbelleğe al (Install)
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      // Bazı dosyalar yoksa bile hataya düşmemesi için tek tek ekleme yapılabilir
+      // Ama şu an ASSETS listesi tam.
       return cache.addAll(ASSETS);
     })
   );
 });
 
-// Çevrimdışı çalışma motoru
+// Eski önbellekleri temizle (Activate)
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+      );
+    })
+  );
+});
+
+// Çevrimdışı çalışma motoru (Fetch)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
