@@ -11,52 +11,59 @@
 
     <div id="game-container">
         <div id="stats">
-            <div><span id="scoreLabel">SKOR:</span> <span id="scoreVal">0</span></div>
-            <div><span id="bestLabel">EN İYİ:</span> <span id="bestScore">0</span></div>
+            <div class="stat-box">SKOR: <span id="scoreVal">0</span></div>
+            <div class="stat-box">EN İYİ: <span id="bestScore">0</span></div>
         </div>
 
         <div id="menu">
-            <h1 class="glitch">CYBER SNAKE</h1>
-            <button id="startBtn" onclick="startGame()">OYUNU BAŞLAT</button>
-            <button id="settingsBtn" onclick="openSettings()">AYARLAR</button>
-            <button id="advBtn" onclick="openAdvanced()">BENİ OKU</button>
+            <h1 class="glitch" data-text="CYBER SNAKE">CYBER SNAKE</h1>
+            <div class="menu-buttons">
+                <button onclick="startGame()">OYUNA BAŞLA</button>
+                <button onclick="openPage('settings-page')">AYARLAR</button>
+                <button onclick="openAdvanced()">GELİŞMİŞ</button>
+            </div>
             <div class="p-signature">Purpleguy © 2026 - tablet power</div>
         </div>
 
         <canvas id="gameCanvas"></canvas>
 
         <div id="settings-page" class="sub-page">
-            <h2 id="settingsTitle">SİSTEM AYARLARI</h2>
-            <div class="setting-row">
-                <span id="speedLabelText">HIZ:</span>
-                <select onchange="setSpeed(this.value)">
-                    <option id="optNormal" value="10">NORMAL</option>
-                    <option id="optSlow" value="7">YAVAŞ</option>
-                    <option id="optFast" value="15">HIZLI</option>
+            <h2>SİSTEM AYARLARI</h2>
+            <div class="setting-item">
+                <label>HIZ:</label>
+                <select id="speedSelect" onchange="setSpeed(this.value)">
+                    <option value="10">NORMAL</option>
+                    <option value="7">YAVAŞ</option>
+                    <option value="15">HIZLI</option>
                 </select>
             </div>
-            <div class="setting-row">
-                <span id="wallsLabelText">DUVARLAR:</span>
+            <div class="setting-item">
+                <label>DUVARLAR:</label>
                 <select onchange="setWallPass(this.value === 'true')">
-                    <option id="optDie" value="false">ÖLDÜRÜCÜ</option>
-                    <option id="optPass" value="true">GEÇİRGEN</option>
+                    <option value="false">ÖLDÜRÜCÜ</option>
+                    <option value="true">GEÇİRGEN</option>
                 </select>
             </div>
-            <div class="setting-row">
-                <span id="themeLabelText">TEMA:</span>
+            <div class="setting-item">
+                <label>TEMA:</label>
                 <select onchange="setTheme(this.value)">
-                    <option value="#00f3ff">SİBER MAVİ</option>
-                    <option value="#ff00ff">NEON PEMBE</option>
-                    <option value="#00ff41">MATRİX YEŞİLİ</option>
+                    <option value="#00f3ff">CYBER BLUE</option>
+                    <option value="#ff00ff">NEON PINK</option>
+                    <option value="#00ff41">MATRIX GREEN</option>
                 </select>
             </div>
-            <button id="saveBtn" onclick="closePage('settings-page')">KAYDET VE ÇIK</button>
+            <button class="close-btn" onclick="closePage('settings-page')">KAYDET</button>
         </div>
 
         <div id="advanced-page" class="sub-page">
-            <h2 id="readmeTitle">SİSTEM KAYITLARI</h2>
-            <div id="readme-content" class="readme-box"></div>
-            <button onclick="confirmExit()">GÜVENLİ ÇIKIŞ</button>
+            <h2>SİSTEM KAYITLARI</h2>
+            <div id="readme-content" class="readme-box">
+                // Purpleguy v3.8 Beta LOGS
+                - 3x Tık: God Mode (Aç/Kapat)
+                - Sprite Fix Uygulandı.
+                - Skor Sistemi Onarıldı.
+            </div>
+            <button class="close-btn" onclick="closePage('advanced-page')">KAPAT</button>
         </div>
     </div>
 
