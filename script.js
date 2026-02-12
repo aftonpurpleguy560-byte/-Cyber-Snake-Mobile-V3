@@ -1,12 +1,12 @@
 /**
- * Cyber Snake v4.0.2 - UPWA & 15 Foods Final Build
+ * Cyber Snake v4.0.4 - Final Stable Build
  * Purpleguy © 2026 - tablet power
  */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// --- KALICI HAFIZA VE AYARLAR ---
+// --- AYARLAR VE HAFIZA ---
 let score = 0;
 let gridSize = 20;
 let bestScore = localStorage.getItem('best') || 0;
@@ -25,7 +25,7 @@ snakeSprites.src = 'snake_sprites.png';
 let assetsLoaded = false;
 snakeSprites.onload = () => { assetsLoaded = true; };
 
-// --- 15 ÇEŞİT YEMEK LİSTESİ ---
+// --- 15 ÇEŞİT YEMEK ---
 const foods = [
     {t:'🍎',p:5},  {t:'🍌',p:8},  {t:'🍇',p:10}, {t:'🍓',p:12}, {t:'🍍',p:20}, 
     {t:'🍉',p:30}, {t:'🍄',p:50}, {t:'🍅',p:14}, {t:'🍒',p:15}, {t:'🍑',p:18},
@@ -33,7 +33,6 @@ const foods = [
 ];
 let food = {x:0, y:0, type:'🍎', points:5};
 
-// --- DİL MOTORU ---
 const translations = {
     tr: {
         startBtn: "OYUNA BAŞLA", settingsBtn: "AYARLAR", advBtn: "GELİŞMİŞ",
@@ -49,103 +48,69 @@ const translations = {
     }
 };
 
-// --- UPWA: SERVICE WORKER VE BİLDİRİM KAYDI ---
+// --- UPWA & BİLDİRİM KAYDI ---
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').then(reg => {
-        console.log("PWA Servis Kayıtlı.");
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted') scheduleNotifications(reg);
-        });
+        if (Notification.permission === 'granted') scheduleNotifications(reg);
     });
 }
 
-// 20 Tane Bildirim Planlayıcı
 function scheduleNotifications(reg) {
-    const messages = [
-        "Yılan acıkmaya başladı...",
-        "Yılan seni görmeyi bekliyor.",
-        "Yılan çok aç!",
-        "Hadi Efe, siber rekor seni bekliyor!",
-        "Yılan paslanıyor, bir şeyler yedir."
-    ];
-
+    const messages = ["Yılan acıkmaya başladı", "Yılan seni görmeyi bekliyor", "Yılan çok aç"];
     for (let i = 1; i <= 20; i++) {
-        // Bildirimleri 6 saatlik aralıklarla (rastgele sapmalı) planla
-        let delay = i * (6 * 3600000) + (Math.random() * 3600000); 
+        let delay = i * 21600000; 
         setTimeout(() => {
             reg.showNotification('Cyber Snake', {
                 body: messages[Math.floor(Math.random() * messages.length)],
                 icon: '/icon_large.png',
-                badge: '/icon_large.png',
                 tag: 'snake-notif-' + i
             });
         }, delay);
     }
 }
 
-// --- AYAR FONKSİYONLARI ---
+// --- GLOBAL FONKSİYONLAR ---
 window.setLang = (lang) => {
     currentLang = lang; localStorage.setItem('lang', lang);
     const t = translations[lang];
-    Object.keys(t).forEach(id => { 
-        const el = document.getElementById(id);
-        if(el) el.innerText = t[id]; 
-    });
-    // Skor ve En İyi etiketlerini güncelle
-    document.getElementById('scoreLabelText').innerText = t.scoreLabelText;
-    document.getElementById('bestLabelText').innerText = t.bestLabelText;
+    Object.keys(t).forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = t[id]; });
 };
 
-window.setTheme = (c) => { 
-    primaryColor = c; localStorage.setItem('theme', c); 
-    document.documentElement.style.setProperty('--p-color', c); 
-};
+window.setTheme = (c) => { primaryColor = c; localStorage.setItem('theme', c); document.documentElement.style.setProperty('--p-color', c); };
+window.setSpeed = (v) => { gameSpeed = parseInt(v); localStorage.setItem('speed', v); };
+window.setWallPass = (v) => { wallPassSetting = (v === true || v === 'true'); localStorage.setItem('wallPass', wallPassSetting); };
+window.openPage = (id) => { if(document.getElementById(id)) document.getElementById(id).style.display = 'flex'; };
+window.closePage = (id) => { if(document.getElementById(id)) document.getElementById(id).style.display = 'none'; };
 
-window.setSpeed = (v) => { 
-    gameSpeed = parseInt(v); localStorage.setItem('speed', v); 
-};
-
-window.setWallPass = (v) => { 
-    wallPassSetting = (v === true || v === 'true'); 
-    localStorage.setItem('wallPass', wallPassSetting); 
-};
-
-window.openPage = (id) => { document.getElementById(id).style.display = 'flex'; };
-window.closePage = (id) => { document.getElementById(id).style.display = 'none'; };
-
-window.openAdvanced = () => { 
-    if(prompt("PASS:") === "purpleguy2026") {
-        const logs = currentLang === 'tr' ? 
-            "SİSTEM LOGLARI [v4.0.2]:\n- UPWA: Aktif\n- 15 Yemek: Yüklendi\n- Bildirimler: Planlandı\n- Durum: Stabil" : 
-            "SYSTEM LOGS [v4.0.2]:\n- UPWA: Active\n- 15 Foods: Loaded\n- Notifications: Scheduled\n- Status: Stable";
-        document.getElementById('readme-content').innerText = logs;
-        window.openPage('advanced-page');
-    }
-};
-
-// --- OYUN MOTORU ---
 window.startGame = () => {
-    const s = Math.min(window.innerWidth * 0.9, 400);
-    canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
-    document.getElementById('menu').style.display = 'none';
-    document.getElementById('stats').style.display = 'flex';
-    canvas.style.display = 'block';
+    const s = Math.min(window.innerWidth*0.9, 400);
+    canvas.width = canvas.height = Math.floor(s/gridSize)*gridSize;
+    document.getElementById('menu').style.display='none';
+    document.getElementById('stats').style.display='flex';
+    canvas.style.display='block';
     gameRunning = true; createFood(); main(); updateUI();
 };
 
+// --- YILANI ÇİZ (SPRITE FIX) ---
 function drawSnake() {
     snake.forEach((p, i) => {
         if (assetsLoaded) {
-            // Sprite koordinatları: 128 (Kafa), 64 (Gövde)
-            if (i === 0) ctx.drawImage(snakeSprites, 128, 0, 64, 64, p.x, p.y, gridSize, gridSize);
-            else ctx.drawImage(snakeSprites, 64, 0, 64, 64, p.x, p.y, gridSize, gridSize);
+            // Sprite sayfasındaki (181591.png) koordinatlar:
+            // 0,0: Kafa | 64,0: Gövde
+            if (i === 0) {
+                ctx.drawImage(snakeSprites, 0, 0, 64, 64, p.x, p.y, gridSize, gridSize);
+            } else {
+                ctx.drawImage(snakeSprites, 64, 0, 64, 64, p.x, p.y, gridSize, gridSize);
+            }
         } else {
-            ctx.fillStyle = primaryColor; ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
+            ctx.fillStyle = primaryColor;
+            ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
         }
     });
 }
 
 function move() {
+    if (!gameRunning) return;
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
 
     if(godMode || wallPassSetting) {
@@ -156,9 +121,7 @@ function move() {
     }
 
     if(!godMode) {
-        for(let i = 1; i < snake.length; i++) {
-            if(head.x === snake[i].x && head.y === snake[i].y) return gameOver();
-        }
+        for(let i=1; i<snake.length; i++) if(head.x === snake[i].x && head.y === snake[i].y) return gameOver();
     }
 
     snake.unshift(head);
@@ -169,31 +132,24 @@ function move() {
     }
 }
 
-function createFood() {
-    const f = foods[Math.floor(Math.random() * foods.length)];
-    food = { 
-        x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize, 
-        y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize, 
-        type: f.t, points: f.p 
-    };
-}
-
-function drawFood() { 
-    ctx.font = "16px Arial"; 
-    ctx.fillText(food.type, food.x + 2, food.y + 16); 
-}
-
-function main() {
-    if(!gameRunning) return;
-    ctx.fillStyle = "rgba(5, 5, 5, 0.6)"; // Siyah arka plan izi
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawFood(); move(); drawSnake();
-    setTimeout(() => requestAnimationFrame(main), 1000 / gameSpeed);
-}
-
 function updateUI() {
     document.getElementById('scoreVal').innerText = godMode ? score + " [GOD]" : score;
     document.getElementById('bestScore').innerText = bestScore;
+}
+
+function createFood() {
+    const f = foods[Math.floor(Math.random()*foods.length)];
+    food = { x: Math.floor(Math.random()*(canvas.width/gridSize))*gridSize, y: Math.floor(Math.random()*(canvas.height/gridSize))*gridSize, type: f.t, points: f.p };
+}
+
+function drawFood() { ctx.font = "16px Arial"; ctx.fillText(food.type, food.x+2, food.y+16); }
+
+function main() {
+    if(!gameRunning) return;
+    ctx.fillStyle = "rgba(5, 5, 5, 0.6)"; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawFood(); move(); drawSnake();
+    setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
 
 function gameOver() {
@@ -203,7 +159,7 @@ function gameOver() {
     location.reload(); 
 }
 
-// --- KONTROLLER (SWIPE) ---
+// --- KONTROLLER ---
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -225,11 +181,17 @@ document.addEventListener('click', e => {
     }
 });
 
-// --- AÇILIŞ ---
+window.openAdvanced = () => { 
+    if(prompt("PASS:") === "purpleguy2026") {
+        const logs = "LOGS v4.0.4: Sprite Fix applied. UPWA Active.";
+        document.getElementById('readme-content').innerText = logs;
+        window.openPage('advanced-page');
+    }
+};
+
 window.onload = () => {
     window.setLang(currentLang);
     window.setTheme(primaryColor);
-    // Select kutularını hafızaya göre eşitle
     if(document.querySelector('select[onchange*="setSpeed"]')) 
         document.querySelector('select[onchange*="setSpeed"]').value = gameSpeed;
     if(document.querySelector('select[onchange*="setWallPass"]')) 
