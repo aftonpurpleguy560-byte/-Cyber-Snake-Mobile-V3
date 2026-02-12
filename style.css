@@ -1,20 +1,18 @@
 /**
- * Cyber Snake v3.8 Beta | Official Style Sheet
+ * Cyber Snake v3.8 | Style Sheet
  * Purpleguy © 2026 - tablet power
  */
 
 :root {
     --p-color: #00f3ff;
-    --neon-pink: #ff00ff;
     --bg-dark: #050505;
-    --matrix-green: #00ff41;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: var(--bg-dark);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-dark); /* Arka plan her zaman siyah */
+    font-family: 'Courier New', Courier, monospace;
     overflow: hidden;
     color: white;
     display: flex;
@@ -24,7 +22,7 @@ body {
     touch-action: none;
 }
 
-/* Arka Plan Grid Sistemi */
+/* Hareketli Arka Plan Izgarası */
 #bg-grid {
     position: fixed;
     top: 0;
@@ -32,180 +30,128 @@ body {
     width: 200%;
     height: 200%;
     background: 
-        linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
+        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
     z-index: -1;
-    animation: moveGrid 20s linear infinite;
+    animation: gridMove 20s linear infinite;
 }
 
-@keyframes moveGrid {
+@keyframes gridMove {
     from { transform: translate(0, 0); }
-    to { transform: translate(-40px, -40px); }
+    to { transform: translate(-50px, -50px); }
 }
 
-/* Ana Konteynır */
 #game-container {
     position: relative;
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
-/* Glitch Efekti */
 .glitch {
     font-size: 2.5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--p-color);
-    animation: glitch-anim 2s infinite linear alternate-reverse;
-    margin-bottom: 20px;
+    color: var(--p-color);
+    text-shadow: 2px 2px #ff00ff;
+    margin-bottom: 30px;
 }
 
-@keyframes glitch-anim {
-    0% { transform: skew(0deg); }
-    100% { transform: skew(-1deg); }
-}
-
-/* Ana Menü */
 #menu {
-    background: rgba(10, 10, 10, 0.9);
+    background: rgba(10, 10, 10, 0.95);
     padding: 40px;
-    border-radius: 20px;
     border: 2px solid var(--p-color);
-    backdrop-filter: blur(15px);
+    border-radius: 15px;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-    max-width: 85%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
     z-index: 10;
 }
 
-/* Butonlar */
 button {
     background: transparent;
     color: var(--p-color);
-    border: 2px solid var(--p-color);
+    border: 1px solid var(--p-color);
     padding: 12px 25px;
     margin: 10px;
     cursor: pointer;
     font-weight: bold;
-    text-transform: uppercase;
     transition: 0.3s;
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-    min-width: 180px;
+    width: 200px;
+    display: block;
 }
 
 button:hover {
     background: var(--p-color);
     color: black;
-    box-shadow: 0 0 20px var(--p-color);
+    box-shadow: 0 0 15px var(--p-color);
 }
 
-/* İstatistik Paneli */
+#gameCanvas {
+    border: 3px solid var(--p-color);
+    display: none;
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+    background: #000;
+}
+
 #stats {
     position: fixed;
     top: 20px;
-    display: none; /* Başlangıçta gizli */
-    gap: 20px;
+    display: none;
+    gap: 30px;
     color: var(--p-color);
     font-weight: bold;
-    font-family: 'Courier New', monospace;
-    z-index: 50;
-    background: rgba(0,0,0,0.5);
-    padding: 10px;
-    border-radius: 5px;
+    z-index: 20;
 }
 
-/* Oyun Alanı */
-canvas {
-    border: 4px solid var(--p-color);
-    border-radius: 10px;
-    display: none; /* Başlangıçta gizli */
-    background: rgba(0,0,0,0.95);
-    box-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
-}
-
-/* Alt Sayfalar (Ayarlar ve Readme) - KRİTİK NOKTA */
 .sub-page {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(5, 5, 5, 0.98);
-    display: none; /* SAYFALARI GİZLER */
+    background: rgba(0, 0, 0, 0.98);
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 100;
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.4s;
 }
 
-/* Ayarlar Satırları */
 .setting-row {
     margin: 15px;
+    width: 280px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    width: 300px;
-    max-width: 80%;
+    align-items: center;
 }
 
 select {
-    background: black;
+    background: #000;
     color: var(--p-color);
     border: 1px solid var(--p-color);
-    padding: 8px;
-    border-radius: 5px;
-    font-weight: bold;
-    outline: none;
+    padding: 5px;
 }
 
-/* Readme İçerik Kutusu */
 .readme-box {
-    background: rgba(0, 15, 0, 0.9);
-    color: var(--matrix-green);
-    padding: 20px;
-    border: 1px solid var(--matrix-green);
-    width: 85%;
-    max-height: 350px;
+    width: 80%;
+    max-height: 300px;
     overflow-y: auto;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    text-align: left;
+    border: 1px solid #00ff41;
+    color: #00ff41;
+    padding: 15px;
+    background: rgba(0, 20, 0, 0.9);
+    margin-bottom: 20px;
     white-space: pre-wrap;
-    line-height: 1.5;
-    box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.2);
+    font-size: 14px;
 }
 
-/* Siber İmza */
 .p-signature {
-    font-size: 11px;
-    margin-top: 25px;
+    margin-top: 20px;
+    font-size: 10px;
     color: var(--p-color);
-    letter-spacing: 1px;
-    font-weight: bold;
-    text-shadow: 0 0 8px var(--p-color);
-    opacity: 0.8;
+    opacity: 0.7;
     cursor: pointer;
-    transition: 0.3s;
+    letter-spacing: 1px;
 }
-
-.p-signature:hover {
-    opacity: 1;
-    transform: scale(1.05);
-}
-
-/* Kaydırma Çubuğu Stili (Readme için) */
-.readme-box::-webkit-scrollbar {
-    width: 5px;
-}
-.readme-box::-webkit-scrollbar-thumb {
-    background: var(--matrix-green);
-}
-
