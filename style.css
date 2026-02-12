@@ -1,157 +1,23 @@
-/**
- * Cyber Snake v3.8 | Style Sheet
- * Purpleguy © 2026 - tablet power
- */
+:root { --p-color: #00f3ff; --bg: #050505; }
+body { margin: 0; background: var(--bg); font-family: 'Courier New', monospace; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; touch-action: none; }
 
-:root {
-    --p-color: #00f3ff;
-    --bg-dark: #050505;
-}
+#bg-grid { position: fixed; width: 200%; height: 200%; background: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; animation: move 20s linear infinite; }
+@keyframes move { from { transform: translate(0,0); } to { transform: translate(-40px, -40px); } }
 
-body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg-dark); /* Arka plan her zaman siyah */
-    font-family: 'Courier New', Courier, monospace;
-    overflow: hidden;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    touch-action: none;
-}
+#menu { background: rgba(0,0,0,0.9); padding: 30px; border: 2px solid var(--p-color); border-radius: 10px; text-align: center; box-shadow: 0 0 20px var(--p-color); }
+.glitch { font-size: 2.5em; color: white; text-shadow: 2px 2px var(--p-color); margin-bottom: 20px; }
 
-/* Hareketli Arka Plan Izgarası */
-#bg-grid {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
-    background: 
-        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    z-index: -1;
-    animation: gridMove 20s linear infinite;
-}
+button { background: black; color: var(--p-color); border: 1px solid var(--p-color); padding: 10px 20px; margin: 5px; width: 180px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+button:hover { background: var(--p-color); color: black; box-shadow: 0 0 15px var(--p-color); }
 
-@keyframes gridMove {
-    from { transform: translate(0, 0); }
-    to { transform: translate(-50px, -50px); }
-}
+#gameCanvas { border: 2px solid var(--p-color); display: none; background: #000; max-width: 90vw; max-height: 70vh; }
+#stats { position: fixed; top: 10px; display: none; gap: 20px; z-index: 100; }
+.stat-box { background: rgba(0,0,0,0.8); border: 1px solid var(--p-color); padding: 5px 15px; border-radius: 5px; color: var(--p-color); }
 
-#game-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
+.sub-page { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; justify-content:center; z-index: 200; }
+.setting-item { width: 250px; display: flex; justify-content: space-between; margin: 10px; }
+select { background: #000; color: var(--p-color); border: 1px solid var(--p-color); }
 
-.glitch {
-    font-size: 2.5rem;
-    color: var(--p-color);
-    text-shadow: 2px 2px #ff00ff;
-    margin-bottom: 30px;
-}
+.readme-box { width: 80%; height: 150px; border: 1px solid #00ff41; color: #00ff41; padding: 10px; overflow-y: auto; background: #011; font-size: 12px; margin-bottom: 20px; }
+.p-signature { margin-top: 20px; font-size: 11px; color: var(--p-color); cursor: pointer; opacity: 0.8; }
 
-#menu {
-    background: rgba(10, 10, 10, 0.95);
-    padding: 40px;
-    border: 2px solid var(--p-color);
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-    z-index: 10;
-}
-
-button {
-    background: transparent;
-    color: var(--p-color);
-    border: 1px solid var(--p-color);
-    padding: 12px 25px;
-    margin: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-    width: 200px;
-    display: block;
-}
-
-button:hover {
-    background: var(--p-color);
-    color: black;
-    box-shadow: 0 0 15px var(--p-color);
-}
-
-#gameCanvas {
-    border: 3px solid var(--p-color);
-    display: none;
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
-    background: #000;
-}
-
-#stats {
-    position: fixed;
-    top: 20px;
-    display: none;
-    gap: 30px;
-    color: var(--p-color);
-    font-weight: bold;
-    z-index: 20;
-}
-
-.sub-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.98);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.4s;
-}
-
-.setting-row {
-    margin: 15px;
-    width: 280px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-select {
-    background: #000;
-    color: var(--p-color);
-    border: 1px solid var(--p-color);
-    padding: 5px;
-}
-
-.readme-box {
-    width: 80%;
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #00ff41;
-    color: #00ff41;
-    padding: 15px;
-    background: rgba(0, 20, 0, 0.9);
-    margin-bottom: 20px;
-    white-space: pre-wrap;
-    font-size: 14px;
-}
-
-.p-signature {
-    margin-top: 20px;
-    font-size: 10px;
-    color: var(--p-color);
-    opacity: 0.7;
-    cursor: pointer;
-    letter-spacing: 1px;
-}
