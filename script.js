@@ -1,5 +1,5 @@
 /**
- * Cyber Snake v4.6.1 - Final Recovery & System Master
+ * Cyber Snake v4.6.9 - Final Sprite Sync
  * Purpleguy © 2026 - tablet power
  */
 
@@ -22,35 +22,26 @@ let dx = 20, dy = 0;
 let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
 let gameRunning = false, godMode = false;
 
-// --- SPRITE MOTORU (Cerrahi Netlik) ---
+// --- SPRITE MOTORU ---
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png';
 let assetsLoaded = false;
 snakeSprites.onload = () => { assetsLoaded = true; };
 
-// --- UPWA+ / SERVICE WORKER ---
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log('UPWA+ Sistem Hazır');
-        });
-    });
-}
+// --- 🍎 15 ÇEŞİT SİBER YEMEK ---
+const foods = [
+    {t:'🍎',p:10}, {t:'🍌',p:15}, {t:'🍇',p:20}, {t:'🍓',p:25}, {t:'🍍',p:30}, 
+    {t:'🍉',p:40}, {t:'🍄',p:50}, {t:'🍅',p:15}, {t:'🍒',p:20}, {t:'🍑',p:25},
+    {t:'🍐',p:10}, {t:'🍋',p:15}, {t:'🥝',p:35}, {t:'🌽',p:20}, {t:'🥥',p:45}
+];
+let food = {x:0, y:0, type:'🍎', points:10};
 
 // --- MENÜ VE SAYFA YÖNETİMİ ---
-window.openPage = function(id) {
-    const el = document.getElementById(id);
-    if (el) { el.style.display = 'flex'; el.style.animation = 'fadeIn 0.3s ease'; }
-};
-
-window.closePage = function(id) {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-};
+window.openPage = (id) => { document.getElementById(id).style.display = 'flex'; };
+window.closePage = (id) => { document.getElementById(id).style.display = 'none'; };
 
 window.startGame = () => {
-    const s = Math.min(window.innerWidth * 0.9, 400);
-    canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
+    canvas.width = canvas.height = 300;
     document.getElementById('menu').style.display = 'none';
     document.getElementById('stats').style.display = 'flex';
     canvas.style.display = 'block';
@@ -59,9 +50,9 @@ window.startGame = () => {
     createFood(); main(); updateUI();
 };
 
-// --- 🎨 SİBER YILAN ÇİZİM MOTORU (Fix Build) ---
+// --- 🎨 SİBER YILAN ÇİZİM MOTORU (256px SPRITE FIX) ---
 function drawSnake() {
-    const unit = 64; // Resim 256px ise 4 parça = 64px
+    const unit = 64; // Senin yaptığın 256/4'lük parçalar
     snake.forEach((p, i) => {
         if (!assetsLoaded) {
             ctx.fillStyle = primaryColor; ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
@@ -71,26 +62,29 @@ function drawSnake() {
         let sx = 0, sy = 0;
         const next = snake[i + 1], prev = snake[i - 1];
 
-        if (i === 0) { // KAFA (Sağa, Sola, Yukarı, Aşağı)
-            if (dx > 0) { sx = 3 * unit; sy = 0; }
-            else if (dx < 0) { sx = 2 * unit; sy = unit; }
-            else if (dy < 0) { sx = 2 * unit; sy = 0; }
-            else { sx = 3 * unit; sy = unit; }
-        } else if (i === snake.length - 1) { // KUYRUK
-            if (prev.x < p.x) { sx = 0; sy = 128; }
-            else if (prev.x > p.x) { sx = 64; sy = 192; }
-            else if (prev.y < p.y) { sx = 0; sy = 192; }
-            else { sx = 64; sy = 128; }
-        } else { // GÖVDE
-            if (prev.x !== next.x && prev.y !== next.y) { sx = 0; sy = 0; }
-            else if (prev.x !== next.x) { sx = 64; sy = 0; }
-            else { sx = 64; sy = 64; }
+        if (i === 0) { // KAFA KATMANI
+            if (dx > 0) { sx = 192; sy = 0; }      // Kafa Sağa (3,0)
+            else if (dx < 0) { sx = 128; sy = 64; } // Kafa Sola (2,1)
+            else if (dy < 0) { sx = 192; sy = 64; } // Kafa Yukarı (3,1)
+            else { sx = 128; sy = 0; }             // Kafa Aşağı (2,0)
+        } 
+        else if (i === snake.length - 1) { // KUYRUK KATMANI
+            if (prev.x < p.x) { sx = 64; sy = 192; }      // Kuyruk Sola
+            else if (prev.x > p.x) { sx = 0; sy = 128; }  // Kuyruk Sağa
+            else if (prev.y < p.y) { sx = 64; sy = 128; } // Kuyruk Yukarı
+            else { sx = 0; sy = 192; }                    // Kuyruk Aşağı
         }
-        ctx.drawImage(snakeSprites, sx, sy, 64, 64, p.x, p.y, gridSize, gridSize);
+        else { // GÖVDE KATMANI
+            if (prev.x !== next.x && prev.y !== next.y) { sx = 0; sy = 0; } // Köşe
+            else if (prev.x !== next.x) { sx = 64; sy = 0; }                // Yatay Gövde
+            else { sx = 64; sy = 64; }                                      // Dikey Gövde
+        }
+
+        ctx.drawImage(snakeSprites, sx, sy, unit, unit, p.x, p.y, gridSize, gridSize);
     });
 }
 
-// --- HAREKET VE OYUN MANTIĞI ---
+// --- HAREKET VE MANTIK ---
 function move() {
     if (!gameRunning) return;
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
@@ -100,13 +94,12 @@ function move() {
         if (head.y >= canvas.height) head.y = 0; else if (head.y < 0) head.y = canvas.height - gridSize;
     } else if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) return gameOver();
 
-    if (!godMode) {
-        for (let i = 1; i < snake.length; i++) if (head.x === snake[i].x && head.y === snake[i].y) return gameOver();
-    }
+    if (!godMode) for (let i = 1; i < snake.length; i++) if (head.x === snake[i].x && head.y === snake[i].y) return gameOver();
 
     snake.unshift(head);
     if (head.x === food.x && head.y === food.y) {
-        score += 10; updateUI(); 
+        score += food.points; 
+        updateUI(); 
         if (score >= winScore) return gameWin();
         createFood();
     } else { snake.pop(); }
@@ -116,18 +109,22 @@ function main() {
     if (!gameRunning) return;
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Yemeği siber nokta olarak çiz
-    ctx.fillStyle = "#ff003c";
-    ctx.fillRect(food.x+2, food.y+2, gridSize-4, gridSize-4);
+    
+    // Yemek Çizimi
+    ctx.font = "16px Arial";
+    ctx.fillText(food.type, food.x + 2, food.y + 16);
     
     move(); drawSnake();
     setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
 
 function createFood() {
+    const f = foods[Math.floor(Math.random() * foods.length)];
     food = { 
         x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize, 
-        y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize 
+        y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize,
+        type: f.t,
+        points: f.p
     };
 }
 
@@ -136,21 +133,19 @@ function updateUI() {
     document.getElementById('bestScore').innerText = bestScore;
 }
 
-// --- OYUN SONU EKRANLARI ---
 function gameOver() {
     gameRunning = false;
-    if (score > bestScore) localStorage.setItem('best', score);
-    alert("BAĞLANTI KESİLDİ! Skorun: " + score);
+    alert("BAĞLANTI KESİLDİ! \nNihai Skor: " + score);
     location.reload(); 
 }
 
 function gameWin() {
     gameRunning = false;
-    alert("SİSTEM ELE GEÇİRİLDİ! Tebrikler Efe, " + difficulty.toUpperCase() + " modu bitirdin!");
+    alert("SİSTEM TAMAMEN ELE GEÇİRİLDİ! \nGörev başarıyla tamamlandı.");
     location.reload();
 }
 
-// --- MOBİL SWIPE ---
+// --- KONTROLLER ---
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -159,7 +154,6 @@ canvas.addEventListener('touchend', e => {
     else { if (Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
 }, {passive:false});
 
-// --- GOD MODE VE AYARLAR ---
 document.addEventListener('click', e => {
     if (e.target.innerText && e.target.innerText.includes('Purpleguy')) {
         let now = Date.now();
@@ -167,13 +161,11 @@ document.addEventListener('click', e => {
         window.lastC = now;
         if (window.cC === 3) { 
             godMode = !godMode; 
-            alert(godMode ? "SİBER ÖLÜMSÜZLÜK: AKTİF ✅" : "SİBER ÖLÜMSÜZLÜK: DEAKTİF ❌");
-            updateUI();
+            alert(godMode ? "ÖLÜMSÜZLÜK PROTOKOLÜ: AKTİF" : "ÖLÜMSÜZLÜK PROTOKOLÜ: DEVRE DIŞI");
         }
     }
 });
 
 window.setDifficulty = (v) => { localStorage.setItem('difficulty', v); location.reload(); };
-window.setTheme = (c) => { localStorage.setItem('theme', c); document.documentElement.style.setProperty('--p-color', c); };
+window.setTheme = (c) => { localStorage.setItem('theme', c); location.reload(); };
 window.setWallPass = (v) => { localStorage.setItem('wallPass', v); location.reload(); };
-window.setLang = (l) => { alert("Dil: " + l.toUpperCase()); };
