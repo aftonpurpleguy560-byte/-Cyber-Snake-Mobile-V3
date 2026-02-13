@@ -1,139 +1,84 @@
-// --- SİSTEM ÇEKİRDEĞİ ---
-const canvas = document.getElementById("gameCanvas");
+const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const box = 20;
+canvas.width = 380; canvas.height = 380;
 
 let score = 0;
 let speed = 120;
-let currentDir = "RIGHT";
-let snake = [{x: 10 * box, y: 10 * box}];
-let gameEngine;
+let dir = "RIGHT";
+let snake = [{x: 10*box, y: 10*box}];
+let highScore = localStorage.getItem("efe_rekor") || 0;
+let gameLoop;
 
-// --- 15 ÇEŞİT YEMEK VE STRATEJİK PUANLAR ---
-const lootTable = [
-    {icon: "🍎", pt: 5}, {icon: "🍐", pt: 5}, {icon: "🍊", pt: 10},
-    {icon: "🍋", pt: 10}, {icon: "🍌", pt: 15}, {icon: "🍉", pt: 15},
-    {icon: "🍇", pt: 20}, {icon: "🍓", pt: 20}, {icon: "🫐", pt: 25},
-    {icon: "🍈", pt: 25}, {icon: "🍒", pt: 30}, {icon: "🍑", pt: 30},
-    {icon: "🍍", pt: 40}, {icon: "🥝", pt: 40}, 
-    {icon: "🍄", pt: 50} // 50 PUANLIK MANTAR MÜHÜRLENDİ
+// SPRITE YÜKLEME (Yılan ve Yemekler)
+const spriteImg = new Image();
+spriteImg.src = "snake_sprites.png"; // Bu dosyanın var olması gerekir
+
+const items = [
+    {i:"🍎",p:5},{i:"🍐",p:5},{i:"🍊",p:10},{i:"🍋",p:10},{i:"🍌",p:15},
+    {i:"🍉",p:15},{i:"🍇",p:20},{i:"🍓",p:20},{i:"🫐",p:25},{i:"🍈",p:25},
+    {i:"🍒",p:30},{i:"🍑",p:30},{i:"🍍",p:40},{i:"🥝",p:40},{i:"🍄",p:50}
 ];
 
 let food = spawnFood();
 
 function spawnFood() {
-    let xPos, yPos;
-    let overlap = true;
-    while(overlap) {
-        xPos = Math.floor(Math.random() * 19) * box;
-        yPos = Math.floor(Math.random() * 19) * box;
-        overlap = snake.some(p => p.x === xPos && p.y === yPos);
-    }
-    const item = lootTable[Math.floor(Math.random() * lootTable.length)];
-    return { x: xPos, y: yPos, ...item };
+    return { x: Math.floor(Math.random()*18+1)*box, y: Math.floor(Math.random()*18+1)*box, ...items[Math.floor(Math.random()*items.length)] };
 }
 
-// --- SWIPE & AYARLAR YÖNETİMİ ---
-const sideMenu = document.getElementById('side-menu');
-let touchX = 0;
-
-document.addEventListener('touchstart', (e) => {
-    touchX = e.touches[0].clientX;
-});
-
-document.addEventListener('touchend', (e) => {
-    const endX = e.changedTouches[0].clientX;
-    const diff = endX - touchX;
-    if (diff > 120) sideMenu.classList.add('open'); // Sağa kaydır: Aç
-    if (diff < -120) sideMenu.classList.remove('open'); // Sola kaydır: Kapat
-});
-
-function toggleMenu() { sideMenu.classList.toggle('open'); }
-
-// --- KONTROL MEKANİZMASI ---
-function setDirection(newDir) {
-    if(newDir === "UP" && currentDir !== "DOWN") currentDir = "UP";
-    if(newDir === "DOWN" && currentDir !== "UP") currentDir = "DOWN";
-    if(newDir === "LEFT" && currentDir !== "RIGHT") currentDir = "LEFT";
-    if(newDir === "RIGHT" && currentDir !== "LEFT") currentDir = "RIGHT";
+// SES MOTORU (CEZA 2)
+function playHit() {
+    const osc = new AudioContext().createOscillator();
+    const g = new AudioContext().createGain();
+    osc.connect(g); g.connect(new AudioContext().destination);
+    osc.frequency.value = 440; g.gain.exponentialRampToValueAtTime(0.0001, new AudioContext().currentTime + 0.1);
+    osc.start(); osc.stop(new AudioContext().currentTime + 0.1);
 }
 
-document.getElementById('up-btn').addEventListener('touchstart', (e) => { e.preventDefault(); setDirection("UP"); });
-document.getElementById('down-btn').addEventListener('touchstart', (e) => { e.preventDefault(); setDirection("DOWN"); });
-document.getElementById('left-btn').addEventListener('touchstart', (e) => { e.preventDefault(); setDirection("LEFT"); });
-document.getElementById('right-btn').addEventListener('touchstart', (e) => { e.preventDefault(); setDirection("RIGHT"); });
+// KONTROLLER & SWIPE
+document.addEventListener("touchstart", e => { startX = e.touches[0].clientX; });
+document.addEventListener("touchend", e => { if(e.changedTouches[0].clientX - startX > 100) toggleMenu(); });
 
-// --- GÖRSEL GERİ BİLDİRİM ---
-function triggerAlert(msg) {
-    const alertBox = document.getElementById('system-alert');
-    alertBox.innerText = msg;
-    alertBox.style.opacity = 1;
-    setTimeout(() => alertBox.style.opacity = 0, 1200);
-}
+const setDir = (d) => {
+    if(d=="UP" && dir!="DOWN") dir="UP"; if(d=="DOWN" && dir!="UP") dir="DOWN";
+    if(d=="LEFT" && dir!="RIGHT") dir="LEFT"; if(d=="RIGHT" && dir!="LEFT") dir="RIGHT";
+};
 
-// --- ANA ÇİZİM MOTORU ---
-function update() {
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+["up","down","left","right"].forEach(id => document.getElementById(id).onclick = () => setDir(id.toUpperCase()));
 
-    // Yılan Çizimi (Neon Sprite)
-    snake.forEach((part, index) => {
-        ctx.fillStyle = (index === 0) ? "#00f3ff" : "#005f66";
-        ctx.shadowBlur = (index === 0) ? 20 : 0;
-        ctx.shadowColor = "#00f3ff";
-        ctx.fillRect(part.x, part.y, box, box);
-        ctx.strokeStyle = "#000";
-        ctx.strokeRect(part.x, part.y, box, box);
+function draw() {
+    ctx.clearRect(0,0,380,380);
+    
+    // YILAN ÇİZİMİ (Spriteli)
+    snake.forEach((p, i) => {
+        ctx.fillStyle = i==0 ? "#00f3ff" : "#005f66";
+        ctx.fillRect(p.x, p.y, box, box);
+        if(i==0 && score > 100) ctx.fillText("👑", p.x, p.y - 5);
     });
-    ctx.shadowBlur = 0;
 
-    // Yemek Çizimi
+    // YEMEK
     ctx.font = "18px Arial";
-    ctx.fillText(food.icon, food.x + 2, food.y + 18);
+    ctx.fillText(food.i, food.x, food.y + 18);
 
-    // Hareket Hesaplama
-    let headX = snake[0].x;
-    let headY = snake[0].y;
+    let head = {x: snake[0].x, y: snake[0].y};
+    if(dir=="UP") head.y -= box; if(dir=="DOWN") head.y += box;
+    if(dir=="LEFT") head.x -= box; if(dir=="RIGHT") head.x += box;
 
-    if(currentDir === "UP") headY -= box;
-    if(currentDir === "DOWN") headY += box;
-    if(currentDir === "LEFT") headX -= box;
-    if(currentDir === "RIGHT") headX += box;
-
-    // Yemek Yeme Durumu
-    if(headX === food.x && headY === food.y) {
-        score += food.pt;
-        if(food.icon === "🍄") triggerAlert("+50 MANTAR!");
+    if(head.x == food.x && head.y == food.y) {
+        score += food.p;
+        playHit();
         food = spawnFood();
-        document.getElementById('score-num').innerText = String(score).padStart(3, '0');
-    } else {
-        snake.pop();
+        if(score > highScore) { highScore = score; localStorage.setItem("efe_rekor", highScore); }
+    } else { snake.pop(); }
+
+    if(head.x<0 || head.x>=380 || head.y<0 || head.y>=380 || snake.some(p=>p.x==head.x && p.y==head.y)) {
+        location.reload();
     }
-
-    let newHead = { x: headX, y: headY };
-
-    // ÖLÜM ŞARTLARI
-    if(headX < 0 || headX >= canvas.width || headY < 0 || headY >= canvas.height || snake.some(p => p.x === newHead.x && p.y === newHead.y)) {
-        triggerAlert("SYSTEM OVERLOAD");
-        setTimeout(() => location.reload(), 1500);
-        return;
-    }
-
-    snake.unshift(newHead);
+    snake.unshift(head);
+    document.getElementById("score-label").innerText = t('score') + ": " + score;
+    document.getElementById("high-score-label").innerText = t('highScore') + ": " + highScore;
 }
 
-// --- MOTORU ÇALIŞTIR VE HIZ AYARI ---
-function run() {
-    clearInterval(gameEngine);
-    gameEngine = setInterval(update, speed);
-}
-
-document.getElementById('speed-slider').addEventListener('input', (e) => {
-    let val = e.target.value;
-    speed = 290 - val; // Slider arttıkça gecikme azalır (hız artar)
-    document.getElementById('speed-val').innerText = val;
-    run();
-});
-
-run();
-
+function toggleMenu() { document.getElementById("side-menu").classList.toggle("open"); }
+function start() { clearInterval(gameLoop); gameLoop = setInterval(draw, speed); }
+start();
