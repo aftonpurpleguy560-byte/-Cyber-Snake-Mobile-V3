@@ -1,17 +1,28 @@
 {
   "short_name": "CyberSnake",
-  "name": "Cyber Snake v4.0 | Purpleguy",
+  "name": "Cyber Snake UPWA+ Efe Edition",
   "icons": [
     {
-      "src": "icon_large.png",
-      "sizes": "192x192 512x512",
+      "src": "icon-192.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/",
+  "background_color": "#000000",
   "display": "standalone",
-  "orientation": "portrait",
-  "theme_color": "#050505",
-  "background_color": "#050505"
+  "scope": "/",
+  "theme_color": "#00f3ff",
+  "shortcuts": [
+    {
+      "name": "Oyuna Başla",
+      "url": "/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
