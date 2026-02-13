@@ -3,115 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - SİSTEM HATASI | Purpleguy</title>
+    <title>SİSTEM HATASI | Purpleguy</title>
     <style>
         :root {
             --p-color: #00f3ff;
-            --bg: #050505;
+            --err-color: #ff003c;
+            --bg: #000000;
         }
 
         body {
             margin: 0;
-            padding: 0;
             background: var(--bg);
             color: white;
-            font-family: 'Courier New', monospace;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            overflow: hidden;
             flex-direction: column;
+            overflow: hidden;
             text-align: center;
         }
 
-        /* Arka Plan Izgarası */
-        #bg-grid {
+        /* Arka Plan Hareketli Izgara Animasyonu */
+        .bg-animate {
             position: fixed;
-            width: 200%;
-            height: 200%;
-            background: 
+            top: 0; left: 0; width: 200%; height: 200%;
+            background-image: 
                 linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-size: 50px 50px;
             z-index: -1;
-            animation: move 20s linear infinite;
+            animation: moveGrid 20s linear infinite;
         }
 
-        @keyframes move {
-            from { transform: translate(0,0); }
-            to { transform: translate(-40px, -40px); }
+        @keyframes moveGrid {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-50px, -50px); }
         }
 
-        .error-code {
-            font-size: 8rem;
+        .error-header {
+            font-size: 120px;
+            font-weight: 900;
             color: var(--p-color);
-            text-shadow: 5px 5px #ff00ff;
+            text-shadow: 4px 4px var(--err-color);
             margin: 0;
-            animation: glitch 1s linear infinite;
+            animation: glitch 1s infinite alternate;
         }
 
         @keyframes glitch {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(3deg); }
-            40% { transform: skew(-3deg); }
-            60% { transform: skew(1deg); }
-            80% { transform: skew(-1deg); }
-            100% { transform: skew(0deg); }
+            0% { transform: skew(0deg); text-shadow: 4px 4px var(--err-color); }
+            100% { transform: skew(2deg); text-shadow: -4px -4px #ff00ff; }
         }
 
-        h2 {
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
+        .terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--p-color);
+            padding: 20px;
+            margin: 20px 0;
+            width: 320px;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
         }
 
-        p {
-            opacity: 0.7;
-            margin-bottom: 30px;
-            max-width: 80%;
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 320px;
         }
 
-        .back-btn {
-            background: transparent;
-            color: var(--p-color);
-            border: 2px solid var(--p-color);
-            padding: 15px 30px;
+        .btn {
+            padding: 15px;
             text-decoration: none;
             font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
             transition: 0.3s;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
         }
 
-        .back-btn:hover {
+        .btn-main {
             background: var(--p-color);
             color: black;
-            box-shadow: 0 0 20px var(--p-color);
+            box-shadow: 0 0 10px var(--p-color);
         }
 
-        .footer-sig {
+        .btn-report {
+            background: transparent;
+            color: var(--err-color);
+            border: 1px solid var(--err-color);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+
+        .footer {
             position: fixed;
-            bottom: 20px;
-            font-size: 12px;
-            color: var(--p-color);
-            opacity: 0.6;
+            bottom: 15px;
+            font-size: 10px;
+            opacity: 0.5;
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
-    <div id="bg-grid"></div>
+    <div class="bg-animate"></div>
 
-    <h1 class="error-code">404</h1>
-    <h2>ERİŞİM REDDEDİLDİ</h2>
-    <p>Aradığın veri siber boşlukta kayboldu veya sistemden silindi.</p>
-    
-    <a href="/" class="back-btn">GÜVENLİ BÖLGEYE DÖN</a>
+    <h1 class="error-header">404</h1>
+    <h2 style="margin-top: -10px; letter-spacing: 5px; color: var(--err-color);">BAĞLANTI KESİLDİ</h2>
 
-    <div class="footer-sig">Purpleguy © 2026 - tablet power</div>
+    <div class="terminal">
+        <div style="color: var(--p-color); border-bottom: 1px solid #333; margin-bottom: 10px; padding-bottom: 5px;">SİSTEM LOGLARI</div>
+        <div>> DURUM: Sayfa Bulunamadı</div>
+        <div>> OPERATÖR: Efe</div>
+        <div>> HATA: 0x800404AF</div>
+        <div style="animation: blink 1s infinite;">> _</div>
+    </div>
+
+    <div class="btn-group">
+        <a href="https://cyber-snake-mobile-v3.vercel.app/" class="btn btn-main">ANA MENÜYE DÖN</a>
+        
+        <button onclick="reportError()" class="btn btn-report">HATAYI BİLDİR</button>
+    </div>
+
+    <div class="footer">Purpleguy © 2026 - tablet power</div>
 
     <script>
-        // Sayfa yüklendiğinde ufak bir daktilo efekti
-        console.log("Sistem Hatası: Aranan koordinatlar bulunamadı.");
+        function reportError() {
+            const email = "aftonpurpleguy560@gmail.com";
+            const subject = "Sistem Hatası Raporu (v4.8.1)";
+            const body = "Selam Efe,\n\nCyber Snake sisteminde 404 hatası aldım. Lütfen koordinatları kontrol et.\n\nDurum: Kritik\nKullanıcı: [Buraya isminizi yazın]";
+            
+            // Gmail taslağını açar
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </script>
 </body>
 </html>
