@@ -1,5 +1,5 @@
 /**
- * Cyber Snake v4.6.9 - Final Sprite Sync
+ * Cyber Snake v4.7.1 - Final Security & Sprite Sync
  * Purpleguy © 2026 - tablet power
  */
 
@@ -22,7 +22,7 @@ let dx = 20, dy = 0;
 let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
 let gameRunning = false, godMode = false;
 
-// --- SPRITE MOTORU ---
+// --- SPRITE MOTORU (256x256) ---
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png';
 let assetsLoaded = false;
@@ -50,9 +50,9 @@ window.startGame = () => {
     createFood(); main(); updateUI();
 };
 
-// --- 🎨 SİBER YILAN ÇİZİM MOTORU (256px SPRITE FIX) ---
+// --- 🎨 SİBER YILAN ÇİZİM MOTORU ---
 function drawSnake() {
-    const unit = 64; // Senin yaptığın 256/4'lük parçalar
+    const unit = 64; 
     snake.forEach((p, i) => {
         if (!assetsLoaded) {
             ctx.fillStyle = primaryColor; ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
@@ -62,24 +62,23 @@ function drawSnake() {
         let sx = 0, sy = 0;
         const next = snake[i + 1], prev = snake[i - 1];
 
-        if (i === 0) { // KAFA KATMANI
-            if (dx > 0) { sx = 192; sy = 0; }      // Kafa Sağa (3,0)
-            else if (dx < 0) { sx = 128; sy = 64; } // Kafa Sola (2,1)
-            else if (dy < 0) { sx = 192; sy = 64; } // Kafa Yukarı (3,1)
-            else { sx = 128; sy = 0; }             // Kafa Aşağı (2,0)
+        if (i === 0) { // KAFA
+            if (dx > 0) { sx = 192; sy = 0; }      
+            else if (dx < 0) { sx = 128; sy = 64; } 
+            else if (dy < 0) { sx = 192; sy = 64; } 
+            else { sx = 128; sy = 0; }             
         } 
-        else if (i === snake.length - 1) { // KUYRUK KATMANI
-            if (prev.x < p.x) { sx = 64; sy = 192; }      // Kuyruk Sola
-            else if (prev.x > p.x) { sx = 0; sy = 128; }  // Kuyruk Sağa
-            else if (prev.y < p.y) { sx = 64; sy = 128; } // Kuyruk Yukarı
-            else { sx = 0; sy = 192; }                    // Kuyruk Aşağı
+        else if (i === snake.length - 1) { // KUYRUK
+            if (prev.x < p.x) { sx = 64; sy = 192; }      
+            else if (prev.x > p.x) { sx = 0; sy = 128; }  
+            else if (prev.y < p.y) { sx = 64; sy = 128; } 
+            else { sx = 0; sy = 192; }                    
         }
-        else { // GÖVDE KATMANI
-            if (prev.x !== next.x && prev.y !== next.y) { sx = 0; sy = 0; } // Köşe
-            else if (prev.x !== next.x) { sx = 64; sy = 0; }                // Yatay Gövde
-            else { sx = 64; sy = 64; }                                      // Dikey Gövde
+        else { // GÖVDE
+            if (prev.x !== next.x && prev.y !== next.y) { sx = 0; sy = 0; } 
+            else if (prev.x !== next.x) { sx = 64; sy = 0; }                
+            else { sx = 64; sy = 64; }                                      
         }
-
         ctx.drawImage(snakeSprites, sx, sy, unit, unit, p.x, p.y, gridSize, gridSize);
     });
 }
@@ -109,11 +108,8 @@ function main() {
     if (!gameRunning) return;
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Yemek Çizimi
     ctx.font = "16px Arial";
     ctx.fillText(food.type, food.x + 2, food.y + 16);
-    
     move(); drawSnake();
     setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
@@ -123,8 +119,7 @@ function createFood() {
     food = { 
         x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize, 
         y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize,
-        type: f.t,
-        points: f.p
+        type: f.t, points: f.p
     };
 }
 
@@ -135,15 +130,36 @@ function updateUI() {
 
 function gameOver() {
     gameRunning = false;
-    alert("BAĞLANTI KESİLDİ! \nNihai Skor: " + score);
+    alert("BAĞLANTI KESİLDİ! \nSkor: " + score);
     location.reload(); 
 }
 
 function gameWin() {
     gameRunning = false;
-    alert("SİSTEM TAMAMEN ELE GEÇİRİLDİ! \nGörev başarıyla tamamlandı.");
+    alert("SİSTEM ELE GEÇİRİLDİ! \nGörev başarıyla tamamlandı.");
     location.reload();
 }
+
+// --- ŞİFRE VE GELİŞMİŞ FONKSİYONLAR ---
+window.unlockDevInfo = () => {
+    const pass = prompt("ERİŞİM ŞİFRESİNİ GİRİN:");
+    if (pass === "Purpleguy2026") {
+        alert("ERİŞİM ONAYLANDI.");
+        openPage('devInfoPage');
+    } else {
+        alert("HATALI ŞİFRE!");
+    }
+};
+
+window.testNotification = () => {
+    alert("UPWA+ Bildirim Sistemi Aktif!");
+};
+
+// --- AYAR KAYITLARI ---
+window.setDifficulty = (v) => { localStorage.setItem('difficulty', v); location.reload(); };
+window.setTheme = (c) => { localStorage.setItem('theme', c); document.documentElement.style.setProperty('--p-color', c); };
+window.setWallPass = (v) => { localStorage.setItem('wallPass', v); location.reload(); };
+window.setLang = (l) => { alert("Dil Değiştirildi: " + l.toUpperCase()); };
 
 // --- KONTROLLER ---
 let tX=0, tY=0;
@@ -161,11 +177,8 @@ document.addEventListener('click', e => {
         window.lastC = now;
         if (window.cC === 3) { 
             godMode = !godMode; 
-            alert(godMode ? "ÖLÜMSÜZLÜK PROTOKOLÜ: AKTİF" : "ÖLÜMSÜZLÜK PROTOKOLÜ: DEVRE DIŞI");
+            alert(godMode ? "ÖLÜMSÜZLÜK AKTİF" : "ÖLÜMSÜZLÜK DEVRE DIŞI");
         }
     }
 });
 
-window.setDifficulty = (v) => { localStorage.setItem('difficulty', v); location.reload(); };
-window.setTheme = (c) => { localStorage.setItem('theme', c); location.reload(); };
-window.setWallPass = (v) => { localStorage.setItem('wallPass', v); location.reload(); };
