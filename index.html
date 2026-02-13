@@ -4,99 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cyber Snake UPWA+</title>
-    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root { --p-color: #00f3ff; }
-        body {
-            background-color: black;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        /* --- SİBER PANEL TASARIMI --- */
-        #menu, .page {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            text-align: center;
-            background: rgba(20, 20, 20, 0.95);
-            padding: 30px;
-            border: 2px solid var(--p-color);
-            box-shadow: 0 0 20px var(--p-color);
-            border-radius: 15px;
-            width: 300px;
-            z-index: 10;
-        }
-
-        .page { display: none; position: absolute; }
-
-        h1 { color: var(--p-color); text-shadow: 0 0 10px var(--p-color); margin: 0; }
-        
-        button {
-            background: transparent;
-            color: white;
-            border: 1px solid var(--p-color);
-            padding: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-            border-radius: 5px;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background: var(--p-color);
-            color: black;
-            box-shadow: 0 0 15px var(--p-color);
-        }
-
-        canvas {
-            display: none;
-            border: 3px solid var(--p-color);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
-            background: black;
-        }
-
-        #stats {
-            display: none;
-            justify-content: space-between;
-            width: 300px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: var(--p-color);
-        }
-
-        .signature {
-            font-size: 10px;
-            margin-top: 15px;
-            opacity: 0.6;
-            cursor: pointer;
-        }
-
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-
-        .difficulty-btns {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 5px;
-        }
-
-        .difficulty-btns button { font-size: 9px; padding: 8px 2px; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Şifreli panel için özel altın siber stil */
+        #devInfoPage { border-color: gold !important; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important; }
+        #devInfoPage h1 { color: gold !important; text-shadow: 0 0 10px gold !important; }
+        .gold-text { color: gold; font-family: monospace; }
+        hr { border: 0.5px solid #333; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -110,52 +24,71 @@
 
     <div id="menu">
         <h1>CYBER SNAKE</h1>
-        <p style="font-size: 12px;">Sürüm: V4.6.0 UPWA+</p>
-        <button onclick="startGame()">OYUNA BAŞLA</button>
-        <button onclick="openPage('settingsPage')">AYARLAR</button>
-        <button onclick="openPage('advancedPage')">GELİŞMİŞ</button>
-        <div class="signature" id="sig">Purpleguy © 2026 - tablet power</div>
+        <p style="font-size: 11px; opacity: 0.7; letter-spacing: 2px;">SİSTEM DURUMU: ÇEVRİMİÇİ</p>
+        <button onclick="startGame()">SİSTEMİ BAŞLAT</button>
+        <button onclick="openPage('settingsPage')">PROTOKOLLER (AYARLAR)</button>
+        <button onclick="openPage('advancedPage')">GELİŞMİŞ SİSTEM</button>
+        <div class="signature" style="cursor: pointer;">Purpleguy © 2026 - tablet power</div>
     </div>
 
     <div id="settingsPage" class="page">
         <h1>AYARLAR</h1>
         
         <div class="setting-item">
-            <label>ZORLUK & HEDEF:</label>
+            <label>ZORLUK SEVİYESİ:</label>
             <div class="difficulty-btns">
-                <button onclick="setDifficulty('kolay')">KOLAY (500)</button>
-                <button onclick="setDifficulty('normal')">NORMAL (1000)</button>
-                <button onclick="setDifficulty('zor')">ZOR (2000)</button>
+                <button onclick="setDifficulty('kolay')">KOLAY</button>
+                <button onclick="setDifficulty('normal')">NORMAL</button>
+                <button onclick="setDifficulty('zor')">ZOR</button>
             </div>
         </div>
 
         <div class="setting-item">
             <label>DUVAR GEÇİŞİ:</label>
-            <button onclick="setWallPass('true')">AÇIK</button>
-            <button onclick="setWallPass('false')">KAPALI</button>
+            <div class="difficulty-btns">
+                <button onclick="setWallPass('true')">AÇIK</button>
+                <button onclick="setWallPass('false')">KAPALI</button>
+            </div>
         </div>
 
         <div class="setting-item">
             <label>TEMA RENGİ:</label>
-            <input type="color" onchange="setTheme(this.value)" style="width: 100%; height: 30px; background: transparent; border: none;">
+            <input type="color" onchange="setTheme(this.value)" style="width: 100%; height: 35px; background: transparent; border: 1px solid var(--p-color); cursor: pointer;">
         </div>
 
-        <button onclick="closePage('settingsPage')">GERİ DÖN</button>
+        <button onclick="closePage('settingsPage')">KAYDET VE ÇIK</button>
     </div>
 
     <div id="advancedPage" class="page">
         <h1>GELİŞMİŞ</h1>
-        <p style="font-size: 11px;">Sistem Çekirdeği: UPWA+ v1.0</p>
+        <p style="font-size: 10px; color: var(--p-color); margin-bottom: 10px;">ÇEKİRDEK VERSİYON: v4.7.0</p>
+        
+        <button onclick="testNotification()">BİLDİRİM TESTİ</button>
+        
         <div class="setting-item">
-            <label>BİLDİRİM TESTİ:</label>
-            <button onclick="alert('UPWA+ Bildirim Sistemi Aktif!')">BİLDİRİM İZNİ AL</button>
+            <label>SİSTEM DİLİ:</label>
+            <div class="difficulty-btns">
+                <button onclick="setLang('tr')">TR</button>
+                <button onclick="setLang('en')">EN</button>
+            </div>
         </div>
-        <div class="setting-item">
-            <label>DİL SEÇİMİ:</label>
-            <button onclick="setLang('tr')">TÜRKÇE</button>
-            <button onclick="setLang('en')">ENGLISH</button>
+
+        <button onclick="unlockDevInfo()" style="border-style: dashed; margin-top: 10px; color: #888;">SİSTEM BİLGİLERİ (KİLİTLİ)</button>
+        
+        <button onclick="closePage('advancedPage')">GERİ DÖN</button>
+    </div>
+
+    <div id="devInfoPage" class="page">
+        <h1>SİSTEM KAYITLARI</h1>
+        <div style="text-align: left; font-size: 13px; line-height: 1.6;">
+            <p><span class="gold-text">> YAPIMCI:</span> Anonim (Ghost)</p>
+            <p><span class="gold-text">> YIL:</span> 2026</p>
+            <p><span class="gold-text">> DONANIM:</span> Tablet Power</p>
+            <p><span class="gold-text">> DURUM:</span> Operasyonel</p>
+            <hr>
+            <p style="text-align: center; font-style: italic; font-size: 11px;">Purpleguy © 2026 - tablet power</p>
         </div>
-        <button onclick="closePage('advancedPage')">KAPAT</button>
+        <button onclick="closePage('devInfoPage')" style="border-color: gold; color: gold; margin-top: 15px;">ERİŞİMİ SONLANDIR</button>
     </div>
 
     <script src="script.js"></script>
