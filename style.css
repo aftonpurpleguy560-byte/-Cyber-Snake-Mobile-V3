@@ -1,171 +1,116 @@
-/**
- * Cyber Snake v4.7.1 - UI Style Sheet
- * Purpleguy © 2026 - tablet power
- */
-
+/* Ana Renk Değişkenleri */
 :root {
-    --p-color: #00f3ff; /* Varsayılan Siber Mavi */
-    --bg-color: #000000;
-    --panel-bg: rgba(15, 15, 15, 0.98);
-}
-
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    outline: none;
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff003c;
+    --dark-bg: #0a0a0c;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: white;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
+    padding: 0;
+    background: var(--dark-bg);
+    color: white;
+    font-family: 'Courier New', monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     overflow: hidden;
-    background-image: radial-gradient(circle at center, #111 0%, #000 100%);
+    touch-action: none; /* Sayfanın gereksiz kaymasını engeller */
 }
 
-/* --- SKOR TABELASI --- */
-#stats {
-    display: none;
-    justify-content: space-between;
-    width: 320px;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    border: 1px solid var(--p-color);
+/* Siber Izgara Arka Planı */
+.grid {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: -1;
+}
+
+/* Oyun Ekranı */
+canvas {
+    border: 3px solid var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.1);
+    background: #000;
+    max-width: 90vw;
+    max-height: 50vh;
     border-radius: 8px;
-    background: var(--panel-bg);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 14px;
-    color: var(--p-color);
 }
 
-/* --- OYUN ALANI --- */
-#gameCanvas {
-    display: none;
-    border: 2px solid var(--p-color);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
-    background-color: #000;
-    max-width: 95vw;
-    max-height: 70vh;
-}
-
-/* --- PANELLER (MENÜ & AYARLAR) --- */
-#menu, .page {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+/* Üst Panel (Skor) */
+.ui-header {
     text-align: center;
-    background: var(--panel-bg);
-    padding: 25px;
-    border: 2px solid var(--p-color);
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-    border-radius: 12px;
-    width: 320px;
-    animation: fadeIn 0.4s ease-out;
+    margin-bottom: 10px;
 }
 
-.page {
-    display: none;
-    position: absolute;
-    z-index: 100;
-}
-
-h1 {
-    margin: 0;
-    font-size: 22px;
-    color: var(--p-color);
-    text-shadow: 0 0 8px var(--p-color);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-/* --- BUTONLAR --- */
-button {
-    background: transparent;
-    color: white;
-    border: 1px solid var(--p-color);
-    padding: 12px;
-    font-size: 12px;
+#scoreDisplay {
+    font-size: 28px;
+    color: var(--neon-blue);
+    text-shadow: 0 0 15px var(--neon-blue);
     font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 4px;
+}
+
+/* Siber Bildirim Sistemi */
+#notify {
+    position: fixed;
+    top: 40%;
+    font-size: 22px;
+    font-weight: bold;
     text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 15px;
+    border-radius: 5px;
 }
 
-button:active {
-    transform: scale(0.95);
-}
-
-button:hover {
-    background: var(--p-color);
-    color: black;
-    box-shadow: 0 0 15px var(--p-color);
-}
-
-/* --- AYAR İÇERİKLERİ --- */
-.setting-item {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 10px;
-    border-radius: 6px;
-    border-left: 3px solid var(--p-color);
-    text-align: left;
-    margin-bottom: 5px;
-}
-
-.setting-item label {
-    display: block;
-    font-size: 10px;
-    margin-bottom: 8px;
-    color: #aaa;
-    letter-spacing: 1px;
-}
-
-.difficulty-btns {
+/* Kontrol Paneli (D-Pad) */
+.controls {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
+    grid-template-areas: 
+        ". up ."
+        "left down right";
+    gap: 15px;
+    margin-top: 20px;
 }
 
-.difficulty-btns button {
-    font-size: 9px;
-    padding: 8px 2px;
+/* Buton Tasarımı ve Tıklama Sorunu Çözümü */
+.btn {
+    width: 75px;
+    height: 75px;
+    background: rgba(0, 243, 255, 0.08);
+    border: 2px solid var(--neon-blue);
+    border-radius: 18px;
+    color: var(--neon-blue);
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none; /* Metin seçmeyi engeller */
+    -webkit-tap-highlight-color: transparent; /* Mobildeki mavi gölgeyi kaldırır */
+    touch-action: manipulation; /* Tıklama gecikmesini yok eder */
+    transition: all 0.1s active;
+    cursor: pointer;
 }
 
-/* --- ÖZEL ALTIN PANEL (GELİŞMİŞ) --- */
-#devInfoPage {
-    border-color: gold !important;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
+/* Butona Basılma Hissi (Geri Bildirim) */
+.btn:active {
+    background: var(--neon-blue);
+    color: #000;
+    transform: scale(0.92);
+    box-shadow: 0 0 25px var(--neon-blue);
 }
 
-.gold-text {
-    color: gold;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-/* --- İMZA --- */
-.signature {
-    font-size: 9px;
-    margin-top: 10px;
-    color: #555;
+/* Footer Bilgisi */
+.footer {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--neon-blue);
+    opacity: 0.4;
     letter-spacing: 1px;
-}
-
-/* --- ANİMASYON --- */
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* Mobil için input düzenleme */
-input[type="color"] {
-    -webkit-appearance: none;
-    border: 1px solid var(--p-color);
 }
