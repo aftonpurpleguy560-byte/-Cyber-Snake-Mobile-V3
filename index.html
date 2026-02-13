@@ -9,8 +9,11 @@
         /* Şifreli panel için özel altın siber stil */
         #devInfoPage { border-color: gold !important; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important; }
         #devInfoPage h1 { color: gold !important; text-shadow: 0 0 10px gold !important; }
-        .gold-text { color: gold; font-family: monospace; }
+        .gold-text { color: gold; font-family: monospace; font-weight: bold; }
         hr { border: 0.5px solid #333; margin: 10px 0; }
+        
+        /* Tema butonları için ekstra düzenleme */
+        .color-btn { width: 100%; height: 25px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -28,7 +31,7 @@
         <button onclick="startGame()">SİSTEMİ BAŞLAT</button>
         <button onclick="openPage('settingsPage')">PROTOKOLLER (AYARLAR)</button>
         <button onclick="openPage('advancedPage')">GELİŞMİŞ SİSTEM</button>
-        <div class="signature" style="cursor: pointer;">Purpleguy © 2026 - tablet power</div>
+        <div class="signature">Purpleguy © 2026 - tablet power</div>
     </div>
 
     <div id="settingsPage" class="page">
@@ -52,8 +55,17 @@
         </div>
 
         <div class="setting-item">
-            <label>TEMA RENGİ:</label>
-            <input type="color" onchange="setTheme(this.value)" style="width: 100%; height: 35px; background: transparent; border: 1px solid var(--p-color); cursor: pointer;">
+            <label>TEMA RENGİ SEÇİN:</label>
+            <div class="difficulty-btns" style="grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                <button onclick="setTheme('#ff0000')" class="color-btn" style="background:#ff0000;"></button>
+                <button onclick="setTheme('#00f3ff')" class="color-btn" style="background:#00f3ff;"></button>
+                <button onclick="setTheme('#0000ff')" class="color-btn" style="background:#0000ff;"></button>
+                <button onclick="setTheme('#00ff00')" class="color-btn" style="background:#00ff00;"></button>
+                <button onclick="setTheme('#ff00ff')" class="color-btn" style="background:#ff00ff;"></button>
+                <button onclick="setTheme('#ffff00')" class="color-btn" style="background:#ffff00;"></button>
+                <button onclick="setTheme('#000000')" class="color-btn" style="background:#000000; border:1px solid #444;"></button>
+                <button onclick="setTheme('#ffffff')" class="color-btn" style="background:#ffffff;"></button>
+            </div>
         </div>
 
         <button onclick="closePage('settingsPage')">KAYDET VE ÇIK</button>
@@ -61,7 +73,7 @@
 
     <div id="advancedPage" class="page">
         <h1>GELİŞMİŞ</h1>
-        <p style="font-size: 10px; color: var(--p-color); margin-bottom: 10px;">ÇEKİRDEK VERSİYON: v4.7.0</p>
+        <p style="font-size: 10px; color: var(--p-color); margin-bottom: 10px;">ÇEKİRDEK VERSİYON: v4.8.0</p>
         
         <button onclick="testNotification()">BİLDİRİM TESTİ</button>
         
@@ -81,7 +93,7 @@
     <div id="devInfoPage" class="page">
         <h1>SİSTEM KAYITLARI</h1>
         <div style="text-align: left; font-size: 13px; line-height: 1.6;">
-            <p><span class="gold-text">> YAPIMCI:</span> Anonim (Ghost)</p>
+            <p><span class="gold-text">> YAPIMCI:</span> Efe</p>
             <p><span class="gold-text">> YIL:</span> 2026</p>
             <p><span class="gold-text">> DONANIM:</span> Tablet Power</p>
             <p><span class="gold-text">> DURUM:</span> Operasyonel</p>
@@ -94,3 +106,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
