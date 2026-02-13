@@ -1,154 +1,158 @@
+/**
+ * Cyber Snake v4.6.0 - UI Style Sheet
+ * Purpleguy © 2026 - tablet power
+ */
+
 :root {
-    --p-color: #00f3ff;
-    --bg-color: #050505;
+    --p-color: #00f3ff; /* Siber Mavi */
+    --bg-color: #000000;
+    --panel-bg: rgba(15, 15, 15, 0.98);
 }
 
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 body {
-    margin: 0;
-    padding: 0;
     background-color: var(--bg-color);
     color: white;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     overflow: hidden;
-    touch-action: none;
+    background-image: radial-gradient(circle at center, #111 0%, #000 100%);
 }
 
-#game-container {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    padding: 20px;
+/* --- STATS PANEL --- */
+#stats {
+    display: none;
+    justify-content: space-between;
+    width: 300px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border: 1px solid var(--p-color);
+    border-radius: 8px;
+    background: var(--panel-bg);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--p-color);
+}
+
+/* --- ANA CANVAS --- */
+#gameCanvas {
+    display: none;
+    border: 2px solid var(--p-color);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    background-color: #000;
+    max-width: 95vw;
+    max-height: 70vh;
+}
+
+/* --- SİBER PANELLER --- */
+#menu, .page {
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-.glass-panel {
-    background: rgba(15, 15, 15, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 25px;
-    width: 100%;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+    gap: 12px;
     text-align: center;
-}
-
-.cyber-title {
-    font-size: 2.2rem;
-    margin-bottom: 30px;
-    color: var(--p-color);
-    text-shadow: 0 0 15px var(--p-color);
-    letter-spacing: 4px;
-    font-weight: 800;
-}
-
-.cyber-btn {
-    background: transparent;
+    background: var(--panel-bg);
+    padding: 25px;
     border: 2px solid var(--p-color);
-    color: var(--p-color);
-    padding: 12px 24px;
-    margin: 8px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.cyber-btn:hover, .cyber-btn:active {
-    background: var(--p-color);
-    color: black;
-    box-shadow: 0 0 25px var(--p-color);
-}
-
-.main-btn {
-    width: 90%;
-    font-size: 1.1rem;
-    padding: 15px;
-}
-
-.menu-row {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-#stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    padding: 15px;
-}
-
-.stat-box {
-    font-size: 1.1rem;
-    color: var(--p-color);
-    font-weight: bold;
-}
-
-canvas {
-    border: 3px solid var(--p-color);
-    box-shadow: 0 0 20px var(--p-color);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
     border-radius: 12px;
-    max-width: 100%;
-    background-color: #000;
+    width: 320px;
+    animation: fadeIn 0.4s ease-out;
 }
 
-.modal {
+.page {
     display: none;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    flex-direction: column;
-    z-index: 1000;
+    z-index: 100;
 }
 
-.setting-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 18px 0;
-}
-
-select {
-    background: #111;
+h1 {
+    margin: 0;
+    font-size: 24px;
     color: var(--p-color);
+    text-shadow: 0 0 8px var(--p-color);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* --- BUTONLAR --- */
+button {
+    background: transparent;
+    color: white;
     border: 1px solid var(--p-color);
-    padding: 8px;
-    border-radius: 5px;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    text-transform: uppercase;
     outline: none;
 }
 
-.p-signature {
-    margin-top: 30px;
-    font-size: 0.75rem;
-    opacity: 0.4;
-    cursor: pointer;
+button:active {
+    transform: scale(0.95);
+}
+
+button:hover {
+    background: var(--p-color);
+    color: black;
+    box-shadow: 0 0 20px var(--p-color);
+}
+
+/* --- AYAR İÇERİKLERİ --- */
+.setting-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid var(--p-color);
+    text-align: left;
+}
+
+.setting-item label {
+    display: block;
+    font-size: 11px;
+    margin-bottom: 8px;
+    color: #aaa;
+}
+
+.difficulty-btns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.difficulty-btns button {
+    font-size: 9px;
+    padding: 8px 0;
+}
+
+/* --- İMZA --- */
+.signature {
+    font-size: 9px;
+    margin-top: 10px;
+    color: #555;
     letter-spacing: 1px;
 }
 
-#readme-content {
-    text-align: left;
-    background: #000;
-    padding: 15px;
-    font-size: 0.8rem;
-    max-height: 250px;
-    overflow-y: auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #0f4; /* Terminal yeşili */
+/* --- ANİMASYONLAR --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Mobil için input düzenleme */
+input[type="color"] {
+    cursor: pointer;
 }
