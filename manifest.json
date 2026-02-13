@@ -1,6 +1,11 @@
 {
   "short_name": "CyberSnake",
-  "name": "Cyber Snake UPWA+ Efe Edition",
+  "name": "Cyber Snake Mobile V Beta",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00f3ff",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
@@ -11,18 +16,6 @@
       "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
-    }
-  ],
-  "start_url": "/",
-  "background_color": "#000000",
-  "display": "standalone",
-  "scope": "/",
-  "theme_color": "#00f3ff",
-  "shortcuts": [
-    {
-      "name": "Oyuna Başla",
-      "url": "/",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
