@@ -1,195 +1,172 @@
-/**
- * Cyber Snake v4.8.1 - Final Master Build
- * Purpleguy © 2026 - tablet power
- */
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const box = 20;
 
-// --- SİSTEM PARAMETRELERİ ---
 let score = 0;
-let gridSize = 20; 
-let bestScore = localStorage.getItem('best') || 0;
-let primaryColor = localStorage.getItem('theme') || "#00f3ff";
-let wallPassSetting = (localStorage.getItem('wallPass') === 'true');
+let speed = 125;
+let d = "RIGHT";
+let snake = [{x: 8 * box, y: 10 * box}];
+let special = null;
 
-// ZORLUK VE HEDEF SİSTEMİ
-let difficulty = localStorage.getItem('difficulty') || 'normal'; 
-let winScore = difficulty === 'kolay' ? 500 : (difficulty === 'zor' ? 2000 : 1000);
-let gameSpeed = difficulty === 'kolay' ? 8 : (difficulty === 'zor' ? 15 : 10);
+// --- 15 ÇEŞİT YEMEK LİSTESİ ---
+const foods = ["🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🍍","🥝","🥥"];
+let food = getRandomFood();
 
-let dx = 20, dy = 0;
-let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
-let gameRunning = false, godMode = false;
-
-// Sayfa yüklendiğinde temayı uygula
-document.documentElement.style.setProperty('--p-color', primaryColor);
-
-// --- SPRITE MOTORU (256x256) ---
-const snakeSprites = new Image();
-snakeSprites.src = 'snake_sprites.png';
-let assetsLoaded = false;
-snakeSprites.onload = () => { assetsLoaded = true; };
-
-// --- 🍎 15 ÇEŞİT SİBER YEMEK ---
-const foods = [
-    {t:'🍎',p:10}, {t:'🍌',p:15}, {t:'🍇',p:20}, {t:'🍓',p:25}, {t:'🍍',p:30}, 
-    {t:'🍉',p:40}, {t:'🍄',p:50}, {t:'🍅',p:15}, {t:'🍒',p:20}, {t:'🍑',p:25},
-    {t:'🍐',p:10}, {t:'🍋',p:15}, {t:'🥝',p:35}, {t:'🌽',p:20}, {t:'🥥',p:45}
-];
-let food = {x:0, y:0, type:'🍎', points:10};
-
-// --- MENÜ VE SAYFA YÖNETİMİ ---
-window.openPage = (id) => { 
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.getElementById(id).style.display = 'flex'; 
-};
-window.closePage = (id) => { 
-    document.getElementById(id).style.display = 'none'; 
-    if(id !== 'devInfoPage') document.getElementById('menu').style.display = 'flex';
-};
-
-window.startGame = () => {
-    canvas.width = canvas.height = 300;
-    document.getElementById('menu').style.display = 'none';
-    document.getElementById('stats').style.display = 'flex';
-    canvas.style.display = 'block';
-    gameRunning = true; score = 0; dx = gridSize; dy = 0;
-    snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
-    createFood(); main(); updateUI();
-};
-
-// --- 🎨 SİBER YILAN ÇİZİM MOTORU ---
-function drawSnake() {
-    const unit = 64; 
-    snake.forEach((p, i) => {
-        if (!assetsLoaded) {
-            ctx.fillStyle = primaryColor; ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
-            return;
-        }
-
-        let sx = 0, sy = 0;
-        const next = snake[i + 1], prev = snake[i - 1];
-
-        if (i === 0) { // KAFA
-            if (dx > 0) { sx = 192; sy = 0; }      
-            else if (dx < 0) { sx = 128; sy = 64; } 
-            else if (dy < 0) { sx = 192; sy = 64; } 
-            else { sx = 128; sy = 0; }             
-        } 
-        else if (i === snake.length - 1) { // KUYRUK
-            if (prev.x < p.x) { sx = 64; sy = 192; }      
-            else if (prev.x > p.x) { sx = 0; sy = 128; }  
-            else if (prev.y < p.y) { sx = 64; sy = 128; } 
-            else { sx = 0; sy = 192; }                    
-        }
-        else { // GÖVDE
-            if (prev.x !== next.x && prev.y !== next.y) { sx = 0; sy = 0; } 
-            else if (prev.x !== next.x) { sx = 64; sy = 0; }                
-            else { sx = 64; sy = 64; }                                      
-        }
-        ctx.drawImage(snakeSprites, sx, sy, unit, unit, p.x, p.y, gridSize, gridSize);
-    });
-}
-
-// --- HAREKET VE MANTIK ---
-function move() {
-    if (!gameRunning) return;
-    const head = {x: snake[0].x + dx, y: snake[0].y + dy};
-
-    if (godMode || wallPassSetting) {
-        if (head.x >= canvas.width) head.x = 0; else if (head.x < 0) head.x = canvas.width - gridSize;
-        if (head.y >= canvas.height) head.y = 0; else if (head.y < 0) head.y = canvas.height - gridSize;
-    } else if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) return gameOver();
-
-    if (!godMode) for (let i = 1; i < snake.length; i++) if (head.x === snake[i].x && head.y === snake[i].y) return gameOver();
-
-    snake.unshift(head);
-    if (head.x === food.x && head.y === food.y) {
-        score += food.points; updateUI(); 
-        if (score >= winScore) return gameWin();
-        createFood();
-    } else { snake.pop(); }
-}
-
-function main() {
-    if (!gameRunning) return;
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = "16px Arial";
-    ctx.fillText(food.type, food.x + 2, food.y + 16);
-    move(); drawSnake();
-    setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
-}
-
-function createFood() {
-    const f = foods[Math.floor(Math.random() * foods.length)];
-    food = { 
-        x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize, 
-        y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize,
-        type: f.t, points: f.p
+function getRandomFood() {
+    return {
+        x: Math.floor(Math.random()*17+1)*box,
+        y: Math.floor(Math.random()*17+1)*box,
+        icon: foods[Math.floor(Math.random()*foods.length)]
     };
 }
 
-function updateUI() {
-    document.getElementById('scoreVal').innerText = score;
-    document.getElementById('bestScore').innerText = bestScore;
-}
-
-function gameOver() {
-    gameRunning = false;
-    alert("VERİ BAĞLANTISI KESİLDİ! \nNihai Skor: " + score);
-    location.reload(); 
-}
-
-function gameWin() {
-    gameRunning = false;
-    alert("SİSTEM TAMAMEN ELE GEÇİRİLDİ! \nTebrikler Efe, görev tamamlandı.");
-    location.reload();
-}
-
-// --- ŞİFRE VE GELİŞMİŞ FONKSİYONLAR ---
-window.unlockDevInfo = () => {
-    const pass = prompt("ERİŞİM ŞİFRESİNİ GİRİN:");
-    if (pass === "Purpleguy2026") {
-        alert("ERİŞİM ONAYLANDI.");
-        openPage('devInfoPage');
-    } else {
-        alert("HATALI ŞİFRE! ERİŞİM REDDEDİLDİ.");
-    }
+// --- DOKUNMATİK VE TIKLAMA KONTROLLERİ (FIXED) ---
+const setDir = (newD) => {
+    if (newD == "UP" && d != "DOWN") d = "UP";
+    if (newD == "DOWN" && d != "UP") d = "DOWN";
+    if (newD == "LEFT" && d != "RIGHT") d = "LEFT";
+    if (newD == "RIGHT" && d != "LEFT") d = "RIGHT";
 };
 
-window.testNotification = () => {
-    alert("UPWA+ Bildirim Sistemi Aktif!");
+// Buton id'lerini ve yönlerini eşleştiriyoruz
+const controls = {
+    "upBtn": "UP",
+    "downBtn": "DOWN",
+    "leftBtn": "LEFT",
+    "rightBtn": "RIGHT"
 };
 
-// --- AYAR KAYITLARI ---
-window.setDifficulty = (v) => { localStorage.setItem('difficulty', v); location.reload(); };
-window.setTheme = (c) => { 
-    localStorage.setItem('theme', c); 
-    document.documentElement.style.setProperty('--p-color', c);
-    primaryColor = c;
-};
-window.setWallPass = (v) => { localStorage.setItem('wallPass', v); location.reload(); };
-window.setLang = (l) => { alert("Dil Değiştirildi: " + l.toUpperCase()); };
+Object.keys(controls).forEach(id => {
+    const el = document.getElementById(id);
+    const dir = controls[id];
+    
+    // Mobilde gecikmesiz tepki için touchstart
+    el.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        setDir(dir);
+    }, {passive: false});
 
-// --- KONTROLLER ---
-let tX=0, tY=0;
-canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
-canvas.addEventListener('touchend', e => {
-    let dX = e.changedTouches[0].clientX - tX, dY = e.changedTouches[0].clientY - tY;
-    if (Math.abs(dX) > Math.abs(dY)) { if (Math.abs(dX)>30 && dx===0) {dx=dX>0?gridSize:-gridSize; dy=0;} }
-    else { if (Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
-}, {passive:false});
-
-document.addEventListener('click', e => {
-    if (e.target.innerText && e.target.innerText.includes('Purpleguy')) {
-        let now = Date.now();
-        if (now - (window.lastC || 0) < 500) window.cC = (window.cC || 0) + 1; else window.cC = 1;
-        window.lastC = now;
-        if (window.cC === 3) { 
-            godMode = !godMode; 
-            alert(godMode ? "ÖLÜMSÜZLÜK PROTOKOLÜ: AKTİF" : "ÖLÜMSÜZLÜK PROTOKOLÜ: DEVRE DIŞI");
-        }
-    }
+    // PC'de tıklama için mousedown
+    el.addEventListener("mousedown", () => setDir(dir));
 });
+
+// Klavye desteği (Test yaparken lazım olur)
+document.addEventListener("keydown", (e) => {
+    if(e.keyCode == 37) setDir("LEFT");
+    if(e.keyCode == 38) setDir("UP");
+    if(e.keyCode == 39) setDir("RIGHT");
+    if(e.keyCode == 40) setDir("DOWN");
+});
+
+// --- SİBER BİLDİRİM SİSTEMİ ---
+function showMsg(txt, clr) {
+    const n = document.getElementById("notify");
+    n.innerText = txt;
+    n.style.color = clr;
+    n.style.textShadow = `0 0 15px ${clr}`;
+    n.style.opacity = 1;
+    setTimeout(() => n.style.opacity = 0, 800);
+}
+
+// --- OYUN DÖNGÜSÜ ---
+function draw() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Yılan Çizimi (Neon Efekt)
+    for(let i=0; i<snake.length; i++) {
+        ctx.fillStyle = (i == 0) ? "#00f3ff" : "#005f66";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    // Yemek Çizimi
+    ctx.font = "16px Arial";
+    ctx.fillText(food.icon, food.x + 2, food.y + 16);
+
+    // Özel Item Çizimi (⚡️, ⭐️, ❄️, 💠)
+    if(special) {
+        ctx.fillText(special.icon, special.x + 2, special.y + 16);
+    }
+
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if(d == "LEFT") snakeX -= box;
+    if(d == "UP") snakeY -= box;
+    if(d == "RIGHT") snakeX += box;
+    if(d == "DOWN") snakeY += box;
+
+    // YEMEK YEME VE PUANLAMA
+    if(snakeX == food.x && snakeY == food.y) {
+        score++;
+        food = getRandomFood();
+        // Her 10 skorda zorluk artışı
+        if(score % 10 == 0) { 
+            speed -= 5; 
+            showMsg("LEVEL UP! ⚡️", "#ff003c");
+            restart(); 
+        }
+        // %30 şansla özel item çıkar
+        if(Math.random() < 0.3) spawnSpecial();
+    } else if(special && snakeX == special.x && snakeY == special.y) {
+        handlePower(special.type);
+        special = null;
+    } else {
+        snake.pop();
+    }
+
+    let newHead = {x: snakeX, y: snakeY};
+
+    // ÖLÜM KONTROLÜ
+    if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+        clearInterval(game);
+        showMsg("GAME OVER", "white");
+        setTimeout(() => location.reload(), 1500);
+        return;
+    }
+
+    snake.unshift(newHead);
+    document.getElementById("scoreDisplay").innerText = "SKOR: " + String(score).padStart(3, '0');
+}
+
+// ÖZEL İTEM SPAWN (EFE'NİN GÜÇLERİ)
+function spawnSpecial() {
+    const types = [
+        {t: "BOLT", i: "⚡️"}, {t: "STAR", i: "⭐️"},
+        {t: "SNOW", i: "❄️"}, {t: "DIAM", i: "💠"}
+    ];
+    const sel = types[Math.floor(Math.random()*types.length)];
+    special = { 
+        x: Math.floor(Math.random()*17+1)*box, 
+        y: Math.floor(Math.random()*17+1)*box, 
+        type: sel.t, 
+        icon: sel.i 
+    };
+}
+
+// GÜÇLERİ UYGULA
+function handlePower(t) {
+    if(t == "BOLT") { score += 2; speed -= 5; showMsg("HIZLANDI! ⚡️", "yellow"); }
+    if(t == "STAR") { score += 4; speed -= 10; showMsg("SÜPER HIZ! ⭐️", "gold"); }
+    if(t == "SNOW") { score += 2; speed += 5; showMsg("YAVAŞLADI ❄️", "#a5f3fc"); }
+    if(t == "DIAM") { score += 1; speed += 10; showMsg("KONTROL 💠", "#2563eb"); }
+    restart();
+}
+
+function collision(head, array) {
+    for(let i=0; i<array.length; i++) {
+        if(head.x == array[i].x && head.y == array[i].y) return true;
+    }
+    return false;
+}
+
+let game;
+function restart() { 
+    clearInterval(game); 
+    game = setInterval(draw, speed); 
+}
+
+// Başlat!
+restart();
