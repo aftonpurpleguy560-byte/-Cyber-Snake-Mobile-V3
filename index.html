@@ -3,55 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CYBER SNAKE UPWA+ | EFE EDITION</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#00f3ff">
+    <title>SNAKE UPWA+ | EFE</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#00f3ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
-    <div class="bg-grid"></div>
-    <div id="system-alert">INITIALIZING...</div>
-
+    <div class="cyber-bg"></div>
     <div id="side-menu">
-        <div class="menu-header">⚙️ SİBER KONTROL</div>
-        <div class="menu-content">
-            <div class="control-group">
-                <label>MOTOR HIZI (ms): <span id="speed-val">120</span></label>
-                <input type="range" id="speed-slider" min="40" max="250" value="120">
-            </div>
-            <div class="control-group">
-                <label>RENK PALETİ</label>
-                <div class="color-preview">NEON BLUE ACTIVE</div>
-            </div>
-            <div class="menu-footer">
-                <span>VERSION: V5.8.2 UPWA+</span><br>
-                <span>OPERATOR: EFE</span>
-            </div>
+        <h2 id="lang-settings">AYARLAR</h2>
+        <div class="opt">
+            <label id="lang-speed">HIZ</label>
+            <input type="range" id="speed-slider" min="50" max="250" value="120">
         </div>
-        <button class="menu-close-btn" onclick="toggleMenu()">KAPAT</button>
-    </div>
-
-    <div class="top-bar">
-        <div class="score-container">
-            <span class="label">SKOR:</span>
-            <span id="score-num">000</span>
+        <div class="opt">
+            <select id="lang-select" onchange="changeLang(this.value)">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="ru">Русский</option>
+            </select>
         </div>
+        <button onclick="toggleMenu()" id="lang-close">KAPAT</button>
     </div>
 
-    <div class="canvas-wrapper">
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="stats">
+        <span id="score-label">SKOR: 0</span>
+        <span id="high-score-label">REKOR: 0</span>
     </div>
 
-    <div class="d-pad">
-        <div class="d-btn" style="grid-area: up" id="up-btn">▲</div>
-        <div class="d-btn" style="grid-area: left" id="left-btn">◀</div>
-        <div class="d-btn" style="grid-area: down" id="down-btn">▼</div>
-        <div class="d-btn" style="grid-area: right" id="right-btn">▶</div>
+    <canvas id="game"></canvas>
+
+    <div class="controls">
+        <button class="btn" id="up">▲</button>
+        <div class="mid-ctrl">
+            <button class="btn" id="left">◀</button>
+            <button class="btn" id="right">▶</button>
+        </div>
+        <button class="btn" id="down">▼</button>
     </div>
 
-    <div class="game-footer">Purpleguy © 2026 - tablet power</div>
-
+    <div id="msg">SYSTEM ONLINE</div>
+    <script src="translations.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
