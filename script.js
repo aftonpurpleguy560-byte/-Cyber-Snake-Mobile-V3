@@ -1,5 +1,5 @@
 /**
- * Cyber Snake v4.7.1 - Final Security & Sprite Sync
+ * Cyber Snake v4.8.1 - Final Master Build
  * Purpleguy © 2026 - tablet power
  */
 
@@ -22,6 +22,9 @@ let dx = 20, dy = 0;
 let snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
 let gameRunning = false, godMode = false;
 
+// Sayfa yüklendiğinde temayı uygula
+document.documentElement.style.setProperty('--p-color', primaryColor);
+
 // --- SPRITE MOTORU (256x256) ---
 const snakeSprites = new Image();
 snakeSprites.src = 'snake_sprites.png';
@@ -37,8 +40,14 @@ const foods = [
 let food = {x:0, y:0, type:'🍎', points:10};
 
 // --- MENÜ VE SAYFA YÖNETİMİ ---
-window.openPage = (id) => { document.getElementById(id).style.display = 'flex'; };
-window.closePage = (id) => { document.getElementById(id).style.display = 'none'; };
+window.openPage = (id) => { 
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById(id).style.display = 'flex'; 
+};
+window.closePage = (id) => { 
+    document.getElementById(id).style.display = 'none'; 
+    if(id !== 'devInfoPage') document.getElementById('menu').style.display = 'flex';
+};
 
 window.startGame = () => {
     canvas.width = canvas.height = 300;
@@ -97,8 +106,7 @@ function move() {
 
     snake.unshift(head);
     if (head.x === food.x && head.y === food.y) {
-        score += food.points; 
-        updateUI(); 
+        score += food.points; updateUI(); 
         if (score >= winScore) return gameWin();
         createFood();
     } else { snake.pop(); }
@@ -130,13 +138,13 @@ function updateUI() {
 
 function gameOver() {
     gameRunning = false;
-    alert("BAĞLANTI KESİLDİ! \nSkor: " + score);
+    alert("VERİ BAĞLANTISI KESİLDİ! \nNihai Skor: " + score);
     location.reload(); 
 }
 
 function gameWin() {
     gameRunning = false;
-    alert("SİSTEM ELE GEÇİRİLDİ! \nGörev başarıyla tamamlandı.");
+    alert("SİSTEM TAMAMEN ELE GEÇİRİLDİ! \nTebrikler Efe, görev tamamlandı.");
     location.reload();
 }
 
@@ -147,7 +155,7 @@ window.unlockDevInfo = () => {
         alert("ERİŞİM ONAYLANDI.");
         openPage('devInfoPage');
     } else {
-        alert("HATALI ŞİFRE!");
+        alert("HATALI ŞİFRE! ERİŞİM REDDEDİLDİ.");
     }
 };
 
@@ -157,7 +165,11 @@ window.testNotification = () => {
 
 // --- AYAR KAYITLARI ---
 window.setDifficulty = (v) => { localStorage.setItem('difficulty', v); location.reload(); };
-window.setTheme = (c) => { localStorage.setItem('theme', c); document.documentElement.style.setProperty('--p-color', c); };
+window.setTheme = (c) => { 
+    localStorage.setItem('theme', c); 
+    document.documentElement.style.setProperty('--p-color', c);
+    primaryColor = c;
+};
 window.setWallPass = (v) => { localStorage.setItem('wallPass', v); location.reload(); };
 window.setLang = (l) => { alert("Dil Değiştirildi: " + l.toUpperCase()); };
 
@@ -177,8 +189,7 @@ document.addEventListener('click', e => {
         window.lastC = now;
         if (window.cC === 3) { 
             godMode = !godMode; 
-            alert(godMode ? "ÖLÜMSÜZLÜK AKTİF" : "ÖLÜMSÜZLÜK DEVRE DIŞI");
+            alert(godMode ? "ÖLÜMSÜZLÜK PROTOKOLÜ: AKTİF" : "ÖLÜMSÜZLÜK PROTOKOLÜ: DEVRE DIŞI");
         }
     }
 });
-
