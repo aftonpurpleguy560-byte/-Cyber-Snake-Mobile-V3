@@ -3,75 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#050505">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Cyber Snake UPWA+</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon_large.png">
-    <title>Cyber Snake v4.0 beta | Purpleguy</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root { --p-color: #00f3ff; }
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* --- SİBER PANEL TASARIMI --- */
+        #menu, .page {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+            background: rgba(20, 20, 20, 0.95);
+            padding: 30px;
+            border: 2px solid var(--p-color);
+            box-shadow: 0 0 20px var(--p-color);
+            border-radius: 15px;
+            width: 300px;
+            z-index: 10;
+        }
+
+        .page { display: none; position: absolute; }
+
+        h1 { color: var(--p-color); text-shadow: 0 0 10px var(--p-color); margin: 0; }
+        
+        button {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--p-color);
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: var(--p-color);
+            color: black;
+            box-shadow: 0 0 15px var(--p-color);
+        }
+
+        canvas {
+            display: none;
+            border: 3px solid var(--p-color);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+            background: black;
+        }
+
+        #stats {
+            display: none;
+            justify-content: space-between;
+            width: 300px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--p-color);
+        }
+
+        .signature {
+            font-size: 10px;
+            margin-top: 15px;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .difficulty-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+        }
+
+        .difficulty-btns button { font-size: 9px; padding: 8px 2px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div id="stats" class="glass-panel" style="display: none;">
-            <div class="stat-box"><span id="scoreLabelText">SKOR</span>: <span id="scoreVal">0</span></div>
-            <div class="stat-box"><span id="bestLabelText">EN İYİ</span>: <span id="bestScore">0</span></div>
+    <div id="stats">
+        <div>SKOR: <span id="scoreVal">0</span></div>
+        <div>EN İYİ: <span id="bestScore">0</span></div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="menu">
+        <h1>CYBER SNAKE</h1>
+        <p style="font-size: 12px;">Sürüm: V4.6.0 UPWA+</p>
+        <button onclick="startGame()">OYUNA BAŞLA</button>
+        <button onclick="openPage('settingsPage')">AYARLAR</button>
+        <button onclick="openPage('advancedPage')">GELİŞMİŞ</button>
+        <div class="signature" id="sig">Purpleguy © 2026 - tablet power</div>
+    </div>
+
+    <div id="settingsPage" class="page">
+        <h1>AYARLAR</h1>
+        
+        <div class="setting-item">
+            <label>ZORLUK & HEDEF:</label>
+            <div class="difficulty-btns">
+                <button onclick="setDifficulty('kolay')">KOLAY (500)</button>
+                <button onclick="setDifficulty('normal')">NORMAL (1000)</button>
+                <button onclick="setDifficulty('zor')">ZOR (2000)</button>
+            </div>
         </div>
 
-        <div id="menu" class="glass-panel">
-            <h1 class="cyber-title">CYBER SNAKE</h1>
-            <button id="startBtn" onclick="startGame()" class="cyber-btn main-btn">OYUNA BAŞLA</button>
-            <div class="menu-row">
-                <button id="settingsBtn" onclick="openPage('settings-page')" class="cyber-btn">AYARLAR</button>
-                <button id="advBtn" onclick="openAdvanced()" class="cyber-btn">GELİŞMİŞ</button>
-            </div>
-            <p class="p-signature">Purpleguy © 2026 - tablet power</p>
+        <div class="setting-item">
+            <label>DUVAR GEÇİŞİ:</label>
+            <button onclick="setWallPass('true')">AÇIK</button>
+            <button onclick="setWallPass('false')">KAPALI</button>
         </div>
 
-        <canvas id="gameCanvas" style="display: none;"></canvas>
-
-        <div id="settings-page" class="modal glass-panel">
-            <h2 id="settingsTitle">SİSTEM AYARLARI</h2>
-            <div class="setting-item">
-                <label id="langLabelText">DİL:</label>
-                <select onchange="setLang(this.value)">
-                    <option value="tr">TÜRKÇE</option>
-                    <option value="en">ENGLISH</option>
-                </select>
-            </div>
-            <div class="setting-item">
-                <label id="speedLabelText">HIZ:</label>
-                <select onchange="setSpeed(this.value)">
-                    <option value="5">YAVAŞ</option>
-                    <option value="10" selected>NORMAL</option>
-                    <option value="15">HIZLI</option>
-                </select>
-            </div>
-            <div class="setting-item">
-                <label id="wallsLabelText">DUVARLAR:</label>
-                <select onchange="setWallPass(this.value)">
-                    <option value="false">ÖLDÜRÜCÜ</option>
-                    <option value="true">GEÇİRGEN</option>
-                </select>
-            </div>
-            <div class="setting-item">
-                <label id="themeLabelText">TEMA:</label>
-                <select onchange="setTheme(this.value)">
-                    <option value="#00f3ff">CYAN</option>
-                    <option value="#ff00ff">MAGENTA</option>
-                    <option value="#00ff00">LIME</option>
-                    <option value="#ff4400">ORANGE</option>
-                </select>
-            </div>
-            <button id="saveBtn" onclick="closePage('settings-page')" class="cyber-btn">KAYDET</button>
+        <div class="setting-item">
+            <label>TEMA RENGİ:</label>
+            <input type="color" onchange="setTheme(this.value)" style="width: 100%; height: 30px; background: transparent; border: none;">
         </div>
 
-        <div id="advanced-page" class="modal glass-panel">
-            <h2 id="readmeTitle">SİSTEM KAYITLARI</h2>
-            <pre id="readme-content"></pre>
-            <button id="readmeExitBtn" onclick="closePage('advanced-page')" class="cyber-btn">KAPAT</button>
+        <button onclick="closePage('settingsPage')">GERİ DÖN</button>
+    </div>
+
+    <div id="advancedPage" class="page">
+        <h1>GELİŞMİŞ</h1>
+        <p style="font-size: 11px;">Sistem Çekirdeği: UPWA+ v1.0</p>
+        <div class="setting-item">
+            <label>BİLDİRİM TESTİ:</label>
+            <button onclick="alert('UPWA+ Bildirim Sistemi Aktif!')">BİLDİRİM İZNİ AL</button>
         </div>
+        <div class="setting-item">
+            <label>DİL SEÇİMİ:</label>
+            <button onclick="setLang('tr')">TÜRKÇE</button>
+            <button onclick="setLang('en')">ENGLISH</button>
+        </div>
+        <button onclick="closePage('advancedPage')">KAPAT</button>
     </div>
 
     <script src="script.js"></script>
