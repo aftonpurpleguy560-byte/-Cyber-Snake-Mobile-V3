@@ -1,12 +1,12 @@
 /**
- * Cyber Snake v4.2.9 - The Final Masterpiece
+ * Cyber Snake v4.3.2 - Final 9th Day Masterpiece
  * Purpleguy © 2026 - tablet power
  */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// --- SİSTEM HAFIZASI VE PARAMETRELER ---
+// --- SİSTEM PARAMETRELERİ ---
 let score = 0;
 let gridSize = 20; 
 let bestScore = localStorage.getItem('best') || 0;
@@ -33,47 +33,29 @@ const foods = [
 ];
 let food = {x:0, y:0, type:'🍎', points:5};
 
-// --- ÇEVİRİ TABLOSU (Tam Liste) ---
-const translations = {
-    tr: {
-        startBtn: "OYUNA BAŞLA", settingsBtn: "AYARLAR", advBtn: "GELİŞMİŞ",
-        settingsTitle: "SİSTEM AYARLARI", langLabelText: "DİL:", speedLabelText: "HIZ:", wallsLabelText: "DUVARLAR:", themeLabelText: "TEMA:",
-        saveBtn: "KAYDET", scoreLabelText: "SKOR", bestLabelText: "EN İYİ",
-        gameOver: "SİSTEM DURDURULDU! SKOR: ", godOn: "GOD MODE: AKTİF", godOff: "GOD MODE: KAPALI"
-    },
-    en: {
-        startBtn: "START GAME", settingsBtn: "SETTINGS", advBtn: "ADVANCED",
-        settingsTitle: "SYSTEM SETTINGS", langLabelText: "LANG:", speedLabelText: "SPEED:", wallsLabelText: "WALLS:", themeLabelText: "THEME:",
-        saveBtn: "SAVE", scoreLabelText: "SCORE", bestLabelText: "BEST",
-        gameOver: "SYSTEM HALTED! SCORE: ", godOn: "GOD MODE: ACTIVE", godOff: "GOD MODE: OFF"
-    }
+// --- MENÜ VE SAYFA FONKSİYONLARI (Gelişmiş Butonu İçin) ---
+window.openPage = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'flex';
 };
 
-// --- BİLDİRİM SİSTEMİ (Tek Seferlik Racon) ---
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-        if (!localStorage.getItem('notificationAsked') && Notification.permission === 'default') {
-            Notification.requestPermission().then(p => {
-                localStorage.setItem('notificationAsked', 'true');
-                if (p === 'granted') scheduleNotifications(reg);
-            });
-        }
-    });
-}
+window.closePage = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+};
 
-function scheduleNotifications(reg) {
-    const msgs = ["Yılan çok acıktı!", "Efe, siber üs seni bekliyor.", "Rekor kırma zamanı!"];
-    for (let i = 1; i <= 20; i++) {
-        setTimeout(() => {
-            reg.showNotification('Cyber Snake', {
-                body: msgs[Math.floor(Math.random() * msgs.length)],
-                icon: '/icon_large.png'
-            });
-        }, i * 21600000);
-    }
-}
+window.startGame = () => {
+    const s = Math.min(window.innerWidth * 0.9, 400);
+    canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('stats').style.display = 'flex';
+    canvas.style.display = 'block';
+    gameRunning = true; score = 0; dx = gridSize; dy = 0;
+    snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
+    createFood(); main(); updateUI();
+};
 
-// --- 🎨 EFE'NİN KAOTİK RESMİNE ÖZEL ÇİZİM MOTORU ---
+// --- 🎨 SİBER YILAN ÇİZİM MOTORU (Görseldeki Parçalara Göre) ---
 function drawSnake() {
     const unit = 64; 
     snake.forEach((p, i) => {
@@ -82,32 +64,34 @@ function drawSnake() {
             ctx.fillRect(p.x, p.y, gridSize - 1, gridSize - 1);
             return;
         }
+
         let sx = 0, sy = 0;
         const next = snake[i + 1];
         const prev = snake[i - 1];
 
-        if (i === 0) { // KAFALAR
-            if (dx === 0 && dy < 0) { sx = 2 * unit; sy = 0; }      
-            else if (dx > 0 && dy === 0) { sx = 3 * unit; sy = 0; } 
-            else if (dx < 0 && dy === 0) { sx = 2 * unit; sy = unit; } 
-            else if (dx === 0 && dy > 0) { sx = 3 * unit; sy = unit; } 
+        // Resimdeki koordinatlara göre cerrahi nokta atışı:
+        if (i === 0) { // KAFA
+            if (dx > 0) { sx = 3 * unit; sy = 0; }      
+            else if (dx < 0) { sx = 3 * unit; sy = unit; } 
+            else if (dy < 0) { sx = 2 * unit; sy = 0; } 
+            else { sx = 2 * unit; sy = unit; }           
         } 
-        else if (i === snake.length - 1) { // KUYRUKLAR
-            if (prev.y < p.y) { sx = 2 * unit; sy = 2 * unit; }
-            else if (prev.x > p.x) { sx = 3 * unit; sy = 2 * unit; }
-            else if (prev.x < p.x) { sx = 2 * unit; sy = 3 * unit; }
-            else if (prev.y > p.y) { sx = 3 * unit; sy = 3 * unit; }
+        else if (i === snake.length - 1) { // KUYRUK
+            if (prev.x < p.x) { sx = 0; sy = 2 * unit; }      
+            else if (prev.x > p.x) { sx = unit; sy = 2 * unit; } 
+            else if (prev.y < p.y) { sx = 0; sy = 3 * unit; }   
+            else { sx = unit; sy = 3 * unit; }                    
         }
         else { // GÖVDE
-            if (prev.x < p.x && next.x > p.x || next.x < p.x && prev.x > p.x) { sx = unit; sy = 0; } 
-            else if (prev.y < p.y && next.y > p.y || next.y < p.y && prev.y > p.y) { sx = unit; sy = unit; } 
-            else { sx = 0; sy = 0; } 
+            if (prev.x !== next.x && prev.y !== next.y) { sx = unit; sy = 0; } 
+            else if (prev.x !== next.x) { sx = 0; sy = 0; } 
+            else { sx = 0; sy = unit; }
         }
         ctx.drawImage(snakeSprites, sx, sy, unit, unit, p.x, p.y, gridSize, gridSize);
     });
 }
 
-// --- HAREKET MOTORU ---
+// --- HAREKET VE OYUN MANTIĞI ---
 function move() {
     if (!gameRunning) return;
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
@@ -141,43 +125,24 @@ function main() {
     setTimeout(() => { requestAnimationFrame(main); }, 1000 / gameSpeed);
 }
 
-// --- MENÜ VE AYAR KOMUTLARI ---
-window.startGame = () => {
-    const s = Math.min(window.innerWidth * 0.9, 400);
-    canvas.width = canvas.height = Math.floor(s / gridSize) * gridSize;
-    document.getElementById('menu').style.display = 'none';
-    document.getElementById('stats').style.display = 'flex';
-    canvas.style.display = 'block';
-    gameRunning = true; score = 0; dx = gridSize; dy = 0;
-    snake = [{x:160,y:160},{x:140,y:160},{x:120,y:160}];
-    createFood(); main(); updateUI();
-};
-
-window.setLang = (l) => { currentLang = l; localStorage.setItem('lang', l); location.reload(); };
-window.setTheme = (c) => { primaryColor = c; localStorage.setItem('theme', c); document.documentElement.style.setProperty('--p-color', c); };
-window.setSpeed = (v) => { gameSpeed = parseInt(v); localStorage.setItem('speed', v); };
-window.setWallPass = (v) => { wallPassSetting = (v === 'true'); localStorage.setItem('wallPass', v); };
-window.openPage = (id) => { document.getElementById(id).style.display = 'flex'; };
-window.closePage = (id) => { document.getElementById(id).style.display = 'none'; };
-
 function createFood() {
     const f = foods[Math.floor(Math.random() * foods.length)];
     food = { x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize, y: Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize, type: f.t, points: f.p };
 }
 
 function updateUI() {
-    document.getElementById('scoreVal').innerText = godMode ? score + " [GOD]" : score;
+    document.getElementById('scoreVal').innerText = score;
     document.getElementById('bestScore').innerText = bestScore;
 }
 
 function gameOver() {
     gameRunning = false;
     if (score > bestScore) localStorage.setItem('best', score);
-    alert(translations[currentLang].gameOver + score);
+    alert("SİSTEM DURDURULDU! SKOR: " + score);
     location.reload(); 
 }
 
-// --- KONTROLLER ---
+// --- MOBİL SWIPE VE GOD MODE ---
 let tX=0, tY=0;
 canvas.addEventListener('touchstart', e => { tX=e.touches[0].clientX; tY=e.touches[0].clientY; }, {passive:false});
 canvas.addEventListener('touchend', e => {
@@ -186,7 +151,6 @@ canvas.addEventListener('touchend', e => {
     else { if (Math.abs(dY)>30 && dy===0) {dx=0; dy=dY>0?gridSize:-gridSize;} }
 }, {passive:false});
 
-// --- İMZA VE GOD MODE (İmzaya 3 Tık) ---
 document.addEventListener('click', e => {
     if (e.target.innerText && e.target.innerText.includes('Purpleguy')) {
         let now = Date.now();
@@ -194,13 +158,14 @@ document.addEventListener('click', e => {
         window.lastC = now;
         if (window.cC === 3) {
             godMode = !godMode; score = godMode ? 9999 : score; updateUI();
-            alert(godMode ? translations[currentLang].godOn : translations[currentLang].godOff);
+            alert(godMode ? "GOD MODE: AKTİF" : "GOD MODE: KAPALI");
         }
     }
 });
 
-window.onload = () => {
-    const t = translations[currentLang];
-    Object.keys(t).forEach(id => { if (document.getElementById(id)) document.getElementById(id).innerText = t[id]; });
-    window.setTheme(primaryColor);
-};
+// AYAR KAYDETME SİSTEMİ
+window.setLang = (l) => { localStorage.setItem('lang', l); location.reload(); };
+window.setTheme = (c) => { localStorage.setItem('theme', c); document.documentElement.style.setProperty('--p-color', c); };
+window.setSpeed = (v) => { gameSpeed = parseInt(v); localStorage.setItem('speed', v); };
+window.setWallPass = (v) => { wallPassSetting = (v === 'true'); localStorage.setItem('wallPass', v); };
+
