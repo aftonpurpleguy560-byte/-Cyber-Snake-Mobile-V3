@@ -2,108 +2,242 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Snake UPWA+</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CYBER SNAKE V5.0 | EFE</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#00f3ff">
+
     <style>
-        /* Şifreli panel için özel altın siber stil */
-        #devInfoPage { border-color: gold !important; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important; }
-        #devInfoPage h1 { color: gold !important; text-shadow: 0 0 10px gold !important; }
-        .gold-text { color: gold; font-family: monospace; font-weight: bold; }
-        hr { border: 0.5px solid #333; margin: 10px 0; }
-        
-        /* Tema butonları için ekstra düzenleme */
-        .color-btn { width: 100%; height: 25px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; }
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff003c;
+            --dark-bg: #0a0a0c;
+        }
+
+        body {
+            margin: 0;
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* Siber Arka Plan */
+        .grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+
+        canvas {
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            background: #000;
+            max-width: 90vw;
+            max-height: 50vh;
+        }
+
+        .ui-header { text-align: center; margin-bottom: 10px; }
+        #scoreDisplay { font-size: 24px; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+
+        /* Bildirim Sistemi */
+        #notify {
+            position: fixed;
+            top: 40%;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Dokunmatik Butonlar (Basılmama Sorunu Çözüldü) */
+        .controls {
+            display: grid;
+            grid-template-areas: ". up ." "left down right";
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            color: var(--neon-blue);
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            touch-action: manipulation;
+            transition: 0.1s;
+        }
+
+        .btn:active {
+            background: var(--neon-blue);
+            color: #000;
+            transform: scale(0.9);
+        }
+
+        .footer { margin-top: 15px; font-size: 10px; opacity: 0.5; }
     </style>
 </head>
 <body>
+    <div class="grid"></div>
+    <div id="notify">BOOST!</div>
 
-    <div id="stats">
-        <div>SKOR: <span id="scoreVal">0</span></div>
-        <div>EN İYİ: <span id="bestScore">0</span></div>
+    <div class="ui-header">
+        <div id="scoreDisplay">SKOR: 000</div>
+        <div style="font-size: 10px; color: var(--neon-pink);">SYSTEM STATUS: V5.0 BETA ACTIVE</div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" width="360" height="360"></canvas>
 
-    <div id="menu">
-        <h1>CYBER SNAKE</h1>
-        <p style="font-size: 11px; opacity: 0.7; letter-spacing: 2px;">SİSTEM DURUMU: ÇEVRİMİÇİ</p>
-        <button onclick="startGame()">SİSTEMİ BAŞLAT</button>
-        <button onclick="openPage('settingsPage')">PROTOKOLLER (AYARLAR)</button>
-        <button onclick="openPage('advancedPage')">GELİŞMİŞ SİSTEM</button>
-        <div class="signature">Purpleguy © 2026 - tablet power</div>
+    <div class="controls">
+        <div class="btn" style="grid-area: up" id="upBtn">▲</div>
+        <div class="btn" style="grid-area: left" id="leftBtn">◀</div>
+        <div class="btn" style="grid-area: down" id="downBtn">▼</div>
+        <div class="btn" style="grid-area: right" id="rightBtn">▶</div>
     </div>
 
-    <div id="settingsPage" class="page">
-        <h1>AYARLAR</h1>
-        
-        <div class="setting-item">
-            <label>ZORLUK SEVİYESİ:</label>
-            <div class="difficulty-btns">
-                <button onclick="setDifficulty('kolay')">KOLAY</button>
-                <button onclick="setDifficulty('normal')">NORMAL</button>
-                <button onclick="setDifficulty('zor')">ZOR</button>
-            </div>
-        </div>
+    <div class="footer">Purpleguy © 2026 - tablet power | OPERATOR: EFE</div>
 
-        <div class="setting-item">
-            <label>DUVAR GEÇİŞİ:</label>
-            <div class="difficulty-btns">
-                <button onclick="setWallPass('true')">AÇIK</button>
-                <button onclick="setWallPass('false')">KAPALI</button>
-            </div>
-        </div>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const box = 20;
 
-        <div class="setting-item">
-            <label>TEMA RENGİ SEÇİN:</label>
-            <div class="difficulty-btns" style="grid-template-columns: repeat(4, 1fr); gap: 8px;">
-                <button onclick="setTheme('#ff0000')" class="color-btn" style="background:#ff0000;"></button>
-                <button onclick="setTheme('#00f3ff')" class="color-btn" style="background:#00f3ff;"></button>
-                <button onclick="setTheme('#0000ff')" class="color-btn" style="background:#0000ff;"></button>
-                <button onclick="setTheme('#00ff00')" class="color-btn" style="background:#00ff00;"></button>
-                <button onclick="setTheme('#ff00ff')" class="color-btn" style="background:#ff00ff;"></button>
-                <button onclick="setTheme('#ffff00')" class="color-btn" style="background:#ffff00;"></button>
-                <button onclick="setTheme('#000000')" class="color-btn" style="background:#000000; border:1px solid #444;"></button>
-                <button onclick="setTheme('#ffffff')" class="color-btn" style="background:#ffffff;"></button>
-            </div>
-        </div>
+        let score = 0;
+        let speed = 125;
+        let d = "RIGHT";
+        let snake = [{x: 8 * box, y: 10 * box}];
+        let special = null;
 
-        <button onclick="closePage('settingsPage')">KAYDET VE ÇIK</button>
-    </div>
+        // 15 Çeşit Yemek (Sprite Listesi)
+        const foods = ["🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🍍","🥝","🥥"];
+        let food = getRandomFood();
 
-    <div id="advancedPage" class="page">
-        <h1>GELİŞMİŞ</h1>
-        <p style="font-size: 10px; color: var(--p-color); margin-bottom: 10px;">ÇEKİRDEK VERSİYON: v4.8.0</p>
-        
-        <button onclick="testNotification()">BİLDİRİM TESTİ</button>
-        
-        <div class="setting-item">
-            <label>SİSTEM DİLİ:</label>
-            <div class="difficulty-btns">
-                <button onclick="setLang('tr')">TR</button>
-                <button onclick="setLang('en')">EN</button>
-            </div>
-        </div>
+        function getRandomFood() {
+            return {
+                x: Math.floor(Math.random()*17+1)*box,
+                y: Math.floor(Math.random()*17+1)*box,
+                icon: foods[Math.floor(Math.random()*foods.length)]
+            };
+        }
 
-        <button onclick="unlockDevInfo()" style="border-style: dashed; margin-top: 10px; color: #888;">SİSTEM BİLGİLERİ (KİLİTLİ)</button>
-        
-        <button onclick="closePage('advancedPage')">GERİ DÖN</button>
-    </div>
+        // Kontrolcüleri Tanımla
+        const setDir = (newD) => {
+            if (newD == "UP" && d != "DOWN") d = "UP";
+            if (newD == "DOWN" && d != "UP") d = "DOWN";
+            if (newD == "LEFT" && d != "RIGHT") d = "LEFT";
+            if (newD == "RIGHT" && d != "LEFT") d = "RIGHT";
+        };
 
-    <div id="devInfoPage" class="page">
-        <h1>SİSTEM KAYITLARI</h1>
-        <div style="text-align: left; font-size: 13px; line-height: 1.6;">
-            <p><span class="gold-text">> YAPIMCI:</span> Efe</p>
-            <p><span class="gold-text">> YIL:</span> 2026</p>
-            <p><span class="gold-text">> DONANIM:</span> Tablet Power</p>
-            <p><span class="gold-text">> DURUM:</span> Operasyonel</p>
-            <hr>
-            <p style="text-align: center; font-style: italic; font-size: 11px;">Purpleguy © 2026 - tablet power</p>
-        </div>
-        <button onclick="closePage('devInfoPage')" style="border-color: gold; color: gold; margin-top: 15px;">ERİŞİMİ SONLANDIR</button>
-    </div>
+        ["upBtn","downBtn","leftBtn","rightBtn"].forEach(id => {
+            const el = document.getElementById(id);
+            const dir = id.replace("Btn","").toUpperCase();
+            el.addEventListener("touchstart", (e) => { e.preventDefault(); setDir(dir); });
+            el.addEventListener("mousedown", () => setDir(dir));
+        });
 
-    <script src="script.js"></script>
+        function showMsg(txt, clr) {
+            const n = document.getElementById("notify");
+            n.innerText = txt; n.style.color = clr; n.style.opacity = 1;
+            setTimeout(() => n.style.opacity = 0, 800);
+        }
+
+        function draw() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Yılan
+            for(let i=0; i<snake.length; i++) {
+                ctx.fillStyle = (i == 0) ? "#00f3ff" : "#005f66";
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            // Yemek
+            ctx.font = "16px Arial";
+            ctx.fillText(food.icon, food.x + 2, food.y + 16);
+
+            // Özel Itemler (⚡️, ⭐️, ❄️, 💠)
+            if(special) {
+                ctx.fillText(special.icon, special.x + 2, special.y + 16);
+            }
+
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if(d == "LEFT") snakeX -= box;
+            if(d == "UP") snakeY -= box;
+            if(d == "RIGHT") snakeX += box;
+            if(d == "DOWN") snakeY += box;
+
+            // Çarpışmalar
+            if(snakeX == food.x && snakeY == food.y) {
+                score++;
+                food = getRandomFood();
+                if(score % 10 == 0) { speed -= 5; restart(); }
+                if(Math.random() < 0.3) spawnSpecial();
+            } else if(special && snakeX == special.x && snakeY == special.y) {
+                handlePower(special.type);
+                special = null;
+            } else {
+                snake.pop();
+            }
+
+            let newHead = {x: snakeX, y: snakeY};
+
+            if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+                location.reload();
+            }
+
+            snake.unshift(newHead);
+            document.getElementById("scoreDisplay").innerText = "SKOR: " + String(score).padStart(3, '0');
+        }
+
+        function spawnSpecial() {
+            const types = [
+                {t: "BOLT", i: "⚡️"}, {t: "STAR", i: "⭐️"},
+                {t: "SNOW", i: "❄️"}, {t: "DIAM", i: "💠"}
+            ];
+            const sel = types[Math.floor(Math.random()*types.length)];
+            special = { x: Math.floor(Math.random()*17+1)*box, y: Math.floor(Math.random()*17+1)*box, type: sel.t, icon: sel.i };
+        }
+
+        function handlePower(t) {
+            if(t == "BOLT") { score += 2; speed -= 5; showMsg("HIZLANDI! ⚡️", "yellow"); }
+            if(t == "STAR") { score += 4; speed -= 10; showMsg("SÜPER HIZ! ⭐️", "gold"); }
+            if(t == "SNOW") { score += 2; speed += 5; showMsg("YAVAŞLADI ❄️", "#a5f3fc"); }
+            if(t == "DIAM") { score += 1; speed += 10; showMsg("KONTROL 💠", "#2563eb"); }
+            restart();
+        }
+
+        function collision(head, array) {
+            for(let i=0; i<array.length; i++) if(head.x == array[i].x && head.y == array[i].y) return true;
+            return false;
+        }
+
+        let game;
+        function restart() { clearInterval(game); game = setInterval(draw, speed); }
+        restart();
+    </script>
 </body>
 </html>
 
